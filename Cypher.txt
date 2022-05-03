@@ -1,0 +1,3 @@
+CREATE (student:Student name:Alice) RETURN student
+CREATE (student:Student name:Bob) RETURN student
+CREATE (student:Student name:Carol) RETURN student

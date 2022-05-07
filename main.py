@@ -1,4 +1,30 @@
-queriesString = ""
+queriesString = "" #global string to print to the file
+
+#statistic globals in precentage
+GirltoBoyRatio = 58
+# student by field ratio (total 100%)
+SFR_Humanities = 22.9
+SFR_SocialSciences = 28.8
+SFR_Law = 7
+SFR_Medicine = 7.7
+SFR_Math = 13.9
+SFR_Agriculture = 0.6
+SFR_EngineeringAndArchitecture = 19.1
+# applicant to accepted ratio
+AAR_Humanities = 1.4
+AAR_LanguagesLiteraturesAndRegionalStudies = 1.7
+AAR_EducationAndTeacherTraining = 1.6
+AAR_Arts = 1.6
+AAR_SocialSciences = 1.6
+AAR_BusinessAndManagement = 1.5
+AAR_Law = 2.4
+AAR_Medicine = 4.4
+AAR_ParaMedicalStudies = 2.3
+AAR_MathematicsStatisticsAndComputerSciences = 1.8
+AAR_PhysicalSciences = 1.5
+AAR_BiologicalSciences = 1.7
+AAR_Agriculture = 1.3
+AAR_EngineeringAndArchitecture = 2
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -7,16 +33,16 @@ def print_hi(name):
 def generateCypherCreate():
     global queriesString
     for name in ["Alice", "Bob", "Carol"]:
-        queriesString =queriesString + "CREATE (student:Student name:"+name+") RETURN student\n"
+        queriesString = queriesString + "CREATE (student:Student name:"+name+") RETURN student\n"
+        #queriesString = queriesString + "CREATE (student:Student name:"+name+") RETURN student\n"
 
-# Press the green button in the gutter to run the script.
+
 if __name__ == '__main__':
     print_hi('Learn Path git. Welcome good sir.')
     f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
     generateCypherCreate()
     print("query:\n"+queriesString)
     f.write(queriesString)
-    #
     f.close()
 
 

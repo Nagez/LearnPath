@@ -13,25 +13,32 @@ SFR_Math = 13.9
 SFR_Agriculture = 0.6
 SFR_EngineeringAndArchitecture = 19.1
 # applicant to accepted ratio
-AAR_Humanities = 1.4
-AAR_LanguagesLiteraturesAndRegionalStudies = 1.7
-AAR_EducationAndTeacherTraining = 1.6
-AAR_Arts = 1.6
-AAR_SocialSciences = 1.6
-AAR_BusinessAndManagement = 1.5
-AAR_Law = 2.4
-AAR_Medicine = 4.4
-AAR_ParaMedicalStudies = 2.3
-AAR_MathematicsStatisticsAndComputerSciences = 1.8
-AAR_PhysicalSciences = 1.5
-AAR_BiologicalSciences = 1.7
-AAR_Agriculture = 1.3
-AAR_EngineeringAndArchitecture = 2
+AAR_Humanities = 0.014
+AAR_LanguagesLiteraturesAndRegionalStudies = 0.017
+AAR_EducationAndTeacherTraining = 0.016
+AAR_Arts = 0.016
+AAR_SocialSciences = 0.016
+AAR_BusinessAndManagement = 0.015
+AAR_Law = 0.024
+AAR_Medicine = 0.044
+AAR_ParaMedicalStudies = 0.023
+AAR_MathematicsStatisticsAndComputerSciences = 0.018
+AAR_PhysicalSciences = 0.015
+AAR_BiologicalSciences = 0.017
+AAR_Agriculture = 0.013
+AAR_EngineeringAndArchitecture = 0.02
 
 
 #random_number = random.choices(['female', 'male'], [GirltoBoyRatio,100-GirltoBoyRatio])
 #random_number = random.choices(['accepted', 'rejected'], [SFR_SocialSciences,100-SFR_SocialSciences])
 #random_number = random.choices(['accepted', 'rejected'], [SFR_SocialSciences,100-SFR_SocialSciences])
+random_number = random.choices(['Humanities','LanguagesLiteraturesAndRegionalStudies','EducationAndTeacherTraining','Arts,SocialSciences',
+                                'BusinessAndManagement','Law,Medicine','ParaMedicalStudies','MathematicsStatisticsAndComputerSciences',
+                                'PhysicalSciences','BiologicalSciences','Agriculture','EngineeringAndArchitecture'],
+[AAR_Humanities,AAR_LanguagesLiteraturesAndRegionalStudies,AAR_EducationAndTeacherTraining,AAR_Arts,AAR_SocialSciences,AAR_BusinessAndManagement,
+AAR_Law,AAR_Medicine,AAR_ParaMedicalStudies,AAR_MathematicsStatisticsAndComputerSciences,AAR_PhysicalSciences,AAR_BiologicalSciences,
+AAR_Agriculture,AAR_EngineeringAndArchitecture])
+
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.

@@ -1,10 +1,13 @@
 import random
 import names
-
+import numpy as np
 queriesString = "" #global string to print to the file
 
 #statistic globals in precentage
 GirltoBoyRatio = 0.58
+
+#pychometricAVG according to EconomicSocialCluster 1 -> 10 (psychometric score is between 200 to 800)
+pychometricAVGESC = [432,516,540,527,555,566,584,610,624,640]
 
 """
 # student by field ratio (total 100%)
@@ -59,32 +62,40 @@ def generateCypherCreate():
     index=1
     for i in range(8):
         random_gender = random.choices(['female', 'male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
-        random_SocioEconomicCluster = random.choices([1,2,3,4,5,6,7,8,9,10],[5,5,12,12,9,9,13,13,11,11])
+        random_SocioEconomicCluster = random.choices([1,2,3,4,5,6,7,8,9,10],[5,5,12,12,9,9,13,13,11,11],k=1)
         faculty = getRandomFacultyBySEC(random_SocioEconomicCluster[0])
+        random_PsychomerticScore = getRandomScore(random_SocioEconomicCluster[0])
 
-        queriesString = queriesString + "CREATE (applicant"+str(index)+":Applicant Name:"+names.get_full_name(gender=random_gender[0])+" ,Gender:"+random_gender[0]+" ,Bagrut: '', Psychometric: '', residence: '', hobby: '', ethnicity: '', Degree: "+faculty+")\n" #, isAccepted: "+random_isAccepted+"
+        queriesString = queriesString + "CREATE (applicant"+str(index)+":Applicant Name:"+names.get_full_name(gender=random_gender[0])+" ,Gender:"+random_gender[0]+" ,Bagrut: '', Psychometric: "+str(random_PsychomerticScore)+", residence: '', hobby: '', ethnicity: '', Degree: "+faculty+")\n" #, isAccepted: "+random_isAccepted+"
         index += 1
 
+#sec- social economic cluster 1 to 10
 def getRandomFacultyBySEC(sec):
     faculties =  ['Social Sciences', 'Engineering and architecture', 'Education', 'Economics and Business Administration',
              'Math', 'Computer Science', 'Medicine', 'Law', 'Agriculture', 'Art', 'Social sciences', 'Exact Science', 'Humanities', 'Medicine']
     random_faculty = 'none'
     if sec == 1 or sec == 2:
-        random_faculty = random.choices(faculties, [12.3, 10.7, 32.6, 15.9, 2.8, 2.8, 8.4, 4.3, 3.2, 2, 2, 1.1, 1.6, 0.3], k=1)
+        random_faculty = random.choices(faculties, [12.3, 10.7, 32.6, 15.9, 1.6, 4, 8.4, 4.3, 3.2, 2, 2, 1.1, 1.6, 0.3], k=1)
     if sec == 3 or sec == 4:
-        random_faculty = random.choices(faculties, [18.3, 15.7, 21.0, 13.3, 6.7, 8.2, 6.1, 3.3, 2.6, 1.9, 1.9, 1, 1.2, 0.6], k=1)
+        random_faculty = random.choices(faculties, [18.3, 15.7, 21.0, 13.3, 1.7, 5, 8.2, 6.1, 3.3, 2.6, 1.9, 1, 1.2, 0.6], k=1)
     if sec == 5 or sec == 6:
-        random_faculty = random.choices(faculties, [12.3, 10.7, 32.6, 15.9, 2.8, 2.8, 8.4, 4.3, 3.2, 2, 2, 1.1, 1.6, 0.3], k=1)
+        random_faculty = random.choices(faculties, [19.2, 19.4, 17.6, 12.4, 3.3, 6, 6.1, 5.2, 3.1, 2.7, 2.4, 1.1, 1, 0.6], k=1)
     if sec == 7 or sec == 8:
-        random_faculty = random.choices(faculties, [12.3, 10.7, 32.6, 15.9, 2.8, 2.8, 8.4, 4.3, 3.2, 2, 2, 1.1, 1.6, 0.3], k=1)
+        random_faculty = random.choices(faculties, [20.5, 19.4, 12.3, 11.1, 3.2, 8, 4.9, 5.1, 4.5, 3.9, 2.7, 1.9, 1.3, 1.2], k=1)
     if sec == 9 or sec == 10:
-        random_faculty = random.choices(faculties, [12.3, 10.7, 32.6, 15.9, 2.8, 2.8, 8.4, 4.3, 3.2, 2, 2, 1.1, 1.6, 0.3], k=1)
+        random_faculty = random.choices(faculties, [21.1, 18.5, 8.2, 10.1, 2.9, 10, 4.4, 5.4, 5, 5.8, 2.8, 2.6, 1.4, 1.8], k=1)
 
     return random_faculty[0]
 
+def getRandomScore(sec):
+    score = 1 # placeholder init
+    while score <= 200 or score >= 800:
+        score = round(random.gauss(pychometricAVGESC[sec-1], 200 / 2.5)) #get a round score according to gaus disterbution of a score mean of the socialEconomic Cluster
+        return score
+
+
 if __name__ == '__main__':
-    print(names.get_full_name())
-    print_hi('Learn Path git. Welcome good sir.')
+    print_hi('Learn Path. Welcome good sir.')
     f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
     generateCypherCreate()
     print("query:\n"+queriesString)

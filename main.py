@@ -5,10 +5,10 @@ queriesString = "" #global string to print to the file
 
 #statistic globals in precentage
 GirltoBoyRatio = 0.58
-
 #pychometricAVG according to EconomicSocialCluster 1 -> 10 (psychometric score is between 200 to 800)
 pychometricAVGESC = [432,516,540,527,555,566,584,610,624,640]
-
+bagrutAVGESC = [80,85,90,90,95,100,105,105,110,115]
+locations = ['South','Center','North','Jersualem']
 """
 # student by field ratio (total 100%)
 SFR_Humanities = 0.229
@@ -64,9 +64,10 @@ def generateCypherCreate():
         random_gender = random.choices(['female', 'male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
         random_SocioEconomicCluster = random.choices([1,2,3,4,5,6,7,8,9,10],[5,5,12,12,9,9,13,13,11,11],k=1)
         faculty = getRandomFacultyBySEC(random_SocioEconomicCluster[0])
-        random_PsychomerticScore = getRandomScore(random_SocioEconomicCluster[0])
+        random_psyScore, random_bagrutScore = getRandomScore(random_SocioEconomicCluster[0])
+        random_area = random.choices(locations)
 
-        queriesString = queriesString + "CREATE (applicant"+str(index)+":Applicant Name:"+names.get_full_name(gender=random_gender[0])+" ,Gender:"+random_gender[0]+" ,Bagrut: '', Psychometric: "+str(random_PsychomerticScore)+", residence: '', hobby: '', ethnicity: '', Degree: "+faculty+")\n" #, isAccepted: "+random_isAccepted+"
+        queriesString = queriesString + "CREATE (applicant"+str(index)+":Applicant Name:'"+names.get_full_name(gender=random_gender[0])+"' ,Gender:'"+random_gender[0]+"' ,Bagrut: '"+str(random_bagrutScore)+"', Psychometric: '"+str(random_psyScore)+"', Area: '"+random_area[0]+"', Degree: '"+faculty+"')\n" #, isAccepted: "+random_isAccepted+" , hobby: '', ethnicity: ''
         index += 1
 
 #sec- social economic cluster 1 to 10
@@ -88,11 +89,13 @@ def getRandomFacultyBySEC(sec):
     return random_faculty[0]
 
 def getRandomScore(sec):
-    score = 1 # placeholder init
-    while score <= 200 or score >= 800:
-        score = round(random.gauss(pychometricAVGESC[sec-1], 200 / 2.5)) #get a round score according to gaus disterbution of a score mean of the socialEconomic Cluster
-        return score
-
+    bagrutScore = 1 # placeholder init
+    psyScore = 1
+    while psyScore <= 200 or psyScore >= 800:
+        psyScore = round(random.gauss(pychometricAVGESC[sec-1], 200 / 2.5)) #get a round score according to gaus disterbution of a score mean of the socialEconomic Cluster
+    while bagrutScore <= 60 or bagrutScore >= 120:
+        bagrutScore = round(random.gauss(bagrutAVGESC[sec - 1], 200 / 4))
+    return psyScore, bagrutScore
 
 if __name__ == '__main__':
     print_hi('Learn Path. Welcome good sir.')

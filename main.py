@@ -51,6 +51,8 @@ print(random.randrange(1, 20, 1))
              AAR_Law, AAR_Medicine, AAR_ParaMedicalStudies, AAR_MathematicsStatisticsAndComputerSciences,
              AAR_PhysicalSciences, AAR_BiologicalSciences,
              AAR_Agriculture, AAR_EngineeringAndArchitecture], k=1)
+             
+ match(f:Faculty{Name:'Comupter science',ID:'1'}),(c:Class{Name:'math and comupter science',ID:'1'}) create(c)-[of:Offered_In]->(f);
 """
 
 def print_hi(name):
@@ -67,12 +69,12 @@ def generateCypherCreate():
         random_psyScore, random_bagrutScore = getRandomScore(random_SocioEconomicCluster[0])
         random_area = random.choices(locations)
 
-        queriesString = queriesString + "CREATE (applicant"+str(index)+":Applicant Name:'"+names.get_full_name(gender=random_gender[0])+"' ,Gender:'"+random_gender[0]+"' ,Bagrut: '"+str(random_bagrutScore)+"', Psychometric: '"+str(random_psyScore)+"', Area: '"+random_area[0]+"', Degree: '"+faculty+"')\n" #, isAccepted: "+random_isAccepted+" , hobby: '', ethnicity: ''
+        queriesString = queriesString + "CREATE (a"+str(index)+":Applicant{Name:'"+names.get_full_name(gender=random_gender[0])+"' ,Gender:'"+random_gender[0]+"' ,Bagrut: '"+str(random_bagrutScore)+"', Psychometric: '"+str(random_psyScore)+"', Area: '"+random_area[0]+"', Faculty: '"+faculty+"', Degree: '})\n" #, isAccepted: "+random_isAccepted+" , hobby: '', ethnicity: ''
         index += 1
 
 #sec- social economic cluster 1 to 10
 def getRandomFacultyBySEC(sec):
-    faculties =  ['Social Sciences', 'Engineering and architecture', 'Education', 'Economics and Business Administration',
+    faculties =  ['Social Sciences', 'Engineering', 'Education', 'Economics and Business Administration',
              'Math', 'Computer Science', 'Medicine', 'Law', 'Agriculture', 'Art', 'Social sciences', 'Exact Science', 'Humanities', 'Medicine']
     random_faculty = 'none'
     if sec == 1 or sec == 2:

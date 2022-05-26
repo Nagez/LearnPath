@@ -69,7 +69,7 @@ def generateCypherCreate():
         random_psyScore, random_bagrutScore = getRandomScore(random_SocioEconomicCluster[0])
         random_area = random.choices(locations)
 
-        queriesString = queriesString + "CREATE (a"+str(index)+":Applicant{Name:'"+names.get_full_name(gender=random_gender[0])+"' ,Gender:'"+random_gender[0]+"' ,Bagrut: '"+str(random_bagrutScore)+"', Psychometric: '"+str(random_psyScore)+"', Area: '"+random_area[0]+"', Faculty: '"+faculty+"', Degree: '})\n" #, isAccepted: "+random_isAccepted+" , hobby: '', ethnicity: ''
+        queriesString = queriesString + "CREATE (a"+str(index)+":Applicant{Name:'"+names.get_full_name(gender=random_gender[0])+"' ,Gender:'"+random_gender[0]+"' ,Bagrut: '"+str(random_bagrutScore)+"', Psychometric: '"+str(random_psyScore)+"', Area: '"+random_area[0]+"', Faculty: '"+faculty+"', Degree: ''})\n" #, isAccepted: "+random_isAccepted+" , hobby: '', ethnicity: ''
         index += 1
 
 #sec- social economic cluster 1 to 10

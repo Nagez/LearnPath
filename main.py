@@ -1,6 +1,7 @@
 import random
 import names
 import numpy as np
+
 queriesString = "" #global string to print to the file
 
 #statistic globals in precentage
@@ -62,7 +63,7 @@ def print_hi(name):
 def generateCypherCreate():
     global queriesString
     index=1
-    for i in range(8):
+    for i in range(100):
         random_gender = random.choices(['female', 'male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
         random_SocioEconomicCluster = random.choices([1,2,3,4,5,6,7,8,9,10],[5,5,12,12,9,9,13,13,11,11],k=1)
         faculty = getRandomFacultyBySEC(random_SocioEconomicCluster[0])

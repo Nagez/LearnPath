@@ -1,6 +1,6 @@
 import random
 import names
-import numpy as np
+import connect
 
 queriesString = "" #global string to print to the file
 
@@ -60,23 +60,20 @@ def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
-def generateCypherCreate():
-    global queriesString
-    index=1
-    for i in range(100):
+def generateCypherCreateApplicant():
         random_gender = random.choices(['female', 'male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
         random_SocioEconomicCluster = random.choices([1,2,3,4,5,6,7,8,9,10],[5,5,12,12,9,9,13,13,11,11],k=1)
         faculty = getRandomFacultyBySEC(random_SocioEconomicCluster[0])
         random_psyScore, random_bagrutScore = getRandomScore(random_SocioEconomicCluster[0])
         random_area = random.choices(locations)
+        applicantQuery = "CREATE (a:Applicant{Name:'"+names.get_full_name(gender=random_gender[0])+"' ,Gender:'"+random_gender[0]+"' ,Bagrut: '"+str(random_bagrutScore)+"', Psychometric: '"+str(random_psyScore)+"', Area: '"+random_area[0]+"', Faculty: '"+faculty+"', Degree: ''})\n" #, isAccepted: "+random_isAccepted+" , hobby: '', ethnicity: ''
+        return applicantQuery
 
-        queriesString = queriesString + "CREATE (a"+str(index)+":Applicant{Name:'"+names.get_full_name(gender=random_gender[0])+"' ,Gender:'"+random_gender[0]+"' ,Bagrut: '"+str(random_bagrutScore)+"', Psychometric: '"+str(random_psyScore)+"', Area: '"+random_area[0]+"', Faculty: '"+faculty+"', Degree: ''})\n" #, isAccepted: "+random_isAccepted+" , hobby: '', ethnicity: ''
-        index += 1
 
 #sec- social economic cluster 1 to 10
 def getRandomFacultyBySEC(sec):
     faculties =  ['Social Sciences', 'Engineering', 'Education', 'Economics and Business Administration',
-             'Math', 'Computer Science', 'Medicine', 'Law', 'Agriculture', 'Art', 'Social sciences', 'Exact Science', 'Humanities', 'Medicine']
+             'Math', 'Computer Science', 'Medicine', 'Law', 'Agriculture', 'Art', 'Social Sciences', 'Exact Science', 'Humanities', 'Medicine']
     random_faculty = 'none'
     if sec == 1 or sec == 2:
         random_faculty = random.choices(faculties, [12.3, 10.7, 32.6, 15.9, 1.6, 4, 8.4, 4.3, 3.2, 2, 2, 1.1, 1.6, 0.3], k=1)
@@ -103,9 +100,45 @@ def getRandomScore(sec):
 if __name__ == '__main__':
     print_hi('Learn Path. Welcome good sir.')
     f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
-    generateCypherCreate()
-    print("query:\n"+queriesString)
+    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
+
+    # learnPath.write_Query("MATCH (a:Applicant) delete a") # use with care to delete all applicants
+    enableCreation = False  # False to disable creation of new applicants
+    if enableCreation == True:
+        # create applicants
+        for i in range(10):
+            applicantQuery = generateCypherCreateApplicant()  # create the students
+            learnPath.write_Query(applicantQuery)
+            queriesString = queriesString + applicantQuery
+
+    print("All current applicants: ")
+    applicants = learnPath.getAllApplicants()
+    for applicant in applicants:
+        print("applicant: ")
+        print(applicant) # all the nodes info
+        print("random classes: ")
+        res = learnPath.read_findClassFromFaculty(str(applicant["Faculty"]))
+        # various ways to access result information
+        for i in range(5):
+            rndClass = random.choice(res)  # choose a random node from the result array
+            print(rndClass)  # all the node info
+
+            # if rndClass["PsychometricMinimum"] == ' ':
+            print(rndClass["PsychometricMinimum"])
+            """
+            if int(applicant["Psychometric"]) > int(rndClass["PsychometricMinimum"]):
+                print("accepted, Psychometric:" + applicant["Psychometric"] + " > minimum:" + rndClass["PsychometricMinimum"] + "")
+            elif int(applicant["Bagrut"]) > int(rndClass["BagrutMinimum"]):
+                print("accepted, Bagrut > minimum")
+            else:
+                print("not accepted")
+            """
+            # print(rndClass.id) # get node id
+            # print(rndClass.keys()) # get node attributes
+            # print(rndClass.values()) # get node attributes value
+
+    # print("query:\n" + queriesString)
     f.write(queriesString)
     f.close()
-
+    learnPath.close()
 

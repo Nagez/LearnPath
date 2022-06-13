@@ -28,26 +28,38 @@ class connection:
             result = session.run("MATCH (n) where id(n) = 393 or id(n) = 395 RETURN n")  # Query
             return [record["c"] for record in result]
 
+    def getAllApplicants(self):
+        with self.driver.session() as session:
+            result = session.run("MATCH (a:Applicant) RETURN a")  # Query
+            return [record["a"] for record in result]
+
     # return a class connected to a faculty that contain the argument string(faculty) in the faculty name
     def read_findClassFromFaculty(self, faculty):
         with self.driver.session() as session:
-            return session.read_transaction(self.findClassFromFaculty, faculty)
+            return session.read_transaction(self.__findClassFromFaculty, faculty)
     @staticmethod
-    def findClassFromFaculty(tx, faculty):
+    def __findClassFromFaculty(tx, faculty):
         result = tx.run("MATCH(f:Faculty)<-[:Offered_In]-(c:Class)"
                         "WHERE f.Name CONTAINS '"+ faculty +"'"
                         "RETURN c")
         return [record["c"] for record in result]
 
-
-
+    # write a query (mainly used to create applicant)
+    def write_Query(self, query):
+        with self.driver.session() as session:
+            session.write_transaction(self.__write_Query, query)
+    @staticmethod
+    def __write_Query(tx, query):
+        result = tx.run(query)
+        return result
+"""
 if __name__ == "__main__":
     learnPath = connection("bolt://localhost:7687", "neo4j", "1234")
     # learnPath.print_greeting("hello, world")
     # res = learnPath.showoneapplicant()
     res = learnPath.read_findClassFromFaculty('Engineering')
 
-    """
+
     # various ways to acces result information
     # print(res) # all the nodes info
     for i in range(5):
@@ -56,5 +68,6 @@ if __name__ == "__main__":
         print(r.id) # get node id
         print(r.keys()) # get node attributes
         print(r.values()) # get node attributes value
-    """
+
     learnPath.close()
+"""

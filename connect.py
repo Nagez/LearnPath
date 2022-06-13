@@ -46,13 +46,15 @@ class connection:
 
         # write a query (mainly used to create applicant)
 
-    def write___matchApplicantToClass(self, applicantID,ClassID):
+    def write_matchApplicantToClass(self, applicantID,classID):
         with self.driver.session() as session:
-            session.write_transaction(self.__matchApplicantToClass, applicantID,ClassID)
+            session.write_transaction(self.__matchApplicantToClass, applicantID,classID)
 
     @staticmethod
-    def __matchApplicantToClass(tx, applicantID,ClassID):
-        # result = tx.run("CREATE where id() =  or id() =  RETURN n")
+    def __matchApplicantToClass(tx, applicantID,classID):
+        result = tx.run("MATCH(a:Applicant),(c:Class) "
+                        "where id(a)="+applicantID+" and id(c)="+classID+" "
+                        "set a.Degree = c.Name CREATE(a)-[ac:Accepted_To]->(c) ")
         return result
 
     # write a query (mainly used to create applicant)
@@ -63,22 +65,3 @@ class connection:
     def __write_Query(tx, query):
         result = tx.run(query)
         return result
-"""
-if __name__ == "__main__":
-    learnPath = connection("bolt://localhost:7687", "neo4j", "1234")
-    # learnPath.print_greeting("hello, world")
-    # res = learnPath.showoneapplicant()
-    res = learnPath.read_findClassFromFaculty('Engineering')
-
-
-    # various ways to acces result information
-    # print(res) # all the nodes info
-    for i in range(5):
-        r = random.choice(res) # choose a random node from the result array
-        print(r) # all the node info
-        print(r.id) # get node id
-        print(r.keys()) # get node attributes
-        print(r.values()) # get node attributes value
-
-    learnPath.close()
-"""

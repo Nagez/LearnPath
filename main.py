@@ -102,11 +102,11 @@ if __name__ == '__main__':
     f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
     learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
 
-    # learnPath.write_Query("MATCH (a:Applicant) delete a") # use with care to delete all applicants
+    # learnPath.write_Query("MATCH (a:Applicant) detach delete a") # use with care to delete all applicants
     enableCreation = False  # False to disable creation of new applicants
     if enableCreation == True:
         # create applicants
-        for i in range(10):
+        for i in range(100):
             applicantQuery = generateCypherCreateApplicant()  # create the students
             learnPath.write_Query(applicantQuery)
             queriesString = queriesString + applicantQuery
@@ -119,7 +119,7 @@ if __name__ == '__main__':
         print("random classes: ")
         res = learnPath.read_findClassFromFaculty(str(applicant["Faculty"]))
         # various ways to access result information
-        for i in range(5):
+        for i in range(1):
             rndClass = random.choice(res)  # choose a random node from the result array
             print(rndClass)  # all the node info
 
@@ -128,6 +128,8 @@ if __name__ == '__main__':
             else:
                 if float(applicant["Psychometric"]) > float(rndClass["PsychometricMinimum"]):
                     print("accepted, Psychometric:" + applicant["Psychometric"] + " > minimum:" + rndClass["PsychometricMinimum"] + "")
+                    learnPath.write_matchApplicantToClass(str(applicant.id),str(rndClass.id))
+                    continue
                 else:
                     print("not accepted by psychometric")
 
@@ -136,6 +138,8 @@ if __name__ == '__main__':
             else:
                 if float(applicant["Bagrut"]) > float(rndClass["BagrutMinimum"]):
                    print("accepted, Bagrut:" + applicant["Bagrut"] + " > minimum:" + rndClass["BagrutMinimum"] + "")
+                   learnPath.write_matchApplicantToClass(str(applicant.id),str(rndClass.id))
+                   continue
                 else:
                     print("not accepted by bagrut")
 

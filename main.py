@@ -123,16 +123,22 @@ if __name__ == '__main__':
             rndClass = random.choice(res)  # choose a random node from the result array
             print(rndClass)  # all the node info
 
-            # if rndClass["PsychometricMinimum"] == ' ':
-            print(rndClass["PsychometricMinimum"])
-            """
-            if int(applicant["Psychometric"]) > int(rndClass["PsychometricMinimum"]):
-                print("accepted, Psychometric:" + applicant["Psychometric"] + " > minimum:" + rndClass["PsychometricMinimum"] + "")
-            elif int(applicant["Bagrut"]) > int(rndClass["BagrutMinimum"]):
-                print("accepted, Bagrut > minimum")
+            if str(rndClass["PsychometricMinimum"]) == '':
+                print("no PsychometricMinimum req")
             else:
-                print("not accepted")
-            """
+                if float(applicant["Psychometric"]) > float(rndClass["PsychometricMinimum"]):
+                    print("accepted, Psychometric:" + applicant["Psychometric"] + " > minimum:" + rndClass["PsychometricMinimum"] + "")
+                else:
+                    print("not accepted by psychometric")
+
+            if str(rndClass["BagrutMinimum"]) == '':
+                print("no BagrutMinimum req")
+            else:
+                if float(applicant["Bagrut"]) > float(rndClass["BagrutMinimum"]):
+                   print("accepted, Bagrut:" + applicant["Bagrut"] + " > minimum:" + rndClass["BagrutMinimum"] + "")
+                else:
+                    print("not accepted by bagrut")
+
             # print(rndClass.id) # get node id
             # print(rndClass.keys()) # get node attributes
             # print(rndClass.values()) # get node attributes value

@@ -44,6 +44,17 @@ class connection:
                         "RETURN c")
         return [record["c"] for record in result]
 
+        # write a query (mainly used to create applicant)
+
+    def write___matchApplicantToClass(self, applicantID,ClassID):
+        with self.driver.session() as session:
+            session.write_transaction(self.__matchApplicantToClass, applicantID,ClassID)
+
+    @staticmethod
+    def __matchApplicantToClass(tx, applicantID,ClassID):
+        # result = tx.run("CREATE where id() =  or id() =  RETURN n")
+        return result
+
     # write a query (mainly used to create applicant)
     def write_Query(self, query):
         with self.driver.session() as session:

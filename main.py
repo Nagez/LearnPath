@@ -103,10 +103,10 @@ if __name__ == '__main__':
     learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
 
     # learnPath.write_Query("MATCH (a:Applicant) detach delete a") # use with care to delete all applicants
-    enableCreation = False  # False to disable creation of new applicants
+    enableCreation = True  # False to disable creation of new applicants
     if enableCreation == True:
         # create applicants
-        for i in range(100):
+        for i in range(200): # range indicate number of applicants
             applicantQuery = generateCypherCreateApplicant()  # create the students
             learnPath.write_Query(applicantQuery)
             queriesString = queriesString + applicantQuery

@@ -10,6 +10,7 @@ GirltoBoyRatio = 0.58
 pychometricAVGESC = [432,516,540,527,555,566,584,610,624,640]
 bagrutAVGESC = [80,85,90,90,95,100,105,105,110,115]
 locations = ['South','Center','North','Jersualem']
+
 """
 # student by field ratio (total 100%)
 SFR_Humanities = 0.229
@@ -109,7 +110,8 @@ def createApplicants(clean,quantity):
         queriesString = queriesString + applicantQuery
 
 # create Accepted_To relation between applicants and classes according to bagrut/psychometric scores
-def connectApplicants():
+# quantity is how many classes will the applicant try to get into
+def connectApplicants(quantity):
     print("All current applicants: ")
     applicants = learnPath.getAllApplicants()
     for applicant in applicants:
@@ -118,7 +120,7 @@ def connectApplicants():
         print("random classes: ")
         res = learnPath.read_findClassFromFaculty(str(applicant["Faculty"]))
         # various ways to access result information
-        for i in range(1):
+        for i in range(quantity):
             rndClass = random.choice(res)  # choose a random node from the result array
             print(rndClass)  # all the node info
 
@@ -164,9 +166,9 @@ if __name__ == '__main__':
     for _class in classes:
         print(_class["Name"])
 
-    #generate and connect the applicants
+    # generate and connect the applicants
     createApplicants(False,200)
-    connectApplicants()
+    connectApplicants(1)
 
     # print("query:\n" + queriesString)
     f.write(queriesString) # write applicant queries to text file

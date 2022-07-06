@@ -92,30 +92,29 @@ def getRandomScore(sec):
     bagrutScore = 1 # placeholder init
     psyScore = 1
     while psyScore <= 200 or psyScore >= 800:
-        psyScore = round(random.gauss(pychometricAVGESC[sec-1], 200 / 2.5)) #get a round score according to gaus disterbution of a score mean of the socialEconomic Cluster
+        psyScore = round(random.gauss(pychometricAVGESC[sec-1], 200 / 2.5)) #get a round score according to gaussian distribution of a score mean of the socialEconomic Cluster
     while bagrutScore <= 60 or bagrutScore >= 120:
         bagrutScore = round(random.gauss(bagrutAVGESC[sec - 1], 200 / 4))
     return psyScore, bagrutScore
 
-if __name__ == '__main__':
-    print_hi('Learn Path. Welcome good sir.')
-    f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
-    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
+# run generate applicants and insert them into neo
+# when is clean true it will delete all existing applicants first then generate new ones
+def createApplicants(clean,quantity):
+    global queriesString
+    if clean == True:
+        learnPath.write_Query("MATCH (a:Applicant) detach delete a")
+    for i in range(quantity):  # range indicate number of applicants
+        applicantQuery = generateCypherCreateApplicant()  # create the students
+        learnPath.write_Query(applicantQuery)
+        queriesString = queriesString + applicantQuery
 
-    # learnPath.write_Query("MATCH (a:Applicant) detach delete a") # use with care to delete all applicants
-    enableCreation = True  # False to disable creation of new applicants
-    if enableCreation == True:
-        # create applicants
-        for i in range(200): # range indicate number of applicants
-            applicantQuery = generateCypherCreateApplicant()  # create the students
-            learnPath.write_Query(applicantQuery)
-            queriesString = queriesString + applicantQuery
-
+# create Accepted_To relation between applicants and classes according to bagrut/psychometric scores
+def connectApplicants():
     print("All current applicants: ")
     applicants = learnPath.getAllApplicants()
     for applicant in applicants:
         print("applicant: ")
-        print(applicant) # all the nodes info
+        print(applicant)  # all the nodes info
         print("random classes: ")
         res = learnPath.read_findClassFromFaculty(str(applicant["Faculty"]))
         # various ways to access result information
@@ -127,8 +126,9 @@ if __name__ == '__main__':
                 print("no PsychometricMinimum req")
             else:
                 if float(applicant["Psychometric"]) > float(rndClass["PsychometricMinimum"]):
-                    print("accepted, Psychometric:" + applicant["Psychometric"] + " > minimum:" + rndClass["PsychometricMinimum"] + "")
-                    learnPath.write_matchApplicantToClass(str(applicant.id),str(rndClass.id))
+                    print("accepted, Psychometric:" + applicant["Psychometric"] + " > minimum:" + rndClass[
+                        "PsychometricMinimum"] + "")
+                    learnPath.write_matchApplicantToClass(str(applicant.id), str(rndClass.id))
                     continue
                 else:
                     print("not accepted by psychometric")
@@ -137,18 +137,39 @@ if __name__ == '__main__':
                 print("no BagrutMinimum req")
             else:
                 if float(applicant["Bagrut"]) > float(rndClass["BagrutMinimum"]):
-                   print("accepted, Bagrut:" + applicant["Bagrut"] + " > minimum:" + rndClass["BagrutMinimum"] + "")
-                   learnPath.write_matchApplicantToClass(str(applicant.id),str(rndClass.id))
-                   continue
+                    print("accepted, Bagrut:" + applicant["Bagrut"] + " > minimum:" + rndClass["BagrutMinimum"] + "")
+                    learnPath.write_matchApplicantToClass(str(applicant.id), str(rndClass.id))
+                    continue
                 else:
                     print("not accepted by bagrut")
-
             # print(rndClass.id) # get node id
             # print(rndClass.keys()) # get node attributes
             # print(rndClass.values()) # get node attributes value
 
+
+if __name__ == '__main__':
+    print_hi('Learn Path. Welcome good sir.')
+    f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
+    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
+
+    # get all faculties
+    faculties = learnPath.write_getAllQuery("Faculty")
+    print("Faculties list: ")
+    for faculty in faculties:
+        print(faculty["Name"])
+
+    # get all classes
+    classes = learnPath.write_getAllQuery("Class")
+    print("Classes list: ")
+    for _class in classes:
+        print(_class["Name"])
+
+    #generate and connect the applicants
+    createApplicants(False,200)
+    connectApplicants()
+
     # print("query:\n" + queriesString)
-    f.write(queriesString)
+    f.write(queriesString) # write applicant queries to text file
     f.close()
     learnPath.close()
 

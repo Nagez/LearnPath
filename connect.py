@@ -1,5 +1,3 @@
-import random
-
 from neo4j import GraphDatabase
 
 class connection:
@@ -49,7 +47,6 @@ class connection:
     def write_matchApplicantToClass(self, applicantID,classID):
         with self.driver.session() as session:
             session.write_transaction(self.__matchApplicantToClass, applicantID,classID)
-
     @staticmethod
     def __matchApplicantToClass(tx, applicantID,classID):
         result = tx.run("MATCH(a:Applicant),(c:Class) "
@@ -57,11 +54,30 @@ class connection:
                         "set a.Degree = c.Name CREATE(a)-[ac:Accepted_To]->(c) ")
         return result
 
-    # write a query (mainly used to create applicant)
+    # get all of the nodes of type var
+    def write_getAllQuery(self, var):
+        with self.driver.session() as session:
+            return session.write_transaction(self.__write_getAllQuery,var)
+    @staticmethod
+    def __write_getAllQuery(tx, var):
+        result = tx.run("MATCH(v:"+var+")"
+                        "RETURN v")
+        return [record["v"] for record in result]
+
+    # general write query (mainly used to create applicant)
     def write_Query(self, query):
         with self.driver.session() as session:
             session.write_transaction(self.__write_Query, query)
     @staticmethod
     def __write_Query(tx, query):
+        result = tx.run(query)
+        return result
+
+    # general read query
+    def read_Query(self, query):
+        with self.driver.session() as session:
+            session.read_transaction(self.__read_Query, query)
+    @staticmethod
+    def __read_Query(tx, query):
         result = tx.run(query)
         return result

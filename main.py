@@ -93,9 +93,10 @@ def getRandomScore(sec):
     bagrutScore = 1 # placeholder init
     psyScore = 1
     while psyScore <= 200 or psyScore >= 800:
-        psyScore = round(random.gauss(pychometricAVGESC[sec-1], 200 / 2.5)) #get a round score according to gaussian distribution of a score mean of the socialEconomic Cluster
+        psyScore = round(random.gauss(pychometricAVGESC[sec-1], 200 / 3)) #get a round score according to gaussian distribution of a score mean of the socialEconomic Cluster
     while bagrutScore <= 60 or bagrutScore >= 120:
-        bagrutScore = round(random.gauss(bagrutAVGESC[sec - 1], 200 / 4))
+        bagrutScore = round(random.gauss(bagrutAVGESC[sec - 1], 200 / 12))
+    # print("psyScore: " + str(psyScore) + " avg: " + str(pychometricAVGESC[sec - 1])+"\n"+"bagrutScore: " + str(bagrutScore) + " avg: " + str(bagrutAVGESC[sec - 1]))
     return psyScore, bagrutScore
 
 # run generate applicants and insert them into neo
@@ -115,9 +116,9 @@ def connectApplicants(quantity):
     print("All current applicants: ")
     applicants = learnPath.getAllApplicants()
     for applicant in applicants:
-        print("applicant: ")
+        print("\napplicant: ")
         print(applicant)  # all the nodes info
-        print("random classes: ")
+        print("random class/es: ")
         res = learnPath.read_findClassFromFaculty(str(applicant["Faculty"]))
         # various ways to access result information
         for i in range(quantity):
@@ -128,8 +129,7 @@ def connectApplicants(quantity):
                 print("no PsychometricMinimum req")
             else:
                 if float(applicant["Psychometric"]) > float(rndClass["PsychometricMinimum"]):
-                    print("accepted, Psychometric:" + applicant["Psychometric"] + " > minimum:" + rndClass[
-                        "PsychometricMinimum"] + "")
+                    print("accepted, Psychometric:" + applicant["Psychometric"] + " > minimum:" + rndClass["PsychometricMinimum"] + "")
                     learnPath.write_matchApplicantToClass(str(applicant.id), str(rndClass.id))
                     continue
                 else:
@@ -156,18 +156,18 @@ if __name__ == '__main__':
 
     # get all faculties
     faculties = learnPath.write_getAllQuery("Faculty")
-    print("Faculties list: ")
-    for faculty in faculties:
-        print(faculty["Name"])
+    #print("Faculties list: ")
+    #for faculty in faculties:
+    #    print(faculty["Name"])
 
     # get all classes
     classes = learnPath.write_getAllQuery("Class")
-    print("Classes list: ")
-    for _class in classes:
-        print(_class["Name"])
+    #print("Classes list: ")
+    #for _class in classes:
+    #    print(_class["Name"])
 
     # generate and connect the applicants
-    createApplicants(False,200)
+    createApplicants(True,200)
     connectApplicants(1)
 
     # print("query:\n" + queriesString)

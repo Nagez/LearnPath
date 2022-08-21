@@ -64,6 +64,19 @@ class connection:
                         "RETURN v")
         return [record["v"] for record in result]
 
+    # connect similar nodes
+    def write_similarNodes(self, tag):
+        with self.driver.session() as session:
+            session.write_transaction(self.__write_similarNodes, tag)
+
+    @staticmethod
+    def __write_similarNodes(tx, tag):
+        result = tx.run("MATCH(c:Class)"
+                        "MATCH(c1:Class)"                     
+                        "WHERE c.Name CONTAINS '"+tag+"' and c1.Name CONTAINS '"+tag+"' and id(c)<>id(c1)"
+                        "MERGE (c)-[:Similar{Tag:'"+tag+"'}]-(c1)")
+        return result
+
     # general write query (mainly used to create applicant)
     def write_Query(self, query):
         with self.driver.session() as session:

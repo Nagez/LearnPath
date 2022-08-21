@@ -112,7 +112,9 @@ def createApplicants(clean,quantity):
 
 # create Accepted_To relation between applicants and classes according to bagrut/psychometric scores
 # quantity is how many classes will the applicant try to get into
-def connectApplicants(quantity):
+def connectApplicants(clean,quantity):
+    if clean == True:
+        learnPath.write_Query("MATCH p=()-[r:Accepted_To]->() detach delete r")
     print("All current applicants: ")
     applicants = learnPath.getAllApplicants()
     for applicant in applicants:
@@ -167,8 +169,21 @@ if __name__ == '__main__':
     #    print(_class["Name"])
 
     # generate and connect the applicants
-    createApplicants(True,200)
-    connectApplicants(1)
+    createApplicants(True, 200)
+    connectApplicants(True, 1)
+
+    # connect similar nodes
+    similarList = ["Engineering", "Bio", "Chemistry", "Food", "Physics", "Med", "Civil", "Geo", "Computer", "Math", "Stat"]
+    learnPath.write_Query("MATCH p=()-[r:Similar]->() detach delete r")  # delete current (to start over)
+    for tag in similarList:
+        learnPath.write_similarNodes(tag)
+
+    """
+    CREATE(a: Applicant{Name: 'Shaked Wagner', Gender: 'Male', Bagrut: '120', Psychometric: '800', Area: 'Center', Faculty: 'Engineering',Degree: 'Computer Engineering'});
+    MATCH(a:Applicant{Name:'Shaked Wagner'})CREATE(a)-[f:Friend]-(a2);
+    CREATE(a: Applicant{Name: 'Or Nagar', Gender: 'Male', Bagrut: '102', Psychometric: '', Area: 'Center', Faculty: '', Degree: ''});
+    MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})CREATE(a)-[f:Friend]-(a2);
+    """
 
     # print("query:\n" + queriesString)
     f.write(queriesString) # write applicant queries to text file

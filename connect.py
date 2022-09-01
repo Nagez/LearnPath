@@ -65,15 +65,15 @@ class connection:
         return [record["v"] for record in result]
 
     # connect similar nodes
-    def write_similarNodes(self, tag):
+    def write_similarNodes(self,str1,str2, tag):
         with self.driver.session() as session:
-            session.write_transaction(self.__write_similarNodes, tag)
+            session.write_transaction(self.__write_similarNodes, str1, str2, tag)
 
     @staticmethod
-    def __write_similarNodes(tx, tag):
+    def __write_similarNodes(tx, str1,str2, tag):
         result = tx.run("MATCH(c:Class)"
                         "MATCH(c1:Class)"                     
-                        "WHERE c.Name CONTAINS '"+tag+"' and c1.Name CONTAINS '"+tag+"' and id(c)<>id(c1)"
+                        "WHERE c.Name CONTAINS '"+str1+"' and c1.Name CONTAINS '"+str2+"' and id(c)<>id(c1)"
                         "MERGE (c)-[:Similar{Tag:'"+tag+"'}]-(c1)")
         return result
 

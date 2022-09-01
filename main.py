@@ -2,11 +2,11 @@ import random
 import names
 import connect
 
-queriesString = "" #global string to print to the file
+queriesString = ""  # global string to print to the file
 
-#statistic globals in precentage
+# statistic globals in percentage
 GirltoBoyRatio = 0.58
-#pychometricAVG according to EconomicSocialCluster 1 -> 10 (psychometric score is between 200 to 800)
+# pychometricAVG according to EconomicSocialCluster 1 -> 10 (psychometric score is between 200 to 800)
 pychometricAVGESC = [432,516,540,527,555,566,584,610,624,640]
 bagrutAVGESC = [80,85,90,90,95,100,105,105,110,115]
 locations = ['South','Center','North','Jersualem']
@@ -93,7 +93,7 @@ def getRandomScore(sec):
     bagrutScore = 1 # placeholder init
     psyScore = 1
     while psyScore <= 200 or psyScore >= 800:
-        psyScore = round(random.gauss(pychometricAVGESC[sec-1], 200 / 3)) #get a round score according to gaussian distribution of a score mean of the socialEconomic Cluster
+        psyScore = round(random.gauss(pychometricAVGESC[sec-1], 200 / 3))  # get a round score according to gaussian distribution of a score mean of the socialEconomic Cluster
     while bagrutScore <= 60 or bagrutScore >= 120:
         bagrutScore = round(random.gauss(bagrutAVGESC[sec - 1], 200 / 12))
     # print("psyScore: " + str(psyScore) + " avg: " + str(pychometricAVGESC[sec - 1])+"\n"+"bagrutScore: " + str(bagrutScore) + " avg: " + str(bagrutAVGESC[sec - 1]))
@@ -150,6 +150,16 @@ def connectApplicants(clean,quantity):
             # print(rndClass.keys()) # get node attributes
             # print(rndClass.values()) # get node attributes value
 
+# create an example friend connection
+def friendDemo():
+    # two example applicants with a friend connection (one with a connection to a degree and one without)
+    learnPath.write_Query("CREATE(a: Applicant{Name: 'Shaked Wagner', Gender: 'Male', Bagrut: '120', Psychometric: '800', Area: 'Center', Faculty: 'Engineering',Degree: 'Computer Engineering'});"
+                          "CREATE(a: Applicant{Name: 'Or Nagar', Gender: 'Male', Bagrut: '102', Psychometric: '', Area: 'Center', Faculty: '', Degree: ''});"
+                          "MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})merge(a)-[f:Friend]-(a2);")
+    #findMatchTroughFriend('Or Nagar')
+
+# def findMatchTroughFriend(Name):
+#    return
 
 if __name__ == '__main__':
     print_hi('Learn Path. Welcome good sir.')
@@ -158,32 +168,39 @@ if __name__ == '__main__':
 
     # get all faculties
     faculties = learnPath.write_getAllQuery("Faculty")
-    #print("Faculties list: ")
-    #for faculty in faculties:
-    #    print(faculty["Name"])
+    # print("Faculties list: ")
+    # for faculty in faculties:
+    #     print(faculty["Name"])
 
     # get all classes
     classes = learnPath.write_getAllQuery("Class")
-    #print("Classes list: ")
-    #for _class in classes:
-    #    print(_class["Name"])
+    # print("Classes list: ")
+    # for _class in classes:
+    #     print(_class["Name"])
 
     # generate and connect the applicants
     createApplicants(True, 200)
     connectApplicants(True, 1)
-
+    
     # connect similar nodes
-    similarList = ["Engineering", "Bio", "Chemistry", "Food", "Physics", "Med", "Civil", "Geo", "Computer", "Math", "Stat"]
+    similarList = ["Engineering", "Bio", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
     learnPath.write_Query("MATCH p=()-[r:Similar]->() detach delete r")  # delete current (to start over)
-    for tag in similarList:
-        learnPath.write_similarNodes(tag)
 
-    """
-    CREATE(a: Applicant{Name: 'Shaked Wagner', Gender: 'Male', Bagrut: '120', Psychometric: '800', Area: 'Center', Faculty: 'Engineering',Degree: 'Computer Engineering'});
-    MATCH(a:Applicant{Name:'Shaked Wagner'})CREATE(a)-[f:Friend]-(a2);
-    CREATE(a: Applicant{Name: 'Or Nagar', Gender: 'Male', Bagrut: '102', Psychometric: '', Area: 'Center', Faculty: '', Degree: ''});
-    MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})CREATE(a)-[f:Friend]-(a2);
-    """
+    for str in similarList:
+        learnPath.write_similarNodes(str,str,str)
+
+    # connect similar nodes for the health tag
+    HealthSimilarList = ["Health", "physiotherapy", "Nutrition", "Communication Disorders", "Brain", "Cognit", "nurs", "Med", "pharm", "Disorder", "dent", "Therapy"]
+    i=len(HealthSimilarList)
+    for str1 in range(i):
+        j = 0
+        i = i - 1
+        for str2 in range(i):
+            learnPath.write_similarNodes(HealthSimilarList[i], HealthSimilarList[j], "Health")
+            j=j+1
+
+    # example to find a degree trough a friend reference
+    # friendDemo()
 
     # print("query:\n" + queriesString)
     f.write(queriesString) # write applicant queries to text file

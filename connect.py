@@ -42,8 +42,7 @@ class connection:
                         "RETURN c")
         return [record["c"] for record in result]
 
-        # write a query (mainly used to create applicant)
-
+    # write a query (mainly used to create applicant)
     def write_matchApplicantToClass(self, applicantID,classID):
         with self.driver.session() as session:
             session.write_transaction(self.__matchApplicantToClass, applicantID,classID)
@@ -53,6 +52,15 @@ class connection:
                         "where id(a)="+applicantID+" and id(c)="+classID+" "
                         "set a.Degree = c.Name CREATE(a)-[ac:Accepted_To]->(c) ")
         return result
+
+    def findMatchTroughFriend(self, Name):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__findMatchTroughFriend, Name)
+
+    @staticmethod
+    def __findMatchTroughFriend(tx, Name):
+        result = tx.run("MATCH(a: Applicant{Name: '"+Name+"'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class) return c")
+        return [record["c"] for record in result]
 
     # get all of the nodes of type var
     def write_getAllQuery(self, var):

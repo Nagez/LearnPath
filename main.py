@@ -188,7 +188,7 @@ if __name__ == '__main__':
     similarList = ["Engineering", "Bio", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
     for str in similarList:
         learnPath.write_similarNodes(str,str,str)
-    # connect similar nodes for the health tag
+    # connect similar nodes for the Health tag
     HealthSimilarList = ["Health", "physiotherapy", "Nutrition", "Communication Disorders", "Brain", "Cognit", "nurs", "Med", "pharm", "Disorder", "dent", "Therapy"]
     i=len(HealthSimilarList)
     for str1 in range(i):
@@ -197,6 +197,16 @@ if __name__ == '__main__':
         for str2 in range(i):
             learnPath.write_similarNodes(HealthSimilarList[i], HealthSimilarList[j], "Health")
             j=j+1
+
+    # connect similar nodes for the Economy tag
+    EconomySimilarList = ["Industr","Manag","Econom","Business","account","financ","market","entrepreneur","orginazation"]
+    i = len(EconomySimilarList)
+    for str1 in range(i):
+        j = 0
+        i = i - 1
+        for str2 in range(i):
+            learnPath.write_similarNodes(EconomySimilarList[i], EconomySimilarList[j], "Health")
+            j = j + 1
 
     # example to find a degree trough a friend reference
     friendDemo()

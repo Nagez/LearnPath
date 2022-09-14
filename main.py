@@ -205,7 +205,7 @@ if __name__ == '__main__':
         j = 0
         i = i - 1
         for str2 in range(i):
-            learnPath.write_similarNodes(EconomySimilarList[i], EconomySimilarList[j], "Health")
+            learnPath.write_similarNodes(EconomySimilarList[i], EconomySimilarList[j], "Economy")
             j = j + 1
 
     # example to find a degree trough a friend reference

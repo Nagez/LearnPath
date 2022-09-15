@@ -199,7 +199,7 @@ if __name__ == '__main__':
             j=j+1
 
     # connect similar nodes for the Economy tag
-    EconomySimilarList = ["Industr","Manag","Econom","Business","account","financ","market","entrepreneur","orginazation"]
+    EconomySimilarList = ["Industr","Manag","Econom","Business","account"]
     i = len(EconomySimilarList)
     for str1 in range(i):
         j = 0

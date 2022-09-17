@@ -67,7 +67,7 @@ def generateCypherCreateApplicant():
     faculty = getRandomFacultyBySEC(random_SocioEconomicCluster[0])
     random_psyScore, random_bagrutScore = getRandomScore(random_SocioEconomicCluster[0])
     random_area = random.choices(locations)
-    applicantQuery = "CREATE (a:Applicant{Name:'"+names.get_full_name(gender=random_gender[0])+"' ,Gender:'"+random_gender[0]+"' ,Bagrut: "+str(random_bagrutScore)+", Psychometric: "+str(random_psyScore)+", Area: '"+random_area[0]+"', Faculty: '"+faculty+"', Degree: ''})\n" #, isAccepted: "+random_isAccepted+" , hobby: '', ethnicity: ''
+    applicantQuery = "CREATE (a:Applicant{Name:'"+names.get_full_name(gender=random_gender[0])+"' ,Gender:'"+random_gender[0]+"' ,Bagrut: '"+str(random_bagrutScore)+"', Psychometric: '"+str(random_psyScore)+"', Area: '"+random_area[0]+"', Faculty: '"+faculty+"', Degree: ''})\n" #, isAccepted: "+random_isAccepted+" , hobby: '', ethnicity: ''
     return applicantQuery
 
 
@@ -122,7 +122,7 @@ def connectApplicants(clean,quantity):
         print(applicant)  # all the nodes info
         print("random class/es: ")
         res = learnPath.read_findClassFromFaculty(str(applicant["Faculty"]))
-        # acceptedList = []
+
         for i in range(quantity):
             rndClass = random.choice(res)  # choose a random node from the result array
             print(rndClass)  # all the node info
@@ -131,7 +131,7 @@ def connectApplicants(clean,quantity):
                 print("no PsychometricMinimum req")
             else:
                 if float(applicant["Psychometric"]) > float(rndClass["PsychometricMinimum"]):
-                    print("accepted, Psychometric:" + str(applicant["Psychometric"]) + " > minimum:" + str(rndClass["PsychometricMinimum"]) + "")
+                    print("accepted, Psychometric:" + applicant["Psychometric"] + " > minimum:" + rndClass["PsychometricMinimum"] + "")
                     learnPath.write_matchApplicantToClass(str(applicant.id), str(rndClass.id))
                     continue
                 else:
@@ -141,7 +141,7 @@ def connectApplicants(clean,quantity):
                 print("no BagrutMinimum req")
             else:
                 if float(applicant["Bagrut"]) > float(rndClass["BagrutMinimum"]):
-                    print("accepted, Bagrut:" + str(applicant["Bagrut"]) + " > minimum:" + str(rndClass["BagrutMinimum"]) + "")
+                    print("accepted, Bagrut:" + applicant["Bagrut"] + " > minimum:" + rndClass["BagrutMinimum"] + "")
                     learnPath.write_matchApplicantToClass(str(applicant.id), str(rndClass.id))
                     continue
                 else:
@@ -155,11 +155,13 @@ def connectApplicants(clean,quantity):
 # create an example friend connection
 def friendDemo():
     # two example applicants with a friend connection (one with a connection to a degree and one without)
-    learnPath.write_Query("MATCH (a:Applicant{Name: 'Shaked Wagner'})MATCH (b:Applicant{Name: 'Or Nagar'}) DETACH DELETE a,b") # to prevent duplicates
-    learnPath.write_Query("CREATE(a: Applicant{Name: 'Shaked Wagner', Gender: 'Male', Bagrut: 120, Psychometric: 800, Area: 'Center', Faculty: 'Engineering',Degree: 'Computer Engineering'})")
-    learnPath.write_Query("CREATE(a: Applicant{Name: 'Or Nagar', Gender: 'Male', Bagrut: 102, Psychometric: '', Area: 'Center', Faculty: '', Degree: ''})")
-    learnPath.write_Query("MATCH (a:Applicant{Name: 'Shaked Wagner'})MATCH(c:Class{Name: 'Computer Engineering',ID:'5'})MERGE(a)-[r:Accepted_To]->(c)")
-    learnPath.write_Query("MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})merge(a)-[f:Friend]-(a2)")
+    learnPath.write_Query("CREATE(a: Applicant{Name: 'Shaked Wagner', Gender: 'Male', Bagrut: '120', Psychometric: '800', Area: 'Center', Faculty: 'Engineering',Degree: 'Computer Engineering'});"
+                          "CREATE(a: Applicant{Name: 'Or Nagar', Gender: 'Male', Bagrut: '102', Psychometric: '', Area: 'Center', Faculty: '', Degree: ''});"
+                          "MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})merge(a)-[f:Friend]-(a2);")
+    #findMatchTroughFriend('Or Nagar')
+
+# def findMatchTroughFriend(Name):
+#    return
 
 if __name__ == '__main__':
     print_hi('Learn Path. Welcome good sir.')
@@ -181,14 +183,15 @@ if __name__ == '__main__':
     # generate and connect the applicants
     createApplicants(True, 200)
     connectApplicants(True, 1)
-
+    
     # connect similar nodes
+    similarList = ["Engineering", "Bio", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
     learnPath.write_Query("MATCH p=()-[r:Similar]->() detach delete r")  # delete current (to start over)
 
-    similarList = ["Engineering", "Bio", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
     for str in similarList:
         learnPath.write_similarNodes(str,str,str)
-    # connect similar nodes for the Health tag
+
+    # connect similar nodes for the health tag
     HealthSimilarList = ["Health", "physiotherapy", "Nutrition", "Communication Disorders", "Brain", "Cognit", "nurs", "Med", "pharm", "Disorder", "dent", "Therapy"]
     i=len(HealthSimilarList)
     for str1 in range(i):
@@ -198,27 +201,8 @@ if __name__ == '__main__':
             learnPath.write_similarNodes(HealthSimilarList[i], HealthSimilarList[j], "Health")
             j=j+1
 
-    # connect similar nodes for the Economy tag
-    EconomySimilarList = ["Industr","Manag","Econom","Business","account"]
-    i = len(EconomySimilarList)
-    for str1 in range(i):
-        j = 0
-        i = i - 1
-        for str2 in range(i):
-            learnPath.write_similarNodes(EconomySimilarList[i], EconomySimilarList[j], "Economy")
-            j = j + 1
-
     # example to find a degree trough a friend reference
-    friendDemo()
-    friendsClasses = learnPath.findMatchTroughFriend('Or Nagar')
-    print("Or Nagar friends Classes : ")
-    for _class in friendsClasses:
-        print(_class)
-
-    availableClasses = learnPath.findMatchTroughName('Or Nagar', 'Computer science')
-    print("Or Nagar available Classes : ")
-    for _class in availableClasses:
-        print(_class)
+    # friendDemo()
 
     # print("query:\n" + queriesString)
     f.write(queriesString) # write applicant queries to text file

@@ -121,6 +121,9 @@ def connectApplicants(clean,quantity):
         print("\napplicant: ")
         print(applicant)  # all the nodes info
         print("random class/es: ")
+        if str(applicant["Faculty"]) == '':
+            print("\napplicant has no faculty ")
+            continue
         res = learnPath.read_findClassFromFaculty(str(applicant["Faculty"]))
         # acceptedList = []
         for i in range(quantity):
@@ -166,6 +169,7 @@ if __name__ == '__main__':
     f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
     learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
 
+    """
     # get all faculties
     faculties = learnPath.write_getAllQuery("Faculty")
     # print("Faculties list: ")
@@ -207,18 +211,18 @@ if __name__ == '__main__':
         for str2 in range(i):
             learnPath.write_similarNodes(EconomySimilarList[i], EconomySimilarList[j], "Economy")
             j = j + 1
-
+    """
     # example to find a degree trough a friend reference
     friendDemo()
-    friendsClasses = learnPath.findMatchTroughFriend('Or Nagar')
-    print("Or Nagar friends Classes : ")
+    ApplicantName = 'Or Nagar'
+    friendsClasses = learnPath.findMatchTroughFriend(ApplicantName)
+    print("\n"+ApplicantName+" friends Classes : ")
     for _class in friendsClasses:
         print(_class)
 
-    availableClasses = learnPath.findMatchTroughName('Or Nagar', 'Computer science')
-    print("Or Nagar available Classes : ")
-    for _class in availableClasses:
-        print(_class)
+    availableClasses = learnPath.findMatchTroughName(ApplicantName, 'Computer science')
+    print("\n"+ApplicantName+" available Classes : ")
+    print(availableClasses)
 
     # print("query:\n" + queriesString)
     f.write(queriesString) # write applicant queries to text file

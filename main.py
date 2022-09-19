@@ -189,6 +189,16 @@ if __name__ == '__main__':
     # connect similar nodes
     learnPath.write_Query("MATCH p=()-[r:Similar]->() detach delete r")  # delete current (to start over)
 
+    # connect similar nodes to the given Tag
+    def similarTagList(similarList,Tag):
+        i=len(similarList)
+        for str1 in range(i):
+            j = 0
+            i = i - 1
+            for str2 in range(i):
+                learnPath.write_similarNodes(similarList[i], similarList[j], Tag)
+                j = j + 1
+                
     similarList = ["Engineering", "Bio", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
     for str in similarList:
         learnPath.write_similarNodes(str,str,str)
@@ -211,7 +221,20 @@ if __name__ == '__main__':
         for str2 in range(i):
             learnPath.write_similarNodes(EconomySimilarList[i], EconomySimilarList[j], "Economy")
             j = j + 1
+            
+    # connect similar nodes for the Build tag
+    BuildSimilarList = ["Architecture","Build"]
+    i = len(BuildSimilarList)
+    for str1 in range(i):
+        j = 0
+        i = i - 1
+        for str2 in range(i):
+            learnPath.write_similarNodes(BuildSimilarList[i], BuildSimilarList[j], "Build")
+            j = j + 1
     """
+
+
+
     # example to find a degree trough a friend reference
     friendDemo()
     ApplicantName = 'Or Nagar'

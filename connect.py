@@ -53,14 +53,25 @@ class connection:
                         "set a.Degree = c.Name CREATE(a)-[ac:Accepted_To]->(c) ")
         return result
 
+    # using an applicant name, find matching class trough his friend connection
     def findMatchTroughFriend(self, Name):
         with self.driver.session() as session:
             return session.read_transaction(self.__findMatchTroughFriend, Name)
 
     @staticmethod
     def __findMatchTroughFriend(tx, Name):
-        result = tx.run("MATCH(a: Applicant{Name: '"+Name+"'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class) return c")
+        result = tx.run("MATCH(a: Applicant{Name: '"+Name+"'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class) WHERE a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum return c")
         return [record["c"] for record in result]
+
+    # match for applicant available classes using a class name search and get classes that contain that name, classes that connected to faculties with that name and similar classes
+    def findMatchTroughName(self, ApplicantName, className):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__findMatchTroughName, ApplicantName, className)
+
+    @staticmethod
+    def __findMatchTroughName(tx, ApplicantName,className):
+        result = tx.run("MATCH(a: Applicant{Name: '"+ApplicantName+"'}) MATCH(c:Class)-[Offered_In]-(f:Faculty) MATCH(c:Class)-[Similar]-(c1:Class) WHERE (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS  toLower('"+className+"')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum) return c,c1")
+        return result
 
     # get all of the nodes of type var
     def write_getAllQuery(self, var):

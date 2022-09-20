@@ -223,7 +223,7 @@ if __name__ == '__main__':
             j = j + 1
             
     # connect similar nodes for the Build tag
-    BuildSimilarList = ["Architecture","Build"]
+    BuildSimilarList = ["Architecture","Build","Civil"]
     i = len(BuildSimilarList)
     for str1 in range(i):
         j = 0

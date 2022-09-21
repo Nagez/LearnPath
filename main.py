@@ -185,16 +185,22 @@ def initConnections():
     similarList = ["Engineering", "Bio", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
     for str in similarList:
         learnPath.write_similarNodes(str, str, str)
-    # connect similar nodes for the Health tag
+    # Health tag
     HealthSimilarList = ["Health", "physiotherapy", "Nutrition", "Communication Disorders", "Brain", "Cognit", "nurs",
                          "Med", "pharm", "Disorder", "dent", "Therapy", "diet"]
-    similarTagList(HealthSimilarList, "Health")
-    # connect similar nodes for the Economy tag
+    # Economy tag
     EconomySimilarList = ["Industr", "Manag", "Econom", "Business", "account"]
-    similarTagList(EconomySimilarList, "Economy")
-    # connect similar nodes for the Build tag
+    # Build tag
     BuildSimilarList = ["Architecture", "Build", "Civil"]
-    similarTagList(BuildSimilarList, "Build")
+
+    # list of the tag lists
+    tagList=[HealthSimilarList,EconomySimilarList,BuildSimilarList]
+    # list of the tag names
+    tagNames=["Health","Economy","Build"]
+
+    # connect similar nodes for the Health,Economy,Build tag
+    for i,list in enumerate(tagList):
+        similarTagList(list, tagNames[i])
 
 if __name__ == '__main__':
     print_hi('Learn Path. Welcome good sir.')

@@ -60,7 +60,11 @@ class connection:
 
     @staticmethod
     def __findMatchTroughFriend(tx, Name):
-        result = tx.run("MATCH(a: Applicant{Name: '"+Name+"'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class) WHERE a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum return c")
+        str = "MATCH(a: Applicant{Name: '"+Name+"'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class)" \
+              " WHERE a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum" \
+              " return c"
+        result = tx.run(str)
+        print("\nMatch trough friend\n" + str)
         return [record["c"] for record in result]
 
     # match for applicant available classes using a class name search and get classes that contain that name, classes that connected to faculties with that name and similar classes
@@ -70,8 +74,13 @@ class connection:
 
     @staticmethod
     def __findMatchTroughName(tx, ApplicantName,className):
-        result = tx.run("MATCH(a: Applicant{Name: '"+ApplicantName+"'}) MATCH(c:Class)-[Offered_In]-(f:Faculty) MATCH(c:Class)-[Similar]-(c1:Class) WHERE (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS  toLower('"+className+"')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum) return c,c1")
-        return result
+        str = "MATCH(a: Applicant{Name: '"+ApplicantName+"'}), (c:Class)-[Offered_In]-(f:Faculty), (c:Class)-[Similar]-(c1:Class)" + \
+                        " WHERE (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum)"+\
+                        " WITH collect(c)+collect(c1) AS cl unwind cl AS classes"+\
+                        " RETURN DISTINCT classes "
+        print("\nMatch trough name search\n" + str)
+        result = tx.run(str)
+        return [record["classes"] for record in result]
 
     # get all of the nodes of type var
     def write_getAllQuery(self, var):

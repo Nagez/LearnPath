@@ -164,24 +164,17 @@ def friendDemo():
     learnPath.write_Query("MATCH (a:Applicant{Name: 'Shaked Wagner'})MATCH(c:Class{Name: 'Computer Engineering',ID:'5'})MERGE(a)-[r:Accepted_To]->(c)")
     learnPath.write_Query("MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})merge(a)-[f:Friend]-(a2)")
 
-if __name__ == '__main__':
-    print_hi('Learn Path. Welcome good sir.')
-    f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
-    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
+# connect similar nodes to the given Tag
+def similarTagList(similarList, Tag):
+    i = len(similarList)
+    for str1 in range(i):
+        j = 0
+        i = i - 1
+        for str2 in range(i):
+            learnPath.write_similarNodes(similarList[i], similarList[j], Tag)
+            j = j + 1
 
-    """
-    # get all faculties
-    faculties = learnPath.write_getAllQuery("Faculty")
-    # print("Faculties list: ")
-    # for faculty in faculties:
-    #     print(faculty["Name"])
-
-    # get all classes
-    classes = learnPath.write_getAllQuery("Class")
-    # print("Classes list: ")
-    # for _class in classes:
-    #     print(_class["Name"])
-
+def initConnections():
     # generate and connect the applicants
     createApplicants(True, 200)
     connectApplicants(True, 1)
@@ -189,63 +182,50 @@ if __name__ == '__main__':
     # connect similar nodes
     learnPath.write_Query("MATCH p=()-[r:Similar]->() detach delete r")  # delete current (to start over)
 
-    # connect similar nodes to the given Tag
-    def similarTagList(similarList,Tag):
-        i=len(similarList)
-        for str1 in range(i):
-            j = 0
-            i = i - 1
-            for str2 in range(i):
-                learnPath.write_similarNodes(similarList[i], similarList[j], Tag)
-                j = j + 1
-                
     similarList = ["Engineering", "Bio", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
     for str in similarList:
-        learnPath.write_similarNodes(str,str,str)
+        learnPath.write_similarNodes(str, str, str)
     # connect similar nodes for the Health tag
-    HealthSimilarList = ["Health", "physiotherapy", "Nutrition", "Communication Disorders", "Brain", "Cognit", "nurs", "Med", "pharm", "Disorder", "dent", "Therapy","diet"]
-    i=len(HealthSimilarList)
-    for str1 in range(i):
-        j = 0
-        i = i - 1
-        for str2 in range(i):
-            learnPath.write_similarNodes(HealthSimilarList[i], HealthSimilarList[j], "Health")
-            j=j+1
-
+    HealthSimilarList = ["Health", "physiotherapy", "Nutrition", "Communication Disorders", "Brain", "Cognit", "nurs",
+                         "Med", "pharm", "Disorder", "dent", "Therapy", "diet"]
+    similarTagList(HealthSimilarList, "Health")
     # connect similar nodes for the Economy tag
-    EconomySimilarList = ["Industr","Manag","Econom","Business","account"]
-    i = len(EconomySimilarList)
-    for str1 in range(i):
-        j = 0
-        i = i - 1
-        for str2 in range(i):
-            learnPath.write_similarNodes(EconomySimilarList[i], EconomySimilarList[j], "Economy")
-            j = j + 1
-            
+    EconomySimilarList = ["Industr", "Manag", "Econom", "Business", "account"]
+    similarTagList(EconomySimilarList, "Economy")
     # connect similar nodes for the Build tag
-    BuildSimilarList = ["Architecture","Build","Civil"]
-    i = len(BuildSimilarList)
-    for str1 in range(i):
-        j = 0
-        i = i - 1
-        for str2 in range(i):
-            learnPath.write_similarNodes(BuildSimilarList[i], BuildSimilarList[j], "Build")
-            j = j + 1
-    """
+    BuildSimilarList = ["Architecture", "Build", "Civil"]
+    similarTagList(BuildSimilarList, "Build")
 
+if __name__ == '__main__':
+    print_hi('Learn Path. Welcome good sir.')
+    f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
+    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
+    initConnections() # can run once
 
+    # get all faculties
+    # faculties = learnPath.write_getAllQuery("Faculty")
+    # print("Faculties list: ")
+    # for faculty in faculties:
+    #     print(faculty["Name"])
+
+    # get all classes
+    # classes = learnPath.write_getAllQuery("Class")
+    # print("Classes list: ")
+    # for _class in classes:
+    #     print(_class["Name"])
 
     # example to find a degree trough a friend reference
     friendDemo()
     ApplicantName = 'Or Nagar'
     friendsClasses = learnPath.findMatchTroughFriend(ApplicantName)
-    print("\n"+ApplicantName+" friends Classes : ")
+    print(""+ApplicantName+" friends Classes ("+str(len(friendsClasses))+"): ")
     for _class in friendsClasses:
         print(_class)
 
     availableClasses = learnPath.findMatchTroughName(ApplicantName, 'Computer science')
-    print("\n"+ApplicantName+" available Classes : ")
-    print(availableClasses)
+    print(""+ApplicantName+" available Classes ("+str(len(availableClasses))+"): ")
+    for _class in availableClasses:
+        print(_class)
 
     # print("query:\n" + queriesString)
     f.write(queriesString) # write applicant queries to text file

@@ -164,21 +164,7 @@ def friendDemo():
     learnPath.write_Query("MATCH (a:Applicant{Name: 'Shaked Wagner'})MATCH(c:Class{Name: 'Computer Engineering',ID:'5'})MERGE(a)-[r:Accepted_To]->(c)")
     learnPath.write_Query("MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})merge(a)-[f:Friend]-(a2)")
 
-# connect similar nodes to the given Tag
-def similarTagList(similarList, Tag):
-    i = len(similarList)
-    for str1 in range(i):
-        j = 0
-        i = i - 1
-        for str2 in range(i):
-            learnPath.write_similarNodes(similarList[i], similarList[j], Tag)
-            j = j + 1
-
-def initConnections():
-    # generate and connect the applicants
-    createApplicants(True, 200)
-    connectApplicants(True, 1)
-
+def connectSimilars():
     # connect similar nodes
     learnPath.write_Query("MATCH p=()-[r:Similar]->() detach delete r")  # delete current (to start over)
 
@@ -194,17 +180,35 @@ def initConnections():
     BuildSimilarList = ["Architecture", "Build", "Civil"]
 
     # list of the tag lists
-    tagList=[HealthSimilarList,EconomySimilarList,BuildSimilarList]
+    tagList = [HealthSimilarList, EconomySimilarList, BuildSimilarList]
     # list of the tag names
-    tagNames=["Health","Economy","Build"]
+    tagNames = ["Health", "Economy", "Build"]
 
     # connect similar nodes for the Health,Economy,Build tag
-    for i,list in enumerate(tagList):
+    for i, list in enumerate(tagList):
         similarTagList(list, tagNames[i])
+
+
+# connect similar nodes to the given Tag
+def similarTagList(similarList, Tag):
+    i = len(similarList)
+    for str1 in range(i):
+        j = 0
+        i = i - 1
+        for str2 in range(i):
+            learnPath.write_similarNodes(similarList[i], similarList[j], Tag)
+            j = j + 1
+
+def initConnections():
+    # generate and connect the applicants
+    createApplicants(True, 200)
+    connectApplicants(True, 1)
+    friendDemo()
+    connectSimilars()
 
 if __name__ == '__main__':
     print_hi('Learn Path. Welcome good sir.')
-    f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
+    # f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
     learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
     initConnections() # can run once
 
@@ -221,7 +225,6 @@ if __name__ == '__main__':
     #     print(_class["Name"])
 
     # example to find a degree trough a friend reference
-    friendDemo()
     ApplicantName = 'Or Nagar'
     friendsClasses = learnPath.findMatchTroughFriend(ApplicantName)
     print(""+ApplicantName+" friends Classes ("+str(len(friendsClasses))+"): ")
@@ -234,7 +237,7 @@ if __name__ == '__main__':
         print(_class)
 
     # print("query:\n" + queriesString)
-    f.write(queriesString) # write applicant queries to text file
-    f.close()
+    # f.write(queriesString) # write applicant queries to text file
+    # f.close()
     learnPath.close()
 

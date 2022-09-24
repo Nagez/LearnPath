@@ -168,7 +168,7 @@ def connectSimilars():
     # connect similar nodes
     learnPath.write_Query("MATCH p=()-[r:Similar]->() detach delete r")  # delete current (to start over)
 
-    similarList = ["Engineering", "Bio", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
+    similarList = ["Engineering", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
     for str in similarList:
         learnPath.write_similarNodes(str, str, str)
     # Health tag
@@ -179,10 +179,16 @@ def connectSimilars():
     # Build tag
     BuildSimilarList = ["Architecture", "Build", "Civil"]
 
+    # Biology tag
+    BiologySimilarList = ["Bio", "Life"]
+
+    # Natural tag (Natural Science)
+    NaturalSimilarList = ["Bio", "Life", "Physics", "Chemistry","Earth", "astronomy"]
+
     # list of the tag lists
-    tagList = [HealthSimilarList, EconomySimilarList, BuildSimilarList]
+    tagList = [HealthSimilarList, EconomySimilarList, BuildSimilarList, BiologySimilarList, NaturalSimilarList]
     # list of the tag names
-    tagNames = ["Health", "Economy", "Build"]
+    tagNames = ["Health", "Economy", "Build", "Biology", "Natural"]
 
     # connect similar nodes for the Health,Economy,Build tag
     for i, list in enumerate(tagList):
@@ -231,6 +237,7 @@ if __name__ == '__main__':
     for _class in friendsClasses:
         print(_class)
 
+    # example to find a degree using the Similar connection and tags
     availableClasses = learnPath.findMatchTroughName(ApplicantName, 'Computer science')
     print(""+ApplicantName+" available Classes ("+str(len(availableClasses))+"): ")
     for _class in availableClasses:

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Learn path</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+ <header>
+      <div class="container">
+        <h1 class="logo">Learn Path web app</h1>
+      </div>
+ </header>
+      <div class="container">
+        <strong><nav>
+          <ul class="menu">
+            <li><a href="{{ url_for('page1') }}">Add an applicant</a></li>
+            <li><a href="{{ url_for('page2') }}">Find match for applicant</a></li>
+          </ul>
+        </nav></strong>
+      </div>
+
+      <div class="container">
+          {% block content %}
+          {% endblock %}
+       </div>
+
+
+</body>
+</html>

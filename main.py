@@ -1,6 +1,7 @@
 import random
 import names
 import connect
+import flaskapp
 
 queriesString = ""  # global string to print to the file
 
@@ -56,10 +57,6 @@ print(random.randrange(1, 20, 1))
              
  match(f:Faculty{Name:'Comupter science',ID:'1'}),(c:Class{Name:'math and comupter science',ID:'1'}) create(c)-[of:Offered_In]->(f);
 """
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
 
 def generateCypherCreateApplicant():
     random_gender = random.choices(['female', 'male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
@@ -212,16 +209,17 @@ def initConnections():
     friendDemo()
     connectSimilars()
 
+
 if __name__ == '__main__':
-    print_hi('Learn Path. Welcome good sir.')
+    print('Learn Path. Welcome good sir.')
     # f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
     learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
-    initConnections() # can run once
+    # initConnections() # can run once
 
     # get all faculties
     # faculties = learnPath.write_getAllQuery("Faculty")
     # print("Faculties list: ")
-    # for faculty in faculties:
+    # for faculty in faculties:22
     #     print(faculty["Name"])
 
     # get all classes
@@ -246,5 +244,7 @@ if __name__ == '__main__':
     # print("query:\n" + queriesString)
     # f.write(queriesString) # write applicant queries to text file
     # f.close()
-    learnPath.close()
 
+    print('starting up web app')
+    flaskapp.app.run() # app.run(debug=True) for debugging
+    learnPath.close()

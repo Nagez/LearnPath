@@ -13,6 +13,8 @@ bagrutAVGESC = [80,85,90,90,95,100,105,105,110,115]
 locations = ['South','Center','North','Jersualem']
 
 """
+# old unsused ratios 
+
 # student by field ratio (total 100%)
 SFR_Humanities = 0.229
 SFR_SocialSciences = 0.288
@@ -58,6 +60,7 @@ print(random.randrange(1, 20, 1))
  match(f:Faculty{Name:'Comupter science',ID:'1'}),(c:Class{Name:'math and comupter science',ID:'1'}) create(c)-[of:Offered_In]->(f);
 """
 
+# generate a create applicant query using the statistics
 def generateCypherCreateApplicant():
     random_gender = random.choices(['female', 'male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
     random_SocioEconomicCluster = random.choices([1,2,3,4,5,6,7,8,9,10],[5,5,12,12,9,9,13,13,11,11],k=1)
@@ -68,7 +71,8 @@ def generateCypherCreateApplicant():
     return applicantQuery
 
 
-#sec- social economic cluster 1 to 10
+# get random faculty with the probability of a given sec
+# sec: social economic cluster (values 1 to 10)
 def getRandomFacultyBySEC(sec):
     faculties =  ['Social Sciences', 'Engineering', 'Education', 'Economics and Business Administration',
              'Math', 'Computer Science', 'Medicine', 'Law', 'Agriculture', 'Art', 'Social Sciences', 'Exact Science', 'Humanities', 'Medicine']
@@ -86,8 +90,11 @@ def getRandomFacultyBySEC(sec):
 
     return random_faculty[0]
 
+
+# get a gaussian random score around the average score of a given sec
+# sec: social economic cluster (values 1 to 10)
 def getRandomScore(sec):
-    bagrutScore = 1 # placeholder init
+    bagrutScore = 1  # placeholder init
     psyScore = 1
     while psyScore <= 200 or psyScore >= 800:
         psyScore = round(random.gauss(pychometricAVGESC[sec-1], 200 / 3))  # get a round score according to gaussian distribution of a score mean of the socialEconomic Cluster
@@ -96,9 +103,12 @@ def getRandomScore(sec):
     # print("psyScore: " + str(psyScore) + " avg: " + str(pychometricAVGESC[sec - 1])+"\n"+"bagrutScore: " + str(bagrutScore) + " avg: " + str(bagrutAVGESC[sec - 1]))
     return psyScore, bagrutScore
 
-# run generate applicants and insert them into neo
-# when is clean true it will delete all existing applicants first then generate new ones
-def createApplicants(clean,quantity):
+
+# run generate applicants and insert them into neo4j
+# when clean is true it will delete all existing applicants first then generate new ones
+# when clean is true it will export the currently generated create applicant queries into a text file
+# quantity indicate how many applicants to add
+def createApplicants(clean,export,quantity):
     global queriesString
     if clean == True:
         learnPath.write_Query("MATCH (a:Applicant) detach delete a")
@@ -106,8 +116,15 @@ def createApplicants(clean,quantity):
         applicantQuery = generateCypherCreateApplicant()  # create the students
         learnPath.write_Query(applicantQuery)
         queriesString = queriesString + applicantQuery
+    if export == True:
+        f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
+        print("Generated applicant queries:\n" + queriesString)
+        f.write(queriesString) # write applicant queries to text file
+        f.close()
+
 
 # create Accepted_To relation between applicants and classes according to bagrut/psychometric scores
+# when clean is true it will delete all existing Accepted_To, used to prevent duplicate relations
 # quantity is how many classes will the applicant try to get into
 def connectApplicants(clean,quantity):
     if clean == True:
@@ -122,7 +139,6 @@ def connectApplicants(clean,quantity):
             print("\napplicant has no faculty ")
             continue
         res = learnPath.read_findClassFromFaculty(str(applicant["Faculty"]))
-        # acceptedList = []
         for i in range(quantity):
             rndClass = random.choice(res)  # choose a random node from the result array
             print(rndClass)  # all the node info
@@ -161,9 +177,10 @@ def friendDemo():
     learnPath.write_Query("MATCH (a:Applicant{Name: 'Shaked Wagner'})MATCH(c:Class{Name: 'Computer Engineering',ID:'5'})MERGE(a)-[r:Accepted_To]->(c)")
     learnPath.write_Query("MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})merge(a)-[f:Friend]-(a2)")
 
+
+# connect similar nodes
 def connectSimilars():
-    # connect similar nodes
-    learnPath.write_Query("MATCH p=()-[r:Similar]->() detach delete r")  # delete current (to start over)
+    learnPath.write_Query("MATCH p=()-[r:Similar]->() detach delete r")  # delete current (to prevent duplicate)
 
     similarList = ["Engineering", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
     for str in similarList:
@@ -187,24 +204,28 @@ def connectSimilars():
     # list of the tag names
     tagNames = ["Health", "Economy", "Build", "Biology", "Natural"]
 
-    # connect similar nodes for the Health,Economy,Build tag
+    # connect similar nodes for all tags
     for i, list in enumerate(tagList):
         similarTagList(list, tagNames[i])
 
 
 # connect similar nodes to the given Tag
+# similarList is the list of relevant key strings for this tag
+# Tag is the desired similar relation tag
 def similarTagList(similarList, Tag):
     i = len(similarList)
-    for str1 in range(i):
+    for str1 in range(i):  # connect each string in the list to the others
         j = 0
         i = i - 1
         for str2 in range(i):
             learnPath.write_similarNodes(similarList[i], similarList[j], Tag)
             j = j + 1
 
+
+# main function for initializing the database
 def initConnections():
     # generate and connect the applicants
-    createApplicants(True, 200)
+    createApplicants(True, False, 200)
     connectApplicants(True, 1)
     friendDemo()
     connectSimilars()
@@ -212,9 +233,8 @@ def initConnections():
 
 if __name__ == '__main__':
     print('Learn Path. Welcome good sir.')
-    # f = open("Cypher.txt", "w")  #"a" - Append - will append to the end of the file, "w" - Write - will overwrite any existing content
     learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
-    # initConnections() # can run once
+    #initConnections()  # can run only once
 
     # get all faculties
     # faculties = learnPath.write_getAllQuery("Faculty")
@@ -241,10 +261,6 @@ if __name__ == '__main__':
     for _class in availableClasses:
         print(_class)
 
-    # print("query:\n" + queriesString)
-    # f.write(queriesString) # write applicant queries to text file
-    # f.close()
-
     print('starting up web app')
-    flaskapp.app.run() # app.run(debug=True) for debugging
-    learnPath.close()
+    flaskapp.app.run()  # app.run(debug=True) for debugging
+    learnPath.close()  # close the connection to the database

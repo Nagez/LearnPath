@@ -7,12 +7,12 @@ def home():
     return render_template('LearnPathHome.html') # get the html file named LearnPathHome, must be in templates folder
 
 
-@app.route('/page1',methods=["GET","POST"])
+@app.route('/page1', methods=["GET","POST"])
 def page1():
     return render_template('page1.html')
 
 
-@app.route('/page2',methods=["GET","POST"])
+@app.route('/page2', methods=["GET","POST"])
 def page2():
     return render_template('page2.html')
 

@@ -2,7 +2,12 @@
 {% block content %}
    <div class="page2">
      <h1>Find match for applicant</h1>
-     <p>This website was built with Python via the Flask framework.</p>
+       {% for item in list %}
+
+        <p>Name: {{item}}</p>
+
+
+       {% endfor %}
   </div>
 {% endblock %}
 

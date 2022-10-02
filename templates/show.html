@@ -1,0 +1,14 @@
+{% extends "LearnPathHome.html" %}
+{% block content %}
+  <div class="page1">
+    <h1>Results:</h1>
+    <h1>{{list[0].labels}}:</h1>
+
+    {% for item in list %}
+
+      <li><a href="{{ url_for('show2',variable = item.id) }}">Name: {{item["Name"]}}</a></li>
+
+    {% endfor %}
+  </div>
+
+{% endblock %}

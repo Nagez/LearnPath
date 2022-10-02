@@ -82,6 +82,28 @@ class connection:
         result = tx.run(str)
         return [record["classes"] for record in result]
 
+
+    # get all faculties of a specific university id
+    def getFacultiesFromUni(self, id):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__getFacultiesFromUni, id)
+
+    @staticmethod
+    def __getFacultiesFromUni(tx, id):
+        result = tx.run("MATCH(i: Institution)-[w: Within]-(f:Faculty) where ID(i) = "+id+" return f")
+        return [record["f"] for record in result]
+
+
+    # get all classes of a specific faculties id
+    def getClassesFromFaculty(self, id):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__getClassesFromFaculty, id)
+    @staticmethod
+    def __getClassesFromFaculty(tx, id):
+        result = tx.run("MATCH(f: Faculty)-[o: Offered_In]-(c:Class) where ID(i) = " + id + " return c")
+        return [record["f"] for record in result]
+
+
     # get all of the nodes of type var
     def write_getAllQuery(self, var):
         with self.driver.session() as session:

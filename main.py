@@ -199,6 +199,14 @@ def connectSimilars():
     # Natural tag (Natural Science)
     NaturalSimilarList = ["Bio", "Life", "Physics", "Chemistry","Earth", "astronomy"]
 
+    """
+    #
+    SocialScienceSimilarList = ["Anthropology", "Area studies", "Business", "Civics", "Communication", "Criminology", "Demography", "Development",
+                                "Economics", "Education", "Environmental", "Folkloristics", "Gender", "Geography", "History", "Industrial relations",
+                                "Information", "International relations", "Law", "Library", "Linguistics", "Media", "Political", "Psychology",
+                                "Public administration", "Sociology", "Social work", "Sustainable development"]
+    """
+
     # list of the tag lists
     tagList = [HealthSimilarList, EconomySimilarList, BuildSimilarList, BiologySimilarList, NaturalSimilarList]
     # list of the tag names

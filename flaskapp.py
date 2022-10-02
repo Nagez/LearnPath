@@ -21,16 +21,20 @@ def show():
 @app.route('/show/<variable>', methods=["GET"])
 def show2(variable):
     if request.method == "GET":
-        Faculty = learnPath.getFacultiesFromUni(variable)
-    return render_template('show.html', list=Faculty)
+        if int(variable) > 6:
+            res = learnPath.getClassesFromFaculty(variable)
+            return render_template('showClass.html', list=res)
+        else:
+            res = learnPath.getFacultiesFromUni(variable)
+    return render_template('show.html', list=res)
 
 
-@app.route('/page2', methods=["GET", "POST"])
-def page2():
+@app.route('/showClass', methods=["GET", "POST"])
+def showClass():
     if request.method == "GET":
         availableClasses = learnPath.findMatchTroughName('Or Nagar', 'Computer science')
 
-    return render_template('page2.html', list=availableClasses)
+    return render_template('showClass.html', list=availableClasses)
 
 
 @app.route('/cool') # the url /cool

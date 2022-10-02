@@ -1,10 +1,10 @@
 {% extends "LearnPathHome.html" %}
 {% block content %}
    <div class="page2">
-     <h1>Find match for applicant</h1>
+     <h1>Classes</h1>
        {% for item in list %}
 
-        <p>Name: {{item}}</p>
+        <p>Name: {{item["Name"]}} PsychometricMinimum: {{item["PsychometricMinimum"]}} BagrutMinimum: {{item["BagrutMinimum"]}}</p>
 
 
        {% endfor %}

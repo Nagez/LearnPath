@@ -6,7 +6,7 @@
 
     {% for item in list %}
 
-      <li><a href="{{ url_for('show2',variable = item.id) }}">Name: {{item["Name"]}}</a></li>
+      <li><a href="{{ url_for('show2',variable = item.id) }}">{{item["Name"]}}</a></li>
 
     {% endfor %}
   </div>

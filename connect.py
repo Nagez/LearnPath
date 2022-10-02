@@ -100,8 +100,8 @@ class connection:
             return session.read_transaction(self.__getClassesFromFaculty, id)
     @staticmethod
     def __getClassesFromFaculty(tx, id):
-        result = tx.run("MATCH(f: Faculty)-[o: Offered_In]-(c:Class) where ID(i) = " + id + " return c")
-        return [record["f"] for record in result]
+        result = tx.run("MATCH(f: Faculty)-[o: Offered_In]-(c:Class) where ID(f) = " + id + " return c")
+        return [record["c"] for record in result]
 
 
     # get all of the nodes of type var

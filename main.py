@@ -2,6 +2,7 @@ import random
 import names
 import connect
 import flaskapp
+import GUI
 
 queriesString = ""  # global string to print to the file
 
@@ -241,7 +242,8 @@ def initConnections():
 
 if __name__ == '__main__':
     print('Learn Path. Welcome.')
-    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
+    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234")  # connect to database
+
     #initConnections()  # can run only once
 
     # get all faculties
@@ -270,5 +272,34 @@ if __name__ == '__main__':
         print(_class)
 
     learnPath.close()  # close the connection to the database
-    print('Starting up web app')
-    flaskapp.app.run()  # app.run(debug=True) for debugging
+
+    # GUI #
+    app=GUI.App()
+
+    def Init_event():
+        if app.check_box_1.get() == 1: #Create
+           # print(1)
+            if app.check_box_info1.get()==1:# Delete Existing
+                print(1.1)
+            if app.check_box_info2.get()==1:# Export to File
+                print(1.2)
+
+        if app.check_box_2.get() == 1: # Connect Applicants
+            print("")
+            if app.check_box_info3.get()==1: #Delete Existing
+                print("Connect Applicants: Delete Existing")
+
+        if app.check_box_3.get() == 1:
+            print("run friendDemo")
+            friendDemo()
+
+        if app.check_box_4.get() == 1:
+            print("run connectSimilars")
+            connectSimilars()
+
+    def App_event():
+        flaskapp.app.run()  # app.run(debug=True) for debugging
+
+    app.button_1.command = Init_event
+    app.button_2.command = App_event
+    app.start()

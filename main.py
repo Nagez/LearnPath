@@ -273,7 +273,7 @@ if __name__ == '__main__':
 
     learnPath.close()  # close the connection to the database
 
-    # GUI #
+    ## GUI ##
     app=GUI.App()
 
     def Init_event():

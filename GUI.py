@@ -1,8 +1,7 @@
 import tkinter
 import tkinter.messagebox
 import customtkinter
-from tkinter.ttk import *
-import sys
+
 
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -76,7 +75,7 @@ class App(customtkinter.CTk):
         self.button_1 = customtkinter.CTkButton(master=self.frame_right,
                                                 text="Run Init",
                                                 fg_color=("gray75", "gray30"),  # <- custom tuple-color
-                                                command=self.button_event)
+                                                )
         self.button_1.grid(row=0, column=0, pady=10, padx=20)
 
         self.radio_var = tkinter.IntVar(value=0)
@@ -103,16 +102,13 @@ class App(customtkinter.CTk):
         self.button_2 = customtkinter.CTkButton(master=self.frame_right,
                                                 text="Run App",
                                                 fg_color=("gray75", "gray30"),  # <- custom tuple-color
-                                                command=self.button_event)
+                                                )
         self.button_2.grid(row=0, column=2, pady=10, padx=20)
 
         # set default values
         self.switch_1.select()
         # self.check_box_1.configure(state=tkinter.DISABLED, text="CheckBox disabled")
         # self.check_box_2.select()
-
-    def button_event(self):
-        print("Button pressed")
 
     def change_mode(self):
         if self.switch_1.get() == 1:
@@ -150,6 +146,7 @@ class App(customtkinter.CTk):
                                                 border_width=2,
                                                 corner_radius=10)
             self.entry.grid(column=1, row=2, sticky="nwe", padx=1, pady=1)
+            self.entry.insert(tkinter.END, '1')
             # if check_box_1 is unchecked destroy frame_info1 and all its widgets
         else:
             self.entry.destroy()
@@ -197,9 +194,3 @@ class App(customtkinter.CTk):
 
     def start(self):
         self.mainloop()
-
-
-if __name__ == "__main__":
-    app = App()
-    app.start()
-    #print(app.check_box_1.get())

@@ -242,8 +242,7 @@ def initConnections():
 
 if __name__ == '__main__':
     print('Learn Path. Welcome.')
-    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234")  # connect to database
-
+    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
     #initConnections()  # can run only once
 
     # get all faculties

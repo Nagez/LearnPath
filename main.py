@@ -11,7 +11,7 @@ GirltoBoyRatio = 0.58
 # pychometricAVG according to EconomicSocialCluster 1 -> 10 (psychometric score is between 200 to 800)
 pychometricAVGESC = [432,516,540,527,555,566,584,610,624,640]
 bagrutAVGESC = [80,85,90,90,95,100,105,105,110,115]
-locations = ['South','Center','North','Jersualem']
+locations = ['South', 'Center', 'North', 'Jerusalem']
 
 """
 # old unsused ratios 
@@ -272,20 +272,20 @@ if __name__ == '__main__':
 
     learnPath.close()  # close the connection to the database
 
-    ## GUI ##
-    app=GUI.App()
+    # GUI #
+    app = GUI.App()
 
-    def Init_event():
-        if app.check_box_1.get() == 1: #Create
+    def init_event():
+        if app.check_box_1.get() == 1:  # Create
            # print(1)
-            if app.check_box_info1.get()==1:# Delete Existing
+            if app.check_box_info1.get() == 1:  # Delete Existing
                 print(1.1)
-            if app.check_box_info2.get()==1:# Export to File
+            if app.check_box_info2.get() == 1:  # Export to File
                 print(1.2)
 
-        if app.check_box_2.get() == 1: # Connect Applicants
+        if app.check_box_2.get() == 1:  # Connect Applicants
             print("")
-            if app.check_box_info3.get()==1: #Delete Existing
+            if app.check_box_info3.get() == 1:  # Delete Existing
                 print("Connect Applicants: Delete Existing")
 
         if app.check_box_3.get() == 1:
@@ -296,9 +296,9 @@ if __name__ == '__main__':
             print("run connectSimilars")
             connectSimilars()
 
-    def App_event():
+    def app_event():
         flaskapp.app.run()  # app.run(debug=True) for debugging
 
-    app.button_1.command = Init_event
-    app.button_2.command = App_event
+    app.button_1.command = init_event
+    app.button_2.command = app_event
     app.start()

@@ -1,4 +1,7 @@
 import random
+import threading
+from tkinter import DISABLED, NORMAL
+
 import names
 import connect
 import flaskapp
@@ -276,6 +279,7 @@ if __name__ == '__main__':
     app = GUI.App()
 
     def init_event():
+        #print("init started")
         if app.check_box_1.get() == 1:  # Create
            # print(1)
             if app.check_box_info1.get() == 1:  # Delete Existing
@@ -294,11 +298,29 @@ if __name__ == '__main__':
 
         if app.check_box_4.get() == 1:
             print("run connectSimilars")
+            app.button_1.configure(text="Wait")
+            app.button_1.configure(state=DISABLED)
             connectSimilars()
+            app.button_1.configure(state=NORMAL)
+            app.button_1.configure(text="Run Init")
+
+        #print("init ended")
 
     def app_event():
         flaskapp.app.run()  # app.run(debug=True) for debugging
 
-    app.button_1.command = init_event
+    # threads #
+
+    # check if thread in working
+    def init_thread_function():
+        # create a new instance of the thread with the same configuration
+        init_event_thread = threading.Thread(target=init_event)
+
+        # check if thread is alive
+        if not init_event_thread.is_alive():
+            # print(init_event_thread.is_alive())
+            init_event_thread.start()
+
+    app.button_1.command = init_thread_function
     app.button_2.command = app_event
     app.start()

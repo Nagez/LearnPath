@@ -321,6 +321,15 @@ if __name__ == '__main__':
             # print(init_event_thread.is_alive())
             init_event_thread.start()
 
+    def app_thread_function():
+        # create a new instance of the thread with the same configuration
+        app_event_thread = threading.Thread(target=app_event)
+
+        # check if thread is alive
+        if not app_event_thread.is_alive():
+            # print(app_event_thread.is_alive())
+            app_event_thread.start()
+
     app.button_1.command = init_thread_function
-    app.button_2.command = app_event
+    app.button_2.command = app_thread_function
     app.start()

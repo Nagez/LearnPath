@@ -110,6 +110,7 @@ class App(customtkinter.CTk):
         # self.check_box_1.configure(state=tkinter.DISABLED, text="CheckBox disabled")
         # self.check_box_2.select()
 
+    # change theme color
     def change_mode(self):
         if self.switch_1.get() == 1:
             customtkinter.set_appearance_mode("dark")

@@ -279,18 +279,37 @@ if __name__ == '__main__':
     app = GUI.App()
 
     def init_event():
-        #print("init started")
+        # print("init started")
         if app.check_box_1.get() == 1:  # Create
-           # print(1)
+            # print(1)
             if app.check_box_info1.get() == 1:  # Delete Existing
                 print(1.1)
             if app.check_box_info2.get() == 1:  # Export to File
                 print(1.2)
 
         if app.check_box_2.get() == 1:  # Connect Applicants
-            print("")
-            if app.check_box_info3.get() == 1:  # Delete Existing
-                print("Connect Applicants: Delete Existing")
+            # check if input is valid (no spaces, no empty input, no "." input)
+            if (app.entry2.get().count(" ") == 0 or app.entry2.get() == "") and app.entry2.get() != "" and app.entry2.get().count(".") == 0:
+                try:
+                    num = int(app.entry2.get())
+                except ValueError:
+                    print("Not an number")
+
+                if num > -1:
+                    if app.check_box_info3.get() == 1:  # Delete Existing
+                        connectApplicants(True, num)
+                        #print("num >-1 and deleting")
+                        #print("Connect Applicants: Delete Existing")
+                    else:
+                        connectApplicants(False, num)
+                        #print("num > -1 and not deleting")
+                else:
+                    print("invalid input(num<-1)")
+            else:
+                print("invalid input")
+
+
+
 
         if app.check_box_3.get() == 1:
             print("run friendDemo")

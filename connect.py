@@ -127,6 +127,16 @@ class connection:
                         "MERGE (c)-[:Similar{Tag:'"+tag+"'}]-(c1)")
         return result
 
+    # get a list of all applicants ids that learn in the same faculty at the same institution
+    def getApplicantsInSameFaculty(self):
+        with self.driver.session() as session:
+            return session.write_transaction(self.__getApplicantsInSameFaculty)
+
+    @staticmethod
+    def __getApplicantsInSameFaculty(tx):
+        result = tx.run("MATCH(a:Applicant)-[r:Accepted_To]-(c:Class)-[o:Offered_In]-(f:Faculty),(a2:Applicant)-[r2:Accepted_To]-(c2:Class)-[o2:Offered_In]-(f2:Faculty) where f.ID=f2.ID return id(a) as RES, id(a2) as RESS")
+        return result.values("RESS","RES")
+
     # general write query (mainly used to create applicant)
     def write_Query(self, query):
         with self.driver.session() as session:

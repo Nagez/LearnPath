@@ -181,6 +181,19 @@ def friendDemo():
     learnPath.write_Query("MATCH (a:Applicant{Name: 'Shaked Wagner'})MATCH(c:Class{Name: 'Computer Engineering',ID:'5'})MERGE(a)-[r:Accepted_To]->(c)")
     learnPath.write_Query("MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})merge(a)-[f:Friend]-(a2)")
 
+# make randomized friend connections by location and institution and a few completely random
+def simulateFriends(quantity):
+
+    """
+    for location in locations:
+        "MATCH(a:Applicant{Area:'"+location+"'}) return id(a) AS applicantID"
+    "MATCH (a:Applicant),(a2:Applicant) WHERE id(a)= 401 or id(a2)=410 merge(a)-[f:Friend]-(a2)"
+
+    numberOfInstitutions = "MATCH(i: Institution) return count(*) as numberOfInstitutions"
+    for i in range(numberOfInstitutions):
+
+    friendDemo()
+    """
 
 # connect similar nodes
 def connectSimilars():
@@ -260,6 +273,17 @@ if __name__ == '__main__':
     # for _class in classes:
     #     print(_class["Name"])
 
+    res = learnPath.getApplicantsInSameFaculty()
+    print(res[0][0])
+    print(res[0][1])
+    for record in res:
+        print(record)
+    print("###################################")
+    # all classes in applicant location
+    # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[o:Offered_In]-(f:Faculty)-[w:Within]-(i:Institution) Where (a.Area=i.Area) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) return c,a,i
+    # all classes in applicant location with similar
+    # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[Offered_In]-(f:Faculty)-[w:Within]-(i:Institution), (c:Class)-[Similar]-(c1:Class)-[o1:Offered_In]-(f1:Faculty)-[w1:Within]-(i1:Institution) WHERE  (a.Area=i.Area and a.Area=i1.Area) and (toLower(c.Name) CONTAINS  toLower('Computer science') or toLower(f.Name) CONTAINS toLower('Computer science')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum) WITH collect(c)+collect(c1) AS cl unwind cl AS classes RETURN DISTINCT classes
+    #input()
     # example to find a degree trough a friend reference
     ApplicantName = 'Or Nagar'
     friendsClasses = learnPath.findMatchTroughFriend(ApplicantName)

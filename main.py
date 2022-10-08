@@ -181,19 +181,37 @@ def friendDemo():
     learnPath.write_Query("MATCH (a:Applicant{Name: 'Shaked Wagner'})MATCH(c:Class{Name: 'Computer Engineering',ID:'5'})MERGE(a)-[r:Accepted_To]->(c)")
     learnPath.write_Query("MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})merge(a)-[f:Friend]-(a2)")
 
+
 # make randomized friend connections by location and institution and a few completely random
-def simulateFriends(quantity):
+def simulateFriends():
+    learnPath.write_Query("MATCH p=()-[r:Friend]->() DETACH DELETE r") # to prevent duplicates
 
-    """
+    print('connecting friends by same location')
+    # add random friends that are from the same areas
     for location in locations:
-        "MATCH(a:Applicant{Area:'"+location+"'}) return id(a) AS applicantID"
-    "MATCH (a:Applicant),(a2:Applicant) WHERE id(a)= 401 or id(a2)=410 merge(a)-[f:Friend]-(a2)"
+        applicantsL = learnPath.getApplicantsInSameArea(location)
+        random.shuffle(applicantsL)  # shuffles the id's to randomize
+        for i in range(0,int(len(applicantsL)/4),2): # make some portion of them friends, jumps of two
+            learnPath.newFriends(str(applicantsL[i][0]), str(applicantsL[i+1][0]),"location")
 
-    numberOfInstitutions = "MATCH(i: Institution) return count(*) as numberOfInstitutions"
-    for i in range(numberOfInstitutions):
+    # add random friends that go to the same faculty of the same institution
+    print('connecting friends by same faculty')
+    applicantsF = learnPath.getApplicantsInSameFaculty()
+    applicantsSample = random.sample(applicantsF,int((len(applicantsF))/10)) # take random pairs of students
+    for i in range(len(applicantsSample)):
+        learnPath.newFriends(str(applicantsSample[i][0]),str(applicantsSample[i][1]),"faculty")
+
+    # add randomized friends
+    print('connecting randomized friends')
+    applicantsR = learnPath.write_getAllQuery("Applicant")
+    random.shuffle(applicantsR) # take random pairs of students
+    for i in range(0,int(len(applicantsR)/10),2):
+        learnPath.newFriends(str(applicantsR[i].id), str(applicantsR[i+1].id), "rand")
 
     friendDemo()
-    """
+    # "MATCH (a:Applicant)-[r:Friend]->(a2:Applicant) RETURN a.Name as Applicant, count(distinct r) as num_of_friends ORDER BY num_of_friends DESC " # check number of friends
+    # numberOfInstitutions = "MATCH(i: Institution) return count(*) as numberOfInstitutions"
+
 
 # connect similar nodes
 def connectSimilars():
@@ -250,9 +268,9 @@ def similarTagList(similarList, Tag):
 # main function for initializing the database
 def initConnections():
     # generate and connect the applicants
-    createApplicants(True, False, 200)
+    createApplicants(True, False, 300)
     connectApplicants(True, 1)
-    friendDemo()
+    simulateFriends()
     connectSimilars()
 
 
@@ -273,15 +291,9 @@ if __name__ == '__main__':
     # for _class in classes:
     #     print(_class["Name"])
 
-    res = learnPath.getApplicantsInSameFaculty()
-    print(res[0][0])
-    print(res[0][1])
-    for record in res:
-        print(record)
-    print("###################################")
-    # all classes in applicant location
+    # all the classes in the applicant's location
     # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[o:Offered_In]-(f:Faculty)-[w:Within]-(i:Institution) Where (a.Area=i.Area) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) return c,a,i
-    # all classes in applicant location with similar
+    # all the classes in the applicant's location with similar
     # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[Offered_In]-(f:Faculty)-[w:Within]-(i:Institution), (c:Class)-[Similar]-(c1:Class)-[o1:Offered_In]-(f1:Faculty)-[w1:Within]-(i1:Institution) WHERE  (a.Area=i.Area and a.Area=i1.Area) and (toLower(c.Name) CONTAINS  toLower('Computer science') or toLower(f.Name) CONTAINS toLower('Computer science')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum) WITH collect(c)+collect(c1) AS cl unwind cl AS classes RETURN DISTINCT classes
     #input()
     # example to find a degree trough a friend reference
@@ -336,8 +348,8 @@ if __name__ == '__main__':
 
 
         if app.check_box_3.get() == 1:
-            print("run friendDemo")
-            friendDemo()
+            print("run simulateFriends")
+            simulateFriends()
 
         if app.check_box_4.get() == 1:
             print("run connectSimilars")

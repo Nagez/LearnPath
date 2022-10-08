@@ -291,13 +291,27 @@ if __name__ == '__main__':
     # for _class in classes:
     #     print(_class["Name"])
 
+    ## recommandations ##
+
     # all the classes in the applicant's location
     # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[o:Offered_In]-(f:Faculty)-[w:Within]-(i:Institution) Where (a.Area=i.Area) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) return c,a,i
     # all the classes in the applicant's location with similar
     # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[Offered_In]-(f:Faculty)-[w:Within]-(i:Institution), (c:Class)-[Similar]-(c1:Class)-[o1:Offered_In]-(f1:Faculty)-[w1:Within]-(i1:Institution) WHERE  (a.Area=i.Area and a.Area=i1.Area) and (toLower(c.Name) CONTAINS  toLower('Computer science') or toLower(f.Name) CONTAINS toLower('Computer science')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum) WITH collect(c)+collect(c1) AS cl unwind cl AS classes RETURN DISTINCT classes
+    # Most popular classes
+    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant) RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
+    # most popular classes in the applicants location
+    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant),(a1:Applicant{Name:"Or Nagar"}) where i.Area=a1.Area RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
+    # average score in each faculty
+    # match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where(c.BagrutMinimum<>'') return f.Name,i.Name, avg(c.BagrutMinimum)
+    # match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where (c.PsychometricMinimum<>'') return f.Name,i.Name, avg(c.PsychometricMinimum)
+    # average of all similar classes
+    # match (c:Class)-[r:Similar]-(c1:Class) where (c.PsychometricMinimum<>'') return r.Tag, avg(c.PsychometricMinimum)
+    # match (c:Class)-[r:Similar]-(c1:Class) where (c.BagrutMinimum<>'') return r.Tag, avg(c.BagrutMinimum)
     #input()
+
     # example to find a degree trough a friend reference
-    ApplicantName = 'Or Nagar'
+    # ApplicantName = 'Or Nagar'
+    ApplicantName = input("Please input applicant name: ")
     friendsClasses = learnPath.findMatchTroughFriend(ApplicantName)
     print(""+ApplicantName+" friends Classes ("+str(len(friendsClasses))+"): ")
     for _class in friendsClasses:

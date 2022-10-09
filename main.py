@@ -329,41 +329,92 @@ if __name__ == '__main__':
     app = GUI.App()
 
     def init_event():
-        # print("init started")
         if app.check_box_1.get() == 1:  # Create
-            # print(1)
-            if app.check_box_info1.get() == 1:  # Delete Existing
-                print(1.1)
-            if app.check_box_info2.get() == 1:  # Export to File
-                print(1.2)
+            if (app.entry.get().count(" ") == 0 or app.entry.get() == "") and app.entry.get() != "" and app.entry.get().count(".") == 0:
+                try:
+                    num = int(app.entry.get())
+                    if num > -1:
+                        app.button_1.configure(text="Wait")
+                        app.button_1.configure(state=DISABLED)
+                        # destroy entry3 if it exists
+                        if app.entry3.winfo_exists() == 1:
+                            app.entry3.destroy()
+                        # num >-1 and deleting
+                        if app.check_box_info1.get() == 1 and app.check_box_info2.get() == 1:  # Delete and Export to File
+                            # run createApplicants
+                            createApplicants(True, True, num)
+                            app.button_1.configure(state=NORMAL)
+                            app.button_1.configure(text="Run Init")
+                        # num > -1 and not deleting
+                        elif app.check_box_info1.get() == 1 and app.check_box_info2.get() == 0:  # Delete Existing only
+                            # run createApplicants
+                            createApplicants(True, False, num)
+                            app.button_1.configure(state=NORMAL)
+                            app.button_1.configure(text="Run Init")
+                        elif app.check_box_info1.get() == 1 and app.check_box_info2.get() == 0:  # Export to file only
+                            # run createApplicants
+                            createApplicants(False, True, num)
+                            app.button_1.configure(state=NORMAL)
+                            app.button_1.configure(text="Run Init")
+                        # no delete and no export
+                        else:
+                            # run createApplicants
+                            createApplicants(False, False, num)
+                            app.button_1.configure(state=NORMAL)
+                            app.button_1.configure(text="Run Init")
+                    # invalid input(num<-1)
+                    else:
+                        app.entry3Fun()
+                # Not an integer
+                except ValueError:
+                    app.entry3Fun()
+
+            # invalid input(spaces/empty string)
+            else:
+                app.entry3Fun()
 
         if app.check_box_2.get() == 1:  # Connect Applicants
             # check if input is valid (no spaces, no empty input, no "." input)
             if (app.entry2.get().count(" ") == 0 or app.entry2.get() == "") and app.entry2.get() != "" and app.entry2.get().count(".") == 0:
                 try:
                     num = int(app.entry2.get())
-                except ValueError:
-                    print("Not an number")
+                    if num > -1:
+                        app.button_1.configure(text="Wait")
+                        app.button_1.configure(state=DISABLED)
+                        # destroy entry3 if it exists
+                        if app.entry4.winfo_exists() == 1:
+                            app.entry4.destroy()
+                        # num >-1 and deleting
+                        if app.check_box_info3.get() == 1:  # Delete Existing
+                            # run connectApplicants
+                            connectApplicants(True, num)
+                            app.button_1.configure(state=NORMAL)
+                            app.button_1.configure(text="Run Init")
+                        else:
+                            # num > -1 and not deleting
+                            # run connectApplicants
+                            connectApplicants(False, num)
+                            app.button_1.configure(state=NORMAL)
+                            app.button_1.configure(text="Run Init")
 
-                if num > -1:
-                    if app.check_box_info3.get() == 1:  # Delete Existing
-                        connectApplicants(True, num)
-                        #print("num >-1 and deleting")
-                        #print("Connect Applicants: Delete Existing")
                     else:
-                        connectApplicants(False, num)
-                        #print("num > -1 and not deleting")
-                else:
-                    print("invalid input(num<-1)")
+                        # invalid input(num<-1)
+                        app.entry4Fun()
+                except ValueError:
+                    # Not an integer
+                    app.entry4Fun()
+
             else:
-                print("invalid input")
-
-
-
+                # invalid input(spaces/empty string)
+                app.entry4Fun()
 
         if app.check_box_3.get() == 1:
             print("run simulateFriends")
+            app.button_1.configure(text="Wait")
+            app.button_1.configure(state=DISABLED)
             simulateFriends()
+            app.button_1.configure(state=NORMAL)
+            app.button_1.configure(text="Run Init")
 
         if app.check_box_4.get() == 1:
             print("run connectSimilars")
@@ -372,8 +423,6 @@ if __name__ == '__main__':
             connectSimilars()
             app.button_1.configure(state=NORMAL)
             app.button_1.configure(text="Run Init")
-
-        #print("init ended")
 
     def app_event():
         flaskapp.app.run()  # app.run(debug=True) for debugging

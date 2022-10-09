@@ -148,6 +148,9 @@ class App(customtkinter.CTk):
                                                 corner_radius=10)
             self.entry.grid(column=1, row=2, sticky="nwe", padx=1, pady=1)
             self.entry.insert(tkinter.END, '1')
+            # create and destroy entry3 in order to make self.entry3.winfo_exists() == 0 work
+            self.entry3 = customtkinter.CTkEntry(master=self.frame_info1)
+            self.entry3.destroy()
             # if check_box_1 is unchecked destroy frame_info1 and all its widgets
         else:
             self.entry.destroy()
@@ -155,6 +158,9 @@ class App(customtkinter.CTk):
             self.check_box_info2.destroy()
             self.check_box_info1.destroy()
             self.frame_info1.destroy()
+            # delete entry 3 if it exists
+            if self.entry3.winfo_exists() == 1:
+                self.entry3.destroy()
 
     def check2(self):
         # if check_box_2 is checked create frame_info2 and all its widgets
@@ -183,12 +189,48 @@ class App(customtkinter.CTk):
                                                  border_width=2,
                                                  corner_radius=10)
             self.entry2.grid(column=1, row=1, sticky="nwe", padx=1, pady=1)
+            # create and destroy entry4 in order to make self.entry4.winfo_exists() == 0 work
+            self.entry4=customtkinter.CTkEntry(master=self.frame_info2)
+            self.entry4.destroy()
+
             # if check_box_2 is unchecked destroy frame_info2 and all its widgets
         else:
             self.entry2.destroy()
             self.label_info_2.destroy()
             self.check_box_info3.destroy()
             self.frame_info2.destroy()
+            # delete entry 4 if it exists
+            if self.entry4.winfo_exists() == 1:
+                self.entry4.destroy()
+
+
+    def entry3Fun(self):
+        # create entry 3 if it doest exists
+        if self.entry3.winfo_exists() == 0:
+            self.entry3 = customtkinter.CTkEntry(master=self.frame_info1,
+                                                 placeholder_text="Invalid Input",
+                                                 width=120,
+                                                 height=25,
+                                                 border_width=0,
+                                                 corner_radius=0
+                                                 )
+            self.frame_info1.grid_rowconfigure(2, weight=1)
+            self.entry3.grid(column=1, row=3, sticky="nwe", padx=1, pady=1)
+            self.entry3.configure(state=tkinter.DISABLED, text="CheckBox disabled", text_color="red")
+
+    def entry4Fun(self):
+        # create entry 3 if it doest exists
+        if self.entry4.winfo_exists() == 0:
+            self.entry4 = customtkinter.CTkEntry(master=self.frame_info2,
+                                                 placeholder_text="Invalid Input",
+                                                 width=120,
+                                                 height=25,
+                                                 border_width=0,
+                                                 corner_radius=0
+                                                 )
+            self.frame_info2.grid_rowconfigure(2, weight=1)
+            self.entry4.grid(column=1, row=2, sticky="nwe", padx=1, pady=1)
+            self.entry4.configure(state=tkinter.DISABLED, text="CheckBox disabled", text_color="red")
 
     def on_closing(self, event=0):
         self.destroy()

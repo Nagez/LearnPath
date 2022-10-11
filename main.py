@@ -304,9 +304,16 @@ if __name__ == '__main__':
     # average score in each faculty
     # match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where(c.BagrutMinimum<>'') return f.Name,i.Name, avg(c.BagrutMinimum)
     # match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where (c.PsychometricMinimum<>'') return f.Name,i.Name, avg(c.PsychometricMinimum)
-    # average of all similar classes
-    # match (c:Class)-[r:Similar]-(c1:Class) where (c.PsychometricMinimum<>'') return r.Tag, avg(c.PsychometricMinimum)
-    # match (c:Class)-[r:Similar]-(c1:Class) where (c.BagrutMinimum<>'') return r.Tag, avg(c.BagrutMinimum)
+    # average scores of all similar classes
+    # match (c:Class)-[r:Similar]-(c1:Class)  where (c.PsychometricMinimum<>'') with r.Tag as tag ,collect(distinct c) as nodes unwind nodes as classes return avg(classes.PsychometricMinimum) as psychometricAverage, count(classes) as classesQuantity, tag order by psychometricAverage desc
+    # match (c:Class)-[r:Similar]-(c1:Class)  where (c.BagrutMinimum<>'') with r.Tag as tag ,collect(distinct c) as nodes unwind nodes as classes return avg(classes.BagrutMinimum) as BagrutAverage, count(classes) as classesQuantity, tag order by BagrutAverage desc
+    # percentage of accepted in each area
+    # match (a:Applicant)-[r:Accepted_To]->(c:Class) with count(a) as total match (a:Applicant)-[r:Accepted_To]->(c:Class)  return a.Area,count(a) as quantityOfAccepted ,(toFloat(count(a))/total)*100 as percent order by percent desc
+    # applicants not accepted yet
+    # MATCH (a:Applicant) WHERE NOT (a)-[:Accepted_To]->() return a
+    # shortest paths from a friend to a class
+    # MATCH (a:Applicant{Name: 'Debbie Jackson'})-[r:Friend]-(a2:Applicant),(e:Class), path = allShortestPaths((a2)-[*..2]->(e)) RETURN path
+
     #input()
 
     # example to find a degree trough a friend reference

@@ -147,7 +147,7 @@ class App(customtkinter.CTk):
                                                 border_width=2,
                                                 corner_radius=10)
             self.entry.grid(column=1, row=2, sticky="nwe", padx=1, pady=1)
-            self.entry.insert(tkinter.END, '1')
+            self.entry.insert(tkinter.END, '300')
             # create and destroy entry3 in order to make self.entry3.winfo_exists() == 0 work
             self.entry3 = customtkinter.CTkEntry(master=self.frame_info1)
             self.entry3.destroy()
@@ -189,6 +189,7 @@ class App(customtkinter.CTk):
                                                  border_width=2,
                                                  corner_radius=10)
             self.entry2.grid(column=1, row=1, sticky="nwe", padx=1, pady=1)
+            self.entry2.insert(tkinter.END, '1')
             # create and destroy entry4 in order to make self.entry4.winfo_exists() == 0 work
             self.entry4=customtkinter.CTkEntry(master=self.frame_info2)
             self.entry4.destroy()

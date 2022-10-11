@@ -11,8 +11,8 @@ queriesString = ""  # global string to print to the file
 
 # statistic globals in percentage
 GirltoBoyRatio = 0.58
-# pychometricAVG according to EconomicSocialCluster 1 -> 10 (psychometric score is between 200 to 800)
-pychometricAVGESC = [432,516,540,527,555,566,584,610,624,640]
+# psychometricAVG according to EconomicSocialCluster 1 -> 10 (psychometric score is between 200 to 800)
+psychometricAVGESC = [432,516,540,527,555,566,584,610,624,640]
 bagrutAVGESC = [80,85,90,90,95,100,105,105,110,115]
 locations = ['South', 'Center', 'North', 'Jerusalem']
 
@@ -101,10 +101,10 @@ def getRandomScore(sec):
     bagrutScore = 1  # placeholder init
     psyScore = 1
     while psyScore <= 200 or psyScore >= 800:
-        psyScore = round(random.gauss(pychometricAVGESC[sec-1], 200 / 3))  # get a round score according to gaussian distribution of a score mean of the socialEconomic Cluster
+        psyScore = round(random.gauss(psychometricAVGESC[sec-1], 200 / 3))  # get a round score according to gaussian distribution of a score mean of the socialEconomic Cluster
     while bagrutScore <= 60 or bagrutScore >= 120:
         bagrutScore = round(random.gauss(bagrutAVGESC[sec - 1], 200 / 12))
-    # print("psyScore: " + str(psyScore) + " avg: " + str(pychometricAVGESC[sec - 1])+"\n"+"bagrutScore: " + str(bagrutScore) + " avg: " + str(bagrutAVGESC[sec - 1]))
+    # print("psyScore: " + str(psyScore) + " avg: " + str(psychometricAVGESC[sec - 1])+"\n"+"bagrutScore: " + str(bagrutScore) + " avg: " + str(bagrutAVGESC[sec - 1]))
     return psyScore, bagrutScore
 
 

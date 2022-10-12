@@ -312,7 +312,7 @@ if __name__ == '__main__':
     # applicants not accepted yet
     # MATCH (a:Applicant) WHERE NOT (a)-[:Accepted_To]->() return a
     # shortest paths from a friend to a class
-    # MATCH (a:Applicant{Name: 'Debbie Jackson'})-[r:Friend]-(a2:Applicant),(e:Class), path = allShortestPaths((a2)-[*..2]->(e)) RETURN path
+    # MATCH (a:Applicant{Name: 'Debbie Jackson'})-[r:Friend]-(a2:Applicant),(e:Class), path = ((a2)-[*..2]->(e)) RETURN path
 
     #input()
 

@@ -5,7 +5,7 @@
     <h1>{{typeList}}:</h1>
      <div class="list-group">
     {% for item in list %}
-        <a href="{{ url_for('show2',variable = item.id) }}" class="list-group-item list-group-item-action">{{item["Name"]}}</a>
+        <a href="{{ url_for('show2',type = typeList, variable = item.id) }}" class="list-group-item list-group-item-action">{{item["Name"]}}</a>
     {% endfor %}
       </div>
 

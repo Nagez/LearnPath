@@ -279,28 +279,34 @@ if __name__ == '__main__':
     learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
     #initConnections()  # can run only once
 
-    # get all faculties
-    # faculties = learnPath.write_getAllQuery("Faculty")
-    # print("Faculties list: ")
-    # for faculty in faculties:22
-    #     print(faculty["Name"])
-
-    # get all classes
-    # classes = learnPath.write_getAllQuery("Class")
-    # print("Classes list: ")
-    # for _class in classes:
-    #     print(_class["Name"])
-
     ## recommandations ##
+    """
+        # example to find a degree trough a friend reference
+        # ApplicantName = 'Or Nagar'
+        ApplicantName = input("Please input applicant name: ")
+        friendsClasses = learnPath.findMatchTroughFriend(ApplicantName)
+        print(""+ApplicantName+" friends Classes ("+str(len(friendsClasses))+"): ")
+        for _class in friendsClasses:
+            print(_class)
 
+        # example to find a degree using the Similar connection and tags
+        availableClasses = learnPath.findMatchTroughName(ApplicantName, 'Computer science')
+        print(""+ApplicantName+" available Classes ("+str(len(availableClasses))+"): ")
+        for _class in availableClasses:
+            print(_class)
+        """
     # all the classes in the applicant's location
     # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[o:Offered_In]-(f:Faculty)-[w:Within]-(i:Institution) Where (a.Area=i.Area) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) return c,a,i
     # all the classes in the applicant's location with similar
     # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[Offered_In]-(f:Faculty)-[w:Within]-(i:Institution), (c:Class)-[Similar]-(c1:Class)-[o1:Offered_In]-(f1:Faculty)-[w1:Within]-(i1:Institution) WHERE  (a.Area=i.Area and a.Area=i1.Area) and (toLower(c.Name) CONTAINS  toLower('Computer science') or toLower(f.Name) CONTAINS toLower('Computer science')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum) WITH collect(c)+collect(c1) AS cl unwind cl AS classes RETURN DISTINCT classes
-    # Most popular classes
-    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant) RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
     # most popular classes in the applicants location
     # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant),(a1:Applicant{Name:"Or Nagar"}) where i.Area=a1.Area RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
+    # shortest paths from a friend to a class
+    # MATCH (a:Applicant{Name: 'Debbie Jackson'})-[r:Friend]-(a2:Applicant),(e:Class), path = ((a2)-[*..2]->(e)) RETURN path
+
+    ## statistics ##
+    # Most popular classes
+    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant) RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
     # average score in each faculty
     # match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where(c.BagrutMinimum<>'') return f.Name,i.Name, avg(c.BagrutMinimum)
     # match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where (c.PsychometricMinimum<>'') return f.Name,i.Name, avg(c.PsychometricMinimum)
@@ -309,27 +315,10 @@ if __name__ == '__main__':
     # match (c:Class)-[r:Similar]-(c1:Class)  where (c.BagrutMinimum<>'') with r.Tag as tag ,collect(distinct c) as nodes unwind nodes as classes return avg(classes.BagrutMinimum) as BagrutAverage, count(classes) as classesQuantity, tag order by BagrutAverage desc
     # percentage of accepted in each area
     # match (a:Applicant)-[r:Accepted_To]->(c:Class) with count(a) as total match (a:Applicant)-[r:Accepted_To]->(c:Class)  return a.Area,count(a) as quantityOfAccepted ,(toFloat(count(a))/total)*100 as percent order by percent desc
+
     # applicants not accepted yet
     # MATCH (a:Applicant) WHERE NOT (a)-[:Accepted_To]->() return a
-    # shortest paths from a friend to a class
-    # MATCH (a:Applicant{Name: 'Debbie Jackson'})-[r:Friend]-(a2:Applicant),(e:Class), path = ((a2)-[*..2]->(e)) RETURN path
 
-    #input()
-    """
-    # example to find a degree trough a friend reference
-    # ApplicantName = 'Or Nagar'
-    ApplicantName = input("Please input applicant name: ")
-    friendsClasses = learnPath.findMatchTroughFriend(ApplicantName)
-    print(""+ApplicantName+" friends Classes ("+str(len(friendsClasses))+"): ")
-    for _class in friendsClasses:
-        print(_class)
-
-    # example to find a degree using the Similar connection and tags
-    availableClasses = learnPath.findMatchTroughName(ApplicantName, 'Computer science')
-    print(""+ApplicantName+" available Classes ("+str(len(availableClasses))+"): ")
-    for _class in availableClasses:
-        print(_class)
-    """
     learnPath.close()  # close the connection to the database
 
     # GUI #

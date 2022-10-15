@@ -66,7 +66,7 @@ print(random.randrange(1, 20, 1))
 
 # generate a create applicant query using the statistics
 def generateCypherCreateApplicant():
-    random_gender = random.choices(['female', 'male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
+    random_gender = random.choices(['Female', 'Male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
     random_SocioEconomicCluster = random.choices([1,2,3,4,5,6,7,8,9,10],[5,5,12,12,9,9,13,13,11,11],k=1)
     faculty = getRandomFacultyBySEC(random_SocioEconomicCluster[0])
     random_psyScore, random_bagrutScore = getRandomScore(random_SocioEconomicCluster[0])
@@ -315,7 +315,7 @@ if __name__ == '__main__':
     # MATCH (a:Applicant{Name: 'Debbie Jackson'})-[r:Friend]-(a2:Applicant),(e:Class), path = ((a2)-[*..2]->(e)) RETURN path
 
     #input()
-
+    """
     # example to find a degree trough a friend reference
     # ApplicantName = 'Or Nagar'
     ApplicantName = input("Please input applicant name: ")
@@ -329,7 +329,7 @@ if __name__ == '__main__':
     print(""+ApplicantName+" available Classes ("+str(len(availableClasses))+"): ")
     for _class in availableClasses:
         print(_class)
-
+    """
     learnPath.close()  # close the connection to the database
 
     # GUI #

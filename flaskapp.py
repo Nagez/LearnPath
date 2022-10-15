@@ -14,27 +14,23 @@ def home():
 def show():
     if request.method == "GET":
         Institution = learnPath.write_getAllQuery("Institution")
-    return render_template('show.html', list=Institution, typeList="Institution")
+    return render_template('show.html', list=Institution, typeList="Institutions")
 
 
-@app.route('/show/<variable>', methods=["GET"])
-def show2(variable):
+@app.route('/show/<type>/<variable>', methods=["GET"])
+def show2(variable,type):
     if request.method == "GET":
-        print(variable)
-        print(int(variable))
-        if int(variable) > 6:
-            res = learnPath.getClassesFromFaculty(variable)
-            typeOfList = list(res[0].labels)[0]
-            #print(res)
-            return render_template('showClass.html', list=res, typeList=str(typeOfList))
-        else:
+        # print(variable)
+        # print(type)
+        # type = request.args.get(type)
+        if type == 'Institutions':
             res = learnPath.getFacultiesFromUni(variable)
-            typeOfList = list(res[0].labels)[0]
-            #print("else")
-            #print(res)
-            print(list(res[0].labels)[0])
-    print(res)
-    return render_template('show.html', list=res, typeList=str(typeOfList))
+            # print(list(res[0].labels)[0])
+            # typeOfList = list(res[0].labels)[0]
+            return render_template('show.html', list=res, typeList='Faculties')
+        if type == 'Faculties':
+            res = learnPath.getClassesFromFaculty(variable)
+            return render_template('showClass.html', list=res)
 
 
 @app.route('/showClass', methods=["GET", "POST"])
@@ -43,6 +39,14 @@ def showClass():
         availableClasses = learnPath.findMatchTroughName('Or Nagar', 'Computer science')
 
     return render_template('showClass.html', list=availableClasses)
+
+
+@app.route('/statistics', methods=["GET"])
+def statistics():
+    # if request.method == "GET":
+        # availableClasses = learnPath.
+    return 'statistics'
+
 
 
 @app.route('/cool') # the url /cool

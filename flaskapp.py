@@ -1,11 +1,11 @@
 from flask import Flask,request,render_template,redirect
 import connect
 
-app = Flask(__name__) # init app
+app = Flask(__name__)  # init app
 learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234")  # connect to database
 
 
-@app.route('/') # the url /
+@app.route('/')  # the url /
 def home():
     return render_template('LearnPathHome.html') # get the html file named LearnPathHome, must be in templates folder
 
@@ -14,19 +14,27 @@ def home():
 def show():
     if request.method == "GET":
         Institution = learnPath.write_getAllQuery("Institution")
-
-    return render_template('show.html', list=Institution)
+    return render_template('show.html', list=Institution, typeList="Institution")
 
 
 @app.route('/show/<variable>', methods=["GET"])
 def show2(variable):
     if request.method == "GET":
+        print(variable)
+        print(int(variable))
         if int(variable) > 6:
             res = learnPath.getClassesFromFaculty(variable)
-            return render_template('showClass.html', list=res)
+            typeOfList = list(res[0].labels)[0]
+            #print(res)
+            return render_template('showClass.html', list=res, typeList=str(typeOfList))
         else:
             res = learnPath.getFacultiesFromUni(variable)
-    return render_template('show.html', list=res)
+            typeOfList = list(res[0].labels)[0]
+            #print("else")
+            #print(res)
+            print(list(res[0].labels)[0])
+    print(res)
+    return render_template('show.html', list=res, typeList=str(typeOfList))
 
 
 @app.route('/showClass', methods=["GET", "POST"])

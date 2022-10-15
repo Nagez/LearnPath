@@ -2,29 +2,117 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>Learn path</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <!-- CSS only -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+     <style>
+
+    </style>
+
 </head>
-<body>
- <header>
-      <div class="container">
-        <h1 class="logo">Learn Path web app</h1>
-      </div>
- </header>
-      <div class="container">
-        <strong><nav>
-          <ul class="menu">
-            <li><a href="{{ url_for('show') }}">Show academic institutions</a></li>
-            <li><a href="{{ url_for('showClass') }}">Find match for applicant</a></li>
-          </ul>
-        </nav></strong>
+<body class="bg-light">
+
+
+<div class="container">
+
+  <nav class="navbar navbar fixed-top navbar-dark bg-dark navbar-expand-lg bg-light">
+  <div class="container-fluid">
+    <h1 class="navbar-brand">LearnPath</h1>
+<!--    <a class="navbar-brand" href="#">Navbar</a>-->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('show') }}">Show institutions</a>
+        </li>
+         <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('showClass') }}">Find match for applicant</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+  <br><br><br><br>
+
+
+      <div class="col-md-7 col-lg-8">
+        <h4 class="mb-3">Applicant Info</h4>
+        <form class="needs-validation" novalidate>
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="firstName" class="form-label">First name</label>
+              <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Valid first name is required.
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <label for="lastName" class="form-label">Last name</label>
+              <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
+              <div class="invalid-feedback">
+                Valid last name is required.
+              </div>
+            </div>
+
+            <div class="col-md-5">
+              <label for="Area" class="form-label">Area</label>
+              <select class="form-select" id="Area" required>
+                <option value="">Choose...</option>
+                <option value="">South</option>
+                <option>Center</option>
+                <option>North</option>
+                <option>Jerusalem</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid area.
+              </div>
+            </div>
+
+            <div class="col-md-5">
+              <label for="Gender" class="form-label">Gender</label>
+              <select class="form-select" id="Gender" required>
+                <option value="">Choose...</option>
+                <option value="">Male</option>
+                <option>Female</option>
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid gender.
+              </div>
+            </div>
+
+          </div>
+
+          <hr class="my-4">
+
+          <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
+        </form>
+
+        <br><br><br>
+        {% block content %}
+        {% endblock %}
       </div>
 
-      <div class="container">
-          {% block content %}
-          {% endblock %}
-       </div>
 
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">&copy; 2022 LearnPath<br>Shaked Wagner, Or Nagar</p>
+  </footer>
+</div>
+
+<!--<script src="script.js"></script>-->
+
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 
 </body>
 </html>

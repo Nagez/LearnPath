@@ -32,6 +32,26 @@ def show2(variable,type):
             res = learnPath.getClassesFromFaculty(variable)
             return render_template('showClass.html', list=res)
 
+@app.route('/', methods=["GET", "POST"])
+def gfg():
+    if request.method == "POST":
+        # getting input with name = fname in HTML form
+        first_name = request.form.get("fname")
+        # getting input with name = lname in HTML form
+        last_name = request.form.get("lname")
+        # getting input with name = Area in HTML form
+        Area = request.form['Area']
+        # getting input with name = Gender in HTML form
+        Gender = request.form['Gender']
+        # getting input with name = Psychometric in HTML form
+        Psychometric = request.form.get("Psychometric")
+        # getting input with name = Bagrut in HTML form
+        Bagrut=request.form.get("Bagrut")
+        # Creating new applicant
+        learnPath.generateCypherCreateCustomApplicant(Gender, Psychometric, Bagrut, Area, first_name+' '+last_name)
+
+    return render_template("LearnPathHome.html")
+
 
 @app.route('/showClass', methods=["GET", "POST"])
 def showClass():

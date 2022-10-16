@@ -182,3 +182,9 @@ class connection:
     def __read_Query(tx, query):
         result = tx.run(query)
         return result
+
+
+    def generateCypherCreateCustomApplicant(self, gender, psychometric, bagrut, area, name):
+        applicantQuery = "CREATE (a:Applicant{Name:'" + name + "' ,Gender:'" + gender + "' ,Bagrut: " + bagrut + ", Psychometric: " + str(
+            psychometric) + ", Area: '" + area + "', Faculty: '""', Degree: ''})\n"
+        self.write_Query(applicantQuery)

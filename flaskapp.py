@@ -52,11 +52,19 @@ def gfg():
 
     return render_template("LearnPathHome.html")
 
-
-@app.route('/showClass', methods=["GET", "POST"])
-def showClass():
+@app.route('/showClass0', methods=["GET"])  # the url /
+def showClass0():
     if request.method == "GET":
-        availableClasses = learnPath.findMatchTroughName('Or Nagar', 'Computer science')
+        return render_template('showClass0.html') # get the html file named LearnPathHome, must be in templates folder
+
+@app.route('/showClass0/pst', methods=["POST"])
+def showClass():
+    if request.method == "POST":
+        # getting input with name = fname in HTML form
+        first_name = request.form.get("fname")
+        # getting input with name = lname in HTML form
+        last_name = request.form.get("lname")
+        availableClasses = learnPath.findMatchTroughName(first_name+' '+last_name, 'Computer science')
 
     return render_template('showClass.html', list=availableClasses)
 

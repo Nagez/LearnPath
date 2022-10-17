@@ -156,6 +156,27 @@ class connection:
         return result.values("RESS","RES")
 
 
+    # get a list of Most popular classes
+    def getMostPopularClasses(self):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__getMostPopularClasses)
+
+    @staticmethod
+    def __getMostPopularClasses(tx):
+         result = tx.run("MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant)"
+                         "RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC")
+         table = []
+         for res in result:
+             dc = {}
+             className = res["ClassName"]
+             institutionName = res["InstitutionName"]
+             area = res["Area"]
+             num_of_accepted = res["num_of_accepted"]
+             dc.update({"ClassName":className,"InstitutionName":institutionName,"Area":area,"Num_of_accepted":num_of_accepted})
+             table.append(dc)
+
+         return table
+
 
     # get a list of all applicants ids that learn in the same faculty at the same institution
     def getApplicantsInSameArea(self,location):

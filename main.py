@@ -116,6 +116,7 @@ def createApplicants(clean,export,quantity):
     global queriesString
     if clean == True:
         learnPath.write_Query("MATCH (a:Applicant) detach delete a")
+        learnPath.generateCypherCreateCustomApplicant('Male', '600', '100', 'North', 'Harry Potter')  # create harry potter
     for i in range(quantity):  # range indicate number of applicants
         applicantQuery = generateCypherCreateApplicant()  # create the students
         learnPath.write_Query(applicantQuery)
@@ -307,6 +308,22 @@ if __name__ == '__main__':
     ## statistics ##
     # Most popular classes
     # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant) RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
+
+    # example for list of dictionaries returns
+    list = learnPath.getMostPopularClasses()
+    print("keys:")
+    print(list[0].keys())
+    for key in list[0]:
+        print(key)
+    print("value list:")
+    for item in list:
+        for value in item.values():
+            print(value)
+    print("all:")
+    for item in list:
+        for key,value in item.items():
+            print(key, " : ", value)
+
     # average score in each faculty
     # match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where(c.BagrutMinimum<>'') return f.Name,i.Name, avg(c.BagrutMinimum)
     # match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where (c.PsychometricMinimum<>'') return f.Name,i.Name, avg(c.PsychometricMinimum)

@@ -72,9 +72,10 @@ def showClass():
 
 @app.route('/statistics', methods=["GET"])
 def statistics():
-    # if request.method == "GET":
-        # availableClasses = learnPath.
-    return 'statistics'
+    if request.method == "GET":
+        list = learnPath.getMostPopularClasses()
+
+    return render_template('listTemplate.html', list=list)
 
 
 

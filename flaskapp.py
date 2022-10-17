@@ -30,7 +30,7 @@ def show2(variable,type):
             return render_template('show.html', list=res, typeList='Faculties')
         if type == 'Faculties':
             res = learnPath.getClassesFromFaculty(variable)
-            return render_template('showClass.html', list=res)
+            return render_template('ClassLearnHome.html', list=res)
 
 @app.route('/', methods=["GET", "POST"])
 def gfg():

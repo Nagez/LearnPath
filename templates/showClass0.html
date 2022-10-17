@@ -41,9 +41,11 @@
 </nav>
 
   <br><br><br><br>
-
+<!--    <h1>Options :</h1>-->
+<!--    <a class='btn btn-primary' href="{{ url_for('showClass0') }}">Find match by name</a>-->
 
       <div class="col-md-7 col-lg-8">
+        <h1>Find Match</h1><br><br><br>
         <h4 class="mb-3">Applicant Info</h4>
        <form class="needs-validation" acnovalidate action="{{ url_for("showClass")}}" method="post"> <!-- action="{{ url_for("gfg")}}" method="post"-->
         <div class="row g-3">
@@ -66,7 +68,7 @@
 
           <hr class="my-4">
 
-          <button class="w-100 btn btn-primary btn-lg" id="submit" type="submit" onclick="printVal()">Submit</button>
+          <button class="w-100 btn btn-primary btn-lg" id="submit" type="submit" onclick="printVal()">Search</button>
         </form>
 
         <br><br><br>

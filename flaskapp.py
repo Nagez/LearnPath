@@ -48,9 +48,10 @@ def gfg():
         # getting input with name = Bagrut in HTML form
         Bagrut=request.form.get("Bagrut")
         # Creating new applicant
-        learnPath.generateCypherCreateCustomApplicant(Gender, Psychometric, Bagrut, Area, first_name+' '+last_name)
-
+        applicant=learnPath.generateCypherCreateCustomApplicant(Gender, Psychometric, Bagrut, Area, first_name+' '+last_name)
+        print(applicant[0].id)
     return render_template("LearnPathHome.html")
+
 
 @app.route('/showClass0', methods=["GET"])  # the url /
 def showClass0():

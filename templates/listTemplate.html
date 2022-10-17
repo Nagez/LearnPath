@@ -1,0 +1,23 @@
+{% extends "LearnPathHome.html" %}
+{% block content %}
+
+    <h1>Statistics:</h1>
+     <div class="list-group">
+        <table>
+            <tr>
+                 {% for key in list[0] %}
+                    <th> {{ key }} </th>
+                {% endfor %}
+            </tr>
+            {% for item in list %}
+            <tr>
+                {% for value in item.values() %}
+                    <td> {{ value }} </td>
+                {% endfor %}
+             </tr>
+            {% endfor %}
+
+        </table>
+      </div>
+
+{% endblock %}

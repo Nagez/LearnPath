@@ -21,6 +21,12 @@
 
 })()
 
+//prevent loading page in other pages (excluding '/')
+if (window.location.pathname != '/') {
+  document.body.onload = null;
+}
+
+
 // function validateName (){
 //      var name = document.getElementById('firstName').value
 //      if (name.length == 0){

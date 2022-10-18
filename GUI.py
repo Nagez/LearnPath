@@ -18,7 +18,7 @@ class App(customtkinter.CTk):
         self.geometry(f"{App.WIDTH}x{App.HEIGHT}")
 
         # configure title icon
-        p1 = tkinter.PhotoImage(file='LearnPath Icon.png')
+        p1 = tkinter.PhotoImage(file='static/LearnPath Icon.png')
         self.iconphoto(False, p1)
 
         # center the window

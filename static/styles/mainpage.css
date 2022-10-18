@@ -29,7 +29,7 @@ header h1.logo:hover {
  * Centering the body content
  */
 .container {
-  width: 1200px;
+  width: 100%;
   margin: 0 auto;
 }
 div.page1 {
@@ -84,3 +84,4 @@ h3 {
 #Psychometric, #Bagrut {
   width: 100%;
 }
+

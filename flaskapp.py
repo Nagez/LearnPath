@@ -6,9 +6,12 @@ learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234")  # conn
 
 
 @app.route('/')  # the url /
-def home():
-    return render_template('LearnPathHome.html') # get the html file named LearnPathHome, must be in templates folder
+def base():
+    return render_template('basePage.html')  # get the html file named basePage, must be in templates folder
 
+@app.route('/AddApplicant')  # the url /
+def home1():
+    return render_template('LearnPathHome.html')  # get the html file named LearnPathHome, must be in templates folder
 
 @app.route('/show', methods=["GET"])
 def show():
@@ -51,12 +54,14 @@ def gfg():
         applicant=learnPath.generateCypherCreateCustomApplicant(Gender, Psychometric, Bagrut, Area, first_name+' '+last_name)
         print(applicant[0].id)
     return render_template("LearnPathHome.html")
+def homePage():
+    print("hi")
 
 
 @app.route('/showClass0', methods=["GET"])  # the url /
 def showClass0():
     if request.method == "GET":
-        return render_template('showClass0.html') # get the html file named LearnPathHome, must be in templates folder
+        return render_template('showClass0.html') # get the html file named showClass0, must be in templates folder
 
 @app.route('/showClass0/pst', methods=["POST"])
 def showClass():
@@ -69,6 +74,9 @@ def showClass():
 
     return render_template('showClass.html', list=availableClasses)
 
+@app.route('/welcome')
+def welcome():
+    return render_template('welcome.html', list=list)
 
 @app.route('/statistics', methods=["GET"])
 def statistics():

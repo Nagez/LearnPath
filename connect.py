@@ -178,6 +178,70 @@ class connection:
          return table
 
 
+    # average score in each faculty in each institution
+    def getAverageInFaculties(self,minimum):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__getAverageInFaculties,minimum)
+
+    @staticmethod
+    def __getAverageInFaculties(tx,minimum):
+        result = tx.run("match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where(c."+minimum+"<>'')"
+                        "return i.Name as InstitutionName, f.Name as FacultyName, avg(c."+minimum+") as Average"+minimum+"")
+        table = []
+        for res in result:
+            dc = {}
+            institutionName = res["InstitutionName"]
+            facultyName = res["FacultyName"]
+            avg = res["Average"+minimum+""]
+            dc.update({"InstitutionName": institutionName, "FacultyName": facultyName,  "Average"+minimum+"": avg})
+            table.append(dc)
+
+        return table
+
+
+    # average score in similar classes
+    def getAverageInSimilar(self, minimum):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__getAverageInSimilar, minimum)
+
+    @staticmethod
+    def __getAverageInSimilar(tx, minimum):
+        result = tx.run("match (c:Class)-[r:Similar]-(c1:Class)  where (c."+minimum+"<>'') with r.Tag as tag ,collect(distinct c) as nodes unwind nodes as classes "
+                        "return round(avg(classes."+minimum+"),2) as Average"+minimum+", count(classes) as ClassesQuantity, tag as Tag order by Average"+minimum+" desc")
+        table = []
+        for res in result:
+            dc = {}
+            avg = res["Average" + minimum + ""]
+            classesQuantity = res["ClassesQuantity"]
+            tag = res["Tag"]
+            dc.update({"Average" + minimum + "": avg, "ClassesQuantity": classesQuantity, "Tag": tag})
+            table.append(dc)
+
+        return table
+
+
+    # percentage of accepted in each area
+    def getAcceptedInAreaPercent(self):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__getAcceptedInAreaPercent)
+
+    @staticmethod
+    def __getAcceptedInAreaPercent(tx):
+        result = tx.run("match (a:Applicant)-[r:Accepted_To]->(c:Class) with count(a) as total"
+                        " match (a:Applicant)-[r:Accepted_To]->(c:Class)"
+                        " return a.Area as Area ,count(a) as QuantityOfAcceptedApplicants ,(toFloat(count(a))/total)*100 as Percent order by Percent desc")
+        table = []
+        for res in result:
+            dc = {}
+            area = res["Area"]
+            quantityOfAcceptedApplicants = res["QuantityOfAcceptedApplicants"]
+            percent = res["Percent"]
+            dc.update({"Area": area, "QuantityOfAcceptedApplicants": quantityOfAcceptedApplicants, "Percent": percent})
+            table.append(dc)
+
+        return table
+
+
     # get a list of all applicants ids that learn in the same faculty at the same institution
     def getApplicantsInSameArea(self,location):
         with self.driver.session() as session:
@@ -223,6 +287,7 @@ class connection:
     def generateCypherCreateCustomApplicant(self, gender, psychometric, bagrut, area, name):
         with self.driver.session() as session:
             applicantQuery = "CREATE (a:Applicant{Name:'" + name + "' ,Gender:'" + gender + "' ,Bagrut: " + bagrut + ", Psychometric: " + str(psychometric) + ", Area: '" + area + "', Faculty: '', Degree: ''}) return a"
+            print(applicantQuery)
             result = session.run(applicantQuery)
             return [record["a"] for record in result]
 

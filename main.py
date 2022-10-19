@@ -310,7 +310,9 @@ if __name__ == '__main__':
     # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant) RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
 
     # example for list of dictionaries returns
-    list = learnPath.getMostPopularClasses()
+    # list = learnPath.getAverageInFaculties('PsychometricMinimum') # learnPath.getAverageInFaculties('BagrutMinimum')
+    # list = learnPath.getAverageInSimilar('PsychometricMinimum') # learnPath.getAverageInSimilar('BagrutMinimum')
+    list = learnPath.getAcceptedInAreaPercent()
     print("keys:")
     print(list[0].keys())
     for key in list[0]:
@@ -331,8 +333,7 @@ if __name__ == '__main__':
     # match (c:Class)-[r:Similar]-(c1:Class)  where (c.PsychometricMinimum<>'') with r.Tag as tag ,collect(distinct c) as nodes unwind nodes as classes return avg(classes.PsychometricMinimum) as psychometricAverage, count(classes) as classesQuantity, tag order by psychometricAverage desc
     # match (c:Class)-[r:Similar]-(c1:Class)  where (c.BagrutMinimum<>'') with r.Tag as tag ,collect(distinct c) as nodes unwind nodes as classes return avg(classes.BagrutMinimum) as BagrutAverage, count(classes) as classesQuantity, tag order by BagrutAverage desc
     # percentage of accepted in each area
-    # match (a:Applicant)-[r:Accepted_To]->(c:Class) with count(a) as total match (a:Applicant)-[r:Accepted_To]->(c:Class)  return a.Area,count(a) as quantityOfAccepted ,(toFloat(count(a))/total)*100 as percent order by percent desc
-
+    # match (a:Applicant)-[r:Accepted_To]->(c:Class) with count(a) as total match (a:Applicant)-[r:Accepted_To]->(c:Class)  return a.Area as Area ,count(a) as QuantityOfAcceptedApplicants ,(toFloat(count(a))/total)*100 as Percent order by Percent desc
     # applicants not accepted yet
     # MATCH (a:Applicant) WHERE NOT (a)-[:Accepted_To]->() return a
 

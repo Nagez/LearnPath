@@ -1,7 +1,25 @@
 {% extends "basePage.html" %}
 {% block content %}
 
-  <br><br><br><br>
+  <br>
+{% with messages = get_flashed_messages(with_categories=true) %}
+<script>document.body.onload = null;</script>
+  <!-- Categories: success (green), info (blue), warning (yellow), danger (red) -->
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>{{ message }}</strong>
+      <button type="button" class="close" data-bs-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
+
+      </div>
+    {% endfor %}
+
+  {% endif %}
+{% endwith %}
+
+
       <div class="col-md-7 col-lg-8">
         <h4 class="mb-3">Applicant Info</h4>
        <form class="needs-validation" acnovalidate action="{{ url_for("gfg")}}" method="post"> <!-- action="{{ url_for("gfg")}}" method="post"-->

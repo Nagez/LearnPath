@@ -1,9 +1,9 @@
-from flask import Flask,request,render_template,redirect
+from flask import Flask, request, render_template, redirect, flash
 import connect
 
 app = Flask(__name__)  # init app
 learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234")  # connect to database
-
+app.secret_key = b'%#s(&2p5_cakpas4==52f5vp1&5@j&o-^jx@mf_(h6hdal0gq_'
 
 @app.route('/')  # the url /
 def base():
@@ -51,8 +51,9 @@ def gfg():
         # getting input with name = Bagrut in HTML form
         Bagrut=request.form.get("Bagrut")
         # Creating new applicant
-        applicant=learnPath.generateCypherCreateCustomApplicant(Gender, Psychometric, Bagrut, Area, first_name+' '+last_name)
+        applicant = learnPath.generateCypherCreateCustomApplicant(Gender, Psychometric, Bagrut, Area, first_name+' '+last_name)
         print(applicant[0].id)
+        flash("Applicant was successfully added !");
     return render_template("LearnPathHome.html")
 def homePage():
     print("hi")

@@ -188,7 +188,7 @@ class connection:
     @staticmethod
     def __getAverageInFaculties(tx):
         str = "match (c:Class)-[]-(f:Faculty)-[]-(i:Institution)"+\
-              "return i.Name as InstitutionName, f.Name as FacultyName, avg(c.BagrutMinimum) as AverageBagrutMinimum, avg(c.PsychometricMinimum) as AveragePsychometricMinimum"
+              "return i.Name as InstitutionName, f.Name as FacultyName, round(avg(c.BagrutMinimum),2) as AverageBagrutMinimum, round(avg(c.PsychometricMinimum),2) as AveragePsychometricMinimum"
         print(str)
         result = tx.run(str)
         table = []
@@ -237,7 +237,7 @@ class connection:
     def __getAcceptedInAreaPercent(tx):
         result = tx.run("match (a:Applicant)-[r:Accepted_To]->(c:Class) with count(a) as total"
                         " match (a:Applicant)-[r:Accepted_To]->(c:Class)"
-                        " return a.Area as Area ,count(a) as QuantityOfAcceptedApplicants ,(toFloat(count(a))/total)*100 as Percent order by Percent desc")
+                        " return a.Area as Area ,count(a) as QuantityOfAcceptedApplicants ,round(((toFloat(count(a))/total)*100),2) as Percent order by Percent desc")
         table = []
         for res in result:
             dc = {}

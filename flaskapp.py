@@ -88,12 +88,23 @@ def welcome():
     return render_template('welcome.html', list=list)
 
 
-@app.route('/statistics', methods=["GET"])
-def statistics():
+@app.route('/statistics/<option>', methods=["GET"])
+def statistics(option):
+    print(option)
+    options = ["Most popular classes", "Average scores in each institution's faculty", "Average scores in similar classes", "Percentage of accepted applicants in each area"]
     if request.method == "GET":
-        list = learnPath.getMostPopularClasses()
+        if option == '0':
+            list = []
+        if option == '1':
+            list = learnPath.getMostPopularClasses()
+        if option == '2':
+            list = learnPath.getAverageInFaculties()
+        if option == '3':
+            list = learnPath.getAverageInSimilar()
+        if option == '4':
+            list = learnPath.getAcceptedInAreaPercent()
 
-    return render_template('listTemplate.html', list=list)
+    return render_template('listTemplate.html', options=options, list=list)
 
 
 @app.route('/cool')  # the url /cool

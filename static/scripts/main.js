@@ -26,6 +26,10 @@ if (window.location.pathname != '/') {
   document.body.onload = null;
 }
 
+//fade alerts
+    window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0)
+}, 4000);
 
 // function validateName (){
 //      var name = document.getElementById('firstName').value

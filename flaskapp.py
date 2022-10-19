@@ -1,17 +1,20 @@
-from flask import Flask, request, render_template, redirect, flash
+from flask import Flask, request, render_template, flash
 import connect
 
 app = Flask(__name__)  # init app
 learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234")  # connect to database
 app.secret_key = b'%#s(&2p5_cakpas4==52f5vp1&5@j&o-^jx@mf_(h6hdal0gq_'
 
+
 @app.route('/')  # the url /
 def base():
     return render_template('basePage.html')  # get the html file named basePage, must be in templates folder
 
+
 @app.route('/AddApplicant')  # the url /
 def home1():
-    return render_template('LearnPathHome.html')  # get the html file named LearnPathHome, must be in templates folder
+    return render_template('addApplicant.html')  # get the html file named LearnPathHome, must be in templates folder
+
 
 @app.route('/show', methods=["GET"])
 def show():
@@ -35,7 +38,8 @@ def show2(variable,type):
             res = learnPath.getClassesFromFaculty(variable)
             return render_template('ClassLearnHome.html', list=res)
 
-@app.route('/', methods=["GET", "POST"])
+
+@app.route('/added1', methods=["GET", "POST"])
 def gfg():
     if request.method == "POST":
         # getting input with name = fname in HTML form
@@ -54,7 +58,9 @@ def gfg():
         applicant = learnPath.generateCypherCreateCustomApplicant(Gender, Psychometric, Bagrut, Area, first_name+' '+last_name)
         print(applicant[0].id)
         flash("Applicant was successfully added !");
-    return render_template("LearnPathHome.html")
+    return render_template("addApplicant.html")
+
+
 def homePage():
     print("hi")
 
@@ -63,6 +69,7 @@ def homePage():
 def showClass0():
     if request.method == "GET":
         return render_template('showClass0.html') # get the html file named showClass0, must be in templates folder
+
 
 @app.route('/showClass0/pst', methods=["POST"])
 def showClass():
@@ -75,9 +82,11 @@ def showClass():
 
     return render_template('showClass.html', list=availableClasses)
 
+
 @app.route('/welcome')
 def welcome():
     return render_template('welcome.html', list=list)
+
 
 @app.route('/statistics', methods=["GET"])
 def statistics():
@@ -87,8 +96,7 @@ def statistics():
     return render_template('listTemplate.html', list=list)
 
 
-
-@app.route('/cool') # the url /cool
+@app.route('/cool')  # the url /cool
 def hi():
     return 'Hi cool'
 

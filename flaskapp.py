@@ -74,11 +74,13 @@ def showClass0():
 @app.route('/showClass0/pst', methods=["POST"])
 def showClass():
     if request.method == "POST":
+        # getting input with name = class in HTML form
+        inputClass = request.form.get("class")
         # getting input with name = fname in HTML form
         first_name = request.form.get("fname")
         # getting input with name = lname in HTML form
         last_name = request.form.get("lname")
-        availableClasses = learnPath.findMatchTroughName(first_name+' '+last_name, 'Computer science')
+        availableClasses = learnPath.findMatchTroughName(first_name+' '+last_name, inputClass)
 
     return render_template('showClass.html', list=availableClasses)
 
@@ -106,6 +108,21 @@ def statistics(option):
 
     return render_template('listTemplate.html', options=options, list=list)
 
+@app.route('/showClassbyID', methods=["GET"])  # the url /
+def findByClassAndIDpage():
+    if request.method == "GET":
+        return render_template('findbyClass&ID.html') # get the html file named showClass0, must be in templates folder
+
+@app.route('/showClassbyIDfun', methods=["POST"])
+def showClassbyIDfun():
+    if request.method == "POST":
+        # getting input with name = class in HTML form
+        inputClass = request.form.get("class")
+        # getting input with name = ID in HTML form
+        ID = request.form.get("ID")
+        availableClasses = learnPath.findMatchIDTroughName(ID, inputClass)
+
+    return render_template('showClass.html', list=availableClasses)
 
 @app.route('/cool')  # the url /cool
 def hi():

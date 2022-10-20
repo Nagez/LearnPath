@@ -67,7 +67,7 @@ class connection:
         print("\nMatch trough friend\n" + str)
         return [record["c"] for record in result]
 
-    # match for applicant available classes using a class name search and get classes that contain that name, classes that connected to faculties with that name and similar classes
+    # match for applicant available classes using a class name search and get classes that contain that name, classes that connected to faculties with that name and similar classes (using applicant Name)
     def findMatchTroughName(self, ApplicantName, className):
         with self.driver.session() as session:
             return session.read_transaction(self.__findMatchTroughName, ApplicantName, className)
@@ -79,6 +79,21 @@ class connection:
                         " WITH collect(c)+collect(c1) AS cl unwind cl AS classes"+\
                         " RETURN DISTINCT classes "
         print("\nMatch trough name search\n" + str)
+        result = tx.run(str)
+        return [record["classes"] for record in result]
+
+    # match for applicant available classes using a class name search and get classes that contain that name, classes that connected to faculties with that name and similar classes (using applicant ID)
+    def findMatchIDTroughName(self, ApplicantID, className):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__findMatchIDTroughName, ApplicantID, className)
+
+    @staticmethod
+    def __findMatchIDTroughName(tx, ApplicantID, className):
+        str = "MATCH(a: Applicant), (c:Class)-[Offered_In]-(f:Faculty), (c:Class)-[Similar]-(c1:Class)" + \
+                        " WHERE ID(a)="+ApplicantID+" and ((toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum))"+\
+                        " WITH collect(c)+collect(c1) AS cl unwind cl AS classes"+\
+                        " RETURN DISTINCT classes "
+        print("\nMatch trough name search with applicant ID\n" + str)
         result = tx.run(str)
         return [record["classes"] for record in result]
 

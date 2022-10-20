@@ -36,8 +36,17 @@
          <li class="nav-item">
           <a class="nav-link" href="{{ url_for('statistics',option = 0) }}">Statistics</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('showClass0') }}">Find Match</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Find Match
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <span id='drop-span'>Algorithm | <span class="badge bg-secondary">Find by</span></span>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('showClass0') }}">ClassName<span class="badge bg-secondary">Applicant Name</span></a></li>
+            <li><a class="dropdown-item" href="{{ url_for('findByClassAndIDpage') }}">ClassName  <span class="badge bg-secondary">Applicant ID</span></a></li>
+            <li><a class="dropdown-item" href="#">Something else here</a></li>
+          </ul>
         </li>
       </ul>
     </div>

@@ -85,3 +85,8 @@ h3 {
   width: 100%;
 }
 
+#drop-span{
+  display: flex;
+  justify-content: center;
+}
+

@@ -57,7 +57,7 @@ def gfg():
         # Creating new applicant
         applicant = learnPath.generateCypherCreateCustomApplicant(Gender, Psychometric, Bagrut, Area, first_name+' '+last_name)
         print(applicant[0].id)
-        flash("Applicant was successfully added !");
+        flash("Applicant was successfully added ! Applicant Name: "+f"{applicant[0]._properties['Name']}"+"     Applicant ID : "+f"{applicant[0].id}");
     return render_template("addApplicant.html")
 
 

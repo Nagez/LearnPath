@@ -113,6 +113,8 @@ def getRandomScore(sec):
 # when clean is true it will export the currently generated create applicant queries into a text file
 # quantity indicate how many applicants to add
 def createApplicants(clean,export,quantity):
+    learnPath.write_Query("match(c: Class)  where(c.PsychometricMinimum = '') set c.PsychometricMinimum = null")
+    learnPath.write_Query("match (c:Class)  where(c.BagrutMinimum='') set c.BagrutMinimum=null")
     global queriesString
     if clean == True:
         learnPath.write_Query("MATCH (a:Applicant) detach delete a")
@@ -147,8 +149,8 @@ def connectApplicants(clean,quantity):
         for i in range(quantity):
             rndClass = random.choice(res)  # choose a random node from the result array
             print(rndClass)  # all the node info
-
-            if str(rndClass["PsychometricMinimum"]) == '':
+            print(rndClass["PsychometricMinimum"])
+            if str(rndClass["PsychometricMinimum"]) == 'None':
                 print("no PsychometricMinimum req")
             else:
                 if float(applicant["Psychometric"]) > float(rndClass["PsychometricMinimum"]):
@@ -158,7 +160,7 @@ def connectApplicants(clean,quantity):
                 else:
                     print("not accepted by psychometric")
 
-            if str(rndClass["BagrutMinimum"]) == '':
+            if str(rndClass["BagrutMinimum"]) == 'None':
                 print("no BagrutMinimum req")
             else:
                 if float(applicant["Bagrut"]) > float(rndClass["BagrutMinimum"]):
@@ -305,14 +307,16 @@ if __name__ == '__main__':
     # shortest paths from a friend to a class
     # MATCH (a:Applicant{Name: 'Debbie Jackson'})-[r:Friend]-(a2:Applicant),(e:Class), path = ((a2)-[*..2]->(e)) RETURN path
 
-    ## statistics ##
-    # Most popular classes
-    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant) RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
+    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant),(a1:Applicant) where i.Area=a1.Area and a1.Name='Or Nagar' RETURN c ,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
 
+    """
+    ## statistics ##
+    
     # example for list of dictionaries returns
-    # list = learnPath.getAverageInFaculties('PsychometricMinimum') # learnPath.getAverageInFaculties('BagrutMinimum')
-    # list = learnPath.getAverageInSimilar('PsychometricMinimum') # learnPath.getAverageInSimilar('BagrutMinimum')
-    list = learnPath.getAcceptedInAreaPercent()
+    list = learnPath.getMostPopularClasses()
+    # list = learnPath.getAverageInFaculties()
+    # list = learnPath.getAverageInSimilar()
+    # list = learnPath.getAcceptedInAreaPercent()
     print("keys:")
     print(list[0].keys())
     for key in list[0]:
@@ -326,15 +330,7 @@ if __name__ == '__main__':
         for key,value in item.items():
             print(key, " : ", value)
 
-    # average score in each faculty
-    # match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where(c.BagrutMinimum<>'') return f.Name,i.Name, avg(c.BagrutMinimum)
-    # match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where (c.PsychometricMinimum<>'') return f.Name,i.Name, avg(c.PsychometricMinimum)
-    # average scores of all similar classes
-    # match (c:Class)-[r:Similar]-(c1:Class)  where (c.PsychometricMinimum<>'') with r.Tag as tag ,collect(distinct c) as nodes unwind nodes as classes return avg(classes.PsychometricMinimum) as psychometricAverage, count(classes) as classesQuantity, tag order by psychometricAverage desc
-    # match (c:Class)-[r:Similar]-(c1:Class)  where (c.BagrutMinimum<>'') with r.Tag as tag ,collect(distinct c) as nodes unwind nodes as classes return avg(classes.BagrutMinimum) as BagrutAverage, count(classes) as classesQuantity, tag order by BagrutAverage desc
-    # percentage of accepted in each area
-    # match (a:Applicant)-[r:Accepted_To]->(c:Class) with count(a) as total match (a:Applicant)-[r:Accepted_To]->(c:Class)  return a.Area as Area ,count(a) as QuantityOfAcceptedApplicants ,(toFloat(count(a))/total)*100 as Percent order by Percent desc
-    # applicants not accepted yet
+    """
     # MATCH (a:Applicant) WHERE NOT (a)-[:Accepted_To]->() return a
 
     learnPath.close()  # close the connection to the database

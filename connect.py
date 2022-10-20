@@ -163,58 +163,66 @@ class connection:
 
     @staticmethod
     def __getMostPopularClasses(tx):
-         result = tx.run("MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant)"
-                         "RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC")
+         str = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant)" +\
+               "RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as NumOfAcceptedApplicants ORDER BY NumOfAcceptedApplicants DESC"
+         print(str)
+         result = tx.run(str)
          table = []
          for res in result:
              dc = {}
              className = res["ClassName"]
              institutionName = res["InstitutionName"]
              area = res["Area"]
-             num_of_accepted = res["num_of_accepted"]
-             dc.update({"ClassName":className,"InstitutionName":institutionName,"Area":area,"Num_of_accepted":num_of_accepted})
+             numOfAcceptedApplicants = res["NumOfAcceptedApplicants"]
+             dc.update({"ClassName":className,"InstitutionName":institutionName,"Area":area,"NumOfAcceptedApplicants":numOfAcceptedApplicants})
              table.append(dc)
 
          return table
 
 
     # average score in each faculty in each institution
-    def getAverageInFaculties(self,minimum):
+    def getAverageInFaculties(self):
         with self.driver.session() as session:
-            return session.read_transaction(self.__getAverageInFaculties,minimum)
+            return session.read_transaction(self.__getAverageInFaculties)
 
     @staticmethod
-    def __getAverageInFaculties(tx,minimum):
-        result = tx.run("match (c:Class)-[]-(f:Faculty)-[]-(i:Institution) where(c."+minimum+"<>'')"
-                        "return i.Name as InstitutionName, f.Name as FacultyName, avg(c."+minimum+") as Average"+minimum+"")
+    def __getAverageInFaculties(tx):
+        str = "match (c:Class)-[]-(f:Faculty)-[]-(i:Institution)"+\
+              "return i.Name as InstitutionName, f.Name as FacultyName, round(avg(c.BagrutMinimum),2) as AverageBagrutMinimum, round(avg(c.PsychometricMinimum),2) as AveragePsychometricMinimum"
+        print(str)
+        result = tx.run(str)
         table = []
         for res in result:
             dc = {}
             institutionName = res["InstitutionName"]
             facultyName = res["FacultyName"]
-            avg = res["Average"+minimum+""]
-            dc.update({"InstitutionName": institutionName, "FacultyName": facultyName,  "Average"+minimum+"": avg})
+            avgB = res["AverageBagrutMinimum"]
+            avgP = res["AveragePsychometricMinimum"]
+            dc.update({"InstitutionName": institutionName, "FacultyName": facultyName,  "AverageBagrutMinimum": avgB,  "AveragePsychometricMinimum": avgP})
             table.append(dc)
 
         return table
 
 
     # average score in similar classes
-    def getAverageInSimilar(self, minimum):
+    def getAverageInSimilar(self):
         with self.driver.session() as session:
-            return session.read_transaction(self.__getAverageInSimilar, minimum)
+            return session.read_transaction(self.__getAverageInSimilar)
 
     @staticmethod
-    def __getAverageInSimilar(tx, minimum):
-        result = tx.run("match (c:Class)-[r:Similar]-(c1:Class)  where (c."+minimum+"<>'') with r.Tag as tag ,collect(distinct c) as nodes unwind nodes as classes "
-                        "return round(avg(classes."+minimum+"),2) as Average"+minimum+", count(classes) as ClassesQuantity, tag as Tag order by Average"+minimum+" desc")
+    def __getAverageInSimilar(tx):
+        str = "match (c:Class)-[r:Similar]-(c1:Class) with r.Tag as tag ,collect(distinct c) as nodes unwind nodes as classes " +\
+              "return round(avg(classes.BagrutMinimum),2) as AverageBagrutMinimum, round(avg(classes.PsychometricMinimum),2) as AveragePsychometricMinimum, count(classes) as ClassesQuantity, tag as Tag order by AverageBagrutMinimum desc"
+        print(str)
+        result = tx.run(str)
         table = []
         for res in result:
             dc = {}
-            avg = res["Average" + minimum + ""]
+            avgB = res["AverageBagrutMinimum"]
+            avgP = res["AveragePsychometricMinimum"]
             classesQuantity = res["ClassesQuantity"]
             tag = res["Tag"]
-            dc.update({"Average" + minimum + "": avg, "ClassesQuantity": classesQuantity, "Tag": tag})
+            dc.update({"AverageBagrutMinimum": avgB, "AveragePsychometricMinimum": avgP, "ClassesQuantity": classesQuantity, "Tag": tag})
             table.append(dc)
 
         return table
@@ -229,7 +237,7 @@ class connection:
     def __getAcceptedInAreaPercent(tx):
         result = tx.run("match (a:Applicant)-[r:Accepted_To]->(c:Class) with count(a) as total"
                         " match (a:Applicant)-[r:Accepted_To]->(c:Class)"
-                        " return a.Area as Area ,count(a) as QuantityOfAcceptedApplicants ,(toFloat(count(a))/total)*100 as Percent order by Percent desc")
+                        " return a.Area as Area ,count(a) as QuantityOfAcceptedApplicants ,round(((toFloat(count(a))/total)*100),2) as Percent order by Percent desc")
         table = []
         for res in result:
             dc = {}
@@ -271,6 +279,7 @@ class connection:
             session.write_transaction(self.__write_Query, query)
     @staticmethod
     def __write_Query(tx, query):
+        print(query)
         result = tx.run(query)
         return result
 

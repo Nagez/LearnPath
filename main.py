@@ -118,7 +118,6 @@ def createApplicants(clean,export,quantity):
     global queriesString
     if clean == True:
         learnPath.write_Query("MATCH (a:Applicant) detach delete a")
-        learnPath.generateCypherCreateCustomApplicant('Male', '600', '100', 'North', 'Harry Potter')  # create harry potter
     for i in range(quantity):  # range indicate number of applicants
         applicantQuery = generateCypherCreateApplicant()  # create the students
         learnPath.write_Query(applicantQuery)
@@ -178,12 +177,18 @@ def connectApplicants(clean,quantity):
 # create an example friend connection
 def friendDemo():
     # two example applicants with a friend connection (one with a connection to a degree and one without)
-    learnPath.write_Query("MATCH (a:Applicant{Name: 'Shaked Wagner'})MATCH (b:Applicant{Name: 'Or Nagar'}) DETACH DELETE a,b") # to prevent duplicates
+    learnPath.write_Query("MATCH (a:Applicant{Name: 'Shaked Wagner'})MATCH (b:Applicant{Name: 'Or Nagar'})MATCH (c:Applicant{Name: 'Harry Potter'})MATCH (d:Applicant{Name: 'Tom Riddle'})  DETACH DELETE a,b,c,d") # to prevent duplicates
     learnPath.write_Query("CREATE(a: Applicant{Name: 'Shaked Wagner', Gender: 'Male', Bagrut: 120, Psychometric: 800, Area: 'Center', Faculty: 'Engineering',Degree: 'Computer Engineering'})")
-    learnPath.write_Query("CREATE(a: Applicant{Name: 'Or Nagar', Gender: 'Male', Bagrut: 102, Psychometric: '', Area: 'Center', Faculty: '', Degree: ''})")
+    learnPath.write_Query("CREATE(a: Applicant{Name: 'Or Nagar', Gender: 'Male', Bagrut: 102, Area: 'Center', Faculty: '', Degree: ''})")
+    learnPath.write_Query("CREATE(a: Applicant{Name: 'Harry Potter', Gender: 'Male', Bagrut: 100, Psychometric: 700, Area: 'North', Faculty: 'Engineering',Degree: 'Computer Engineering'})")
+    learnPath.write_Query("CREATE(a: Applicant{Name: 'Tom Riddle', Gender: 'Male',Bagrut: 80, Psychometric: 750, Area: 'North', Faculty: 'Engineering',Degree: 'Computer Science'})")
     learnPath.write_Query("MATCH (a:Applicant{Name: 'Shaked Wagner'})MATCH(c:Class{Name: 'Computer Engineering',ID:'5'})MERGE(a)-[r:Accepted_To]->(c)")
+    learnPath.write_Query("MATCH (a:Applicant{Name: 'Harry Potter'})MATCH(c:Class{Name: 'Computer Engineering',ID:'5'})MERGE(a)-[r:Accepted_To]->(c)")
+    learnPath.write_Query("MATCH (a:Applicant{Name: 'Tom Riddle'})MATCH(c:Class{Name: 'Computer Science',ID:'5'})MERGE(a)-[r:Accepted_To]->(c)")
     learnPath.write_Query("MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Shaked Wagner'})merge(a)-[f:Friend]-(a2)")
-
+    learnPath.write_Query("MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Harry Potter'})merge(a)-[f:Friend]-(a2)")
+    learnPath.write_Query("MATCH(a: Applicant{Name: 'Or Nagar'}),(a2:Applicant{Name:'Tom Riddle'})merge(a)-[f:Friend]-(a2)")
+    learnPath.write_Query("MATCH(a: Applicant{Name: 'Harry Potter'}),(a2:Applicant{Name:'Tom Riddle'})merge(a)-[f:Friend]-(a2)")
 
 # make randomized friend connections by location and institution and a few completely random
 def simulateFriends():
@@ -212,6 +217,7 @@ def simulateFriends():
         learnPath.newFriends(str(applicantsR[i].id), str(applicantsR[i+1].id), "rand")
 
     friendDemo()
+    print('Done connecting friends')
     # "MATCH (a:Applicant)-[r:Friend]->(a2:Applicant) RETURN a.Name as Applicant, count(distinct r) as num_of_friends ORDER BY num_of_friends DESC " # check number of friends
     # numberOfInstitutions = "MATCH(i: Institution) return count(*) as numberOfInstitutions"
 
@@ -299,15 +305,22 @@ if __name__ == '__main__':
             print(_class)
         """
     # all the classes in the applicant's location
-    # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[o:Offered_In]-(f:Faculty)-[w:Within]-(i:Institution) Where (a.Area=i.Area) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) return c,a,i
-    # all the classes in the applicant's location with similar
-    # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[Offered_In]-(f:Faculty)-[w:Within]-(i:Institution), (c:Class)-[Similar]-(c1:Class)-[o1:Offered_In]-(f1:Faculty)-[w1:Within]-(i1:Institution) WHERE  (a.Area=i.Area and a.Area=i1.Area) and (toLower(c.Name) CONTAINS  toLower('Computer science') or toLower(f.Name) CONTAINS toLower('Computer science')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum) WITH collect(c)+collect(c1) AS cl unwind cl AS classes RETURN DISTINCT classes
-    # most popular classes in the applicants location
-    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant),(a1:Applicant{Name:"Or Nagar"}) where i.Area=a1.Area RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
-    # shortest paths from a friend to a class
-    # MATCH (a:Applicant{Name: 'Debbie Jackson'})-[r:Friend]-(a2:Applicant),(e:Class), path = ((a2)-[*..2]->(e)) RETURN path
+    # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[o:Offered_In]-(f:Faculty)-[w:Within]-(i:Institution)
+    # Where (a.Area=i.Area) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) return c,a,i
 
-    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant),(a1:Applicant) where i.Area=a1.Area and a1.Name='Or Nagar' RETURN c ,i.Name as InstitutionName, i.Area as Area, count(distinct r) as num_of_accepted ORDER BY num_of_accepted DESC
+    # all the classes in the applicant's location with similar
+    # MATCH(a: Applicant{Name: 'Or Nagar'}), (c:Class)-[Offered_In]-(f:Faculty)-[w:Within]-(i:Institution), (c:Class)-[Similar]-(c1:Class)-[o1:Offered_In]-(f1:Faculty)-[w1:Within]-(i1:Institution)
+    # WHERE  (a.Area=i.Area and a.Area=i1.Area) and (toLower(c.Name) CONTAINS  toLower('Computer science') or toLower(f.Name) CONTAINS toLower('Computer science')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum) WITH collect(c)+collect(c1) AS cl unwind cl AS classes RETURN DISTINCT classes
+
+    # path lenghts from a friend to a class including similars
+    # MATCH (a:Applicant{Name: 'Or Nagar'})-[r:Friend]-(a2:Applicant),(c:Class)--()--(i:Institution), path = ((a2)-[*..3]->(c))
+    # RETURN distinct c,i,length(path) as Priority ORDER BY Priority asc
+
+    # recommand by most popular classes in the applicant's location
+    # need to add the classes without accepted to
+    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant),(a1:Applicant)
+    # where i.Area=a1.Area and a1.Name='Or Nagar' and (a1.Bagrut>=c.BagrutMinimum or a1.Psychometric>=c.PsychometricMinimum)
+    # RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as NumOfAcceptedApplicants ORDER BY NumOfAcceptedApplicants DESC
 
     """
     ## statistics ##
@@ -332,6 +345,7 @@ if __name__ == '__main__':
 
     """
     # MATCH (a:Applicant) WHERE NOT (a)-[:Accepted_To]->() return a
+    # MATCH (c:Class)-[r:Similar]->(c1:Class) return c.Name,collect(c1.Name), count(c1)
 
     learnPath.close()  # close the connection to the database
 

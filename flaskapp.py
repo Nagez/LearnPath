@@ -92,7 +92,7 @@ def welcome():
 
 @app.route('/statistics/<option>', methods=["GET"])
 def statistics(option):
-    print(option)
+    # print(option)
     options = ["Most popular classes", "Average scores in each institution's faculty", "Average scores in similar classes", "Percentage of accepted applicants in each area"]
     if request.method == "GET":
         if option == '0':

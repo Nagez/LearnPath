@@ -124,6 +124,22 @@ def showClassbyIDfun():
 
     return render_template('showClass.html', list=availableClasses)
 
+
+@app.route('/showClassUsingFriendsByName', methods=["GET"])  # the url /
+def findByClassAndNameByFriendpage():
+    if request.method == "GET":
+        return render_template('findByFriend_Name.html') # get the html file named showClass0, must be in templates folder
+
+@app.route('/showClassbyNameUsingFriends', methods=["POST"])
+def showClassbyNameUsingFriends():
+    if request.method == "POST":
+        # getting input with name = fname in HTML form
+        first_name = request.form.get("fname")
+        # getting input with name = lname in HTML form
+        last_name = request.form.get("lname")
+        availableClasses = learnPath.findMatchTroughFriend(first_name+' '+last_name)
+
+    return render_template('showClass.html', list=availableClasses)
 @app.route('/cool')  # the url /cool
 def hi():
     return 'Hi cool'

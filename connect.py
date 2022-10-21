@@ -62,7 +62,7 @@ class connection:
     def __findMatchTroughFriend(tx, Name):
         str = "MATCH(a: Applicant{Name: '"+Name+"'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class)" \
               " WHERE a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum" \
-              " return c"
+              " return distinct c,count(f) as strengh order by strengh desc"
         result = tx.run(str)
         print("\nMatch trough friend\n" + str)
         return [record["c"] for record in result]
@@ -294,7 +294,7 @@ class connection:
             session.write_transaction(self.__write_Query, query)
     @staticmethod
     def __write_Query(tx, query):
-        print(query)
+        # print(query)
         result = tx.run(query)
         return result
 

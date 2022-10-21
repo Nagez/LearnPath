@@ -91,11 +91,11 @@ class App(customtkinter.CTk):
         self.check_box_2.grid(row=2, column=0, pady=10, padx=20, sticky="w")
 
         self.check_box_3 = customtkinter.CTkCheckBox(self.frame_right,
-                                                     text="friendDemo")
+                                                     text="simulate Friends")
         self.check_box_3.grid(row=3, column=0, pady=10, padx=20, sticky="w")
 
         self.check_box_4 = customtkinter.CTkCheckBox(self.frame_right,
-                                                     text="ConnectSimilars")
+                                                     text="Connect Similars")
         self.check_box_4.grid(row=4, column=0, pady=10, padx=20, sticky="w")
 
         # column 2 #

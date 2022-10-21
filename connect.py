@@ -62,7 +62,7 @@ class connection:
     def __findMatchTroughFriend(tx, Name):
         str = "MATCH(a: Applicant{Name: '"+Name+"'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class)" \
               " WHERE a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum" \
-              " return distinct c,count(f) as strengh order by strengh desc"
+              " return distinct c,collect(a2.Name) as friend,count(f) as strengh order by strengh desc"
         result = tx.run(str)
         print("\nMatch trough friend\n" + str)
         return [record["c"] for record in result]
@@ -74,10 +74,10 @@ class connection:
 
     @staticmethod
     def __findMatchTroughName(tx, ApplicantName,className):
-        str = "MATCH(a: Applicant{Name: '"+ApplicantName+"'}), (c:Class)-[Offered_In]-(f:Faculty), (c:Class)-[Similar]-(c1:Class)" + \
-                        " WHERE (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum)"+\
-                        " WITH collect(c)+collect(c1) AS cl unwind cl AS classes"+\
-                        " RETURN DISTINCT classes "
+        str = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class)"\
+               "with c,c1 where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"'))"\
+               "WITH collect(c)+collect(c1) AS cl unwind cl AS classes MATCH(a: Applicant{Name: '"+ApplicantName+"'})"\
+               "RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff"
         print("\nMatch trough name search\n" + str)
         result = tx.run(str)
         return [record["classes"] for record in result]

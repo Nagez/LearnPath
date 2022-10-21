@@ -317,10 +317,12 @@ if __name__ == '__main__':
     # RETURN distinct c,i,length(path) as Priority ORDER BY Priority asc
 
     # recommand by most popular classes in the applicant's location
-    # need to add the classes without accepted to
-    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)<-[r:Accepted_To]-(a:Applicant),(a1:Applicant)
-    # where i.Area=a1.Area and a1.Name='Or Nagar' and (a1.Bagrut>=c.BagrutMinimum or a1.Psychometric>=c.PsychometricMinimum)
-    # RETURN c.Name as ClassName,i.Name as InstitutionName, i.Area as Area, count(distinct r) as NumOfAcceptedApplicants ORDER BY NumOfAcceptedApplicants DESC
+    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)
+    # optional match (c)<-[r:Accepted_To]-(a1:Applicant)
+    # with c,i,count(r) as countr
+    # match (a:Applicant{Name:'Or Nagar'})
+    # where i.Area=a.Area and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum)
+    # return c,i,countr order by countr desc
 
     """
     ## statistics ##

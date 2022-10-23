@@ -104,7 +104,7 @@ class connection:
     @staticmethod
     def __findMatchTroughID(tx, ApplicantID,className):
         str = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class)MATCH(a: Applicant)"\
-              "where (toLower(c.Name) CONTAINS  toLower('computer science') or toLower(f.Name) CONTAINS toLower('computer science')) and ID(a)=761"\
+              "where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"')) and ID(a)="+ApplicantID+""\
               "WITH a,collect(c)+collect(c1) AS cl unwind cl AS classes"\
               "RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff "
         print("\nMatch trough id search\n" + str)

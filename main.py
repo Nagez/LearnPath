@@ -248,11 +248,11 @@ if __name__ == '__main__':
 
     ## recommandations ##
 
-    # find classes your firends was accepted to and you can apply to
+    # find classes your friends was accepted to and you can apply to
     # MATCH(a: Applicant{Name: 'Or Nagar'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class)
     # WHERE a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum
     # return distinct c,collect(a2.Name) as friends ,count(f) as strengh order by strengh desc
-    # ApplicantName = 'Or Nagar'
+    ApplicantName = 'Or Nagar'
     # ApplicantName = input("Please input applicant name: ")
     # friendsClasses = learnPath.findMatchTroughFriend(ApplicantName)
     # print(""+ApplicantName+" friends Classes ("+str(len(friendsClasses))+"): ")
@@ -266,28 +266,32 @@ if __name__ == '__main__':
     # with c,c1 where (toLower(c.Name) CONTAINS  toLower('computer science') or toLower(f.Name) CONTAINS toLower('computer science'))
     # WITH collect(c)+collect(c1) AS cl unwind cl AS classes MATCH(a: Applicant{Name: 'Or Nagar'})
     # RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff
-    # availableClasses = learnPath.findMatchTroughName(ApplicantName, 'Computer science')
-    # print(""+ApplicantName+" available Classes ("+str(len(availableClasses))+"): ")
-    # for _class in availableClasses:
-    #     print(_class)
+    availableClasses = learnPath.findMatchTroughName(ApplicantName, 'Computer science')
+    print(""+ApplicantName+" available Classes ("+str(len(availableClasses))+"): ")
+    for res in availableClasses:
+        print(res)
 
     # recommand by most popular classes in the applicant's location he can apply to
     # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)
     # optional match (c)<-[r:Accepted_To]-(a1:Applicant)
-    # with c,i,count(r) as countr
+    # with c,i,count(r) as AcceptedQuantity
     # match (a:Applicant{Name:'Or Nagar'})
     # where i.Area=a.Area and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum)
     # return c,i,AcceptedQuantity order by AcceptedQuantity desc
+    # result = learnPath.findMatchTroughAreaPopularity(ApplicantName)
+    # for res in result:
+    #    print(res)
 
     # general recommandation using path lenghts from a friend to a class including similars and friend of friend, can be adjusted to show more
     # MATCH (a:Applicant{Name: 'Or Nagar'})-[r:Friend]-(a2:Applicant),(c:Class)--()--(i:Institution), path = ((a2)-[*..3]->(c))
     # RETURN distinct c,i,length(path) as Priority ORDER BY Priority asc
+    # result = learnPath.findMatchTroughFriendPath
 
     # all classes with sufficient score and both null
     # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class), (a: Applicant{Name: 'Or Nagar'})
     # where (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum)  or (c.PsychometricMinimum is null and c.BagrutMinimum is null)
     # return c,i
-
+    # trying to calc all accepted applicants avg scores
 
     # MATCH (a:Applicant) WHERE NOT (a)-[:Accepted_To]->() return a
     # MATCH (c:Class)-[r:Similar]->(c1:Class) return c.Name,collect(c1.Name), count(c1)

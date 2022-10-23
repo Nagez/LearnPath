@@ -25,6 +25,27 @@ class connection:
         return [record["c"] for record in result]
 
 
+    # get all faculties of a specific university id
+    def getFacultiesFromUni(self, id):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__getFacultiesFromUni, id)
+
+    @staticmethod
+    def __getFacultiesFromUni(tx, id):
+        result = tx.run("MATCH(i: Institution)-[w: Within]-(f:Faculty) where ID(i) = "+id+" return f")
+        return [record["f"] for record in result]
+
+
+    # get all classes of a specific faculties id
+    def getClassesFromFaculty(self, id):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__getClassesFromFaculty, id)
+    @staticmethod
+    def __getClassesFromFaculty(tx, id):
+        result = tx.run("MATCH(f: Faculty)-[o: Offered_In]-(c:Class) where ID(f) = " + id + " return c")
+        return [record["c"] for record in result]
+
+
     # write a query (mainly used to create applicant)
     def write_matchApplicantToClass(self, applicantID,classID):
         with self.driver.session() as session:
@@ -77,7 +98,16 @@ class connection:
                "RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff"
         print("\nMatch trough name search\n" + str)
         result = tx.run(str)
-        return [record["classes"] for record in result]
+        table = []
+        for res in result:
+            dc = {}
+            className = res["classes"]["Name"]
+            bagrutDiff = res["BagrutDiff"]
+            psychometricDiff = res["PsychometricDiff"]
+            dc.update({"ClassName": className, "BagrutDiff": bagrutDiff, "PsychometricDiff": psychometricDiff})
+            table.append(dc)
+
+        return table
 
 
     # match for applicant available classes using a class name search and get classes that contain that name, classes that connected to faculties with that name and similar classes (using applicant ID)
@@ -87,50 +117,76 @@ class connection:
 
     @staticmethod
     def __findMatchIDTroughName(tx, ApplicantID, className):
-        str = "MATCH(a: Applicant), (c:Class)-[Offered_In]-(f:Faculty), (c:Class)-[Similar]-(c1:Class)" + \
-                        " WHERE ID(a)="+ApplicantID+" and ((toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum))"+\
-                        " WITH collect(c)+collect(c1) AS cl unwind cl AS classes"+\
-                        " RETURN DISTINCT classes "
+        str = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class)MATCH(a: Applicant)"\
+              " where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"')) and ID(a)="+ApplicantID+""\
+              " WITH a,collect(c)+collect(c1) AS cl unwind cl AS classes"\
+              " RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff "
         print("\nMatch trough name search with applicant ID\n" + str)
         result = tx.run(str)
-        return [record["classes"] for record in result]
+        table = []
+        for res in result:
+            dc = {}
+            className = res["classes"]["Name"]
+            bagrutDiff = res["BagrutDiff"]
+            psychometricDiff = res["PsychometricDiff"]
+            dc.update({"ClassName": className, "BagrutDiff": bagrutDiff, "PsychometricDiff": psychometricDiff})
+            table.append(dc)
+
+        return table
+        # return [record["classes"] for record in result]
 
 
-    # match for applicant available classes using a class name search and get classes that contain that name, classes that connected to faculties with that name and similar classes
-    def findMatchTroughID(self, ApplicantID, className):
+    # recommand by most popular classes in the applicant's location he can apply to
+    def findMatchTroughAreaPopularity(self, ApplicantName):
         with self.driver.session() as session:
-            return session.read_transaction(self.__findMatchTroughID, ApplicantID, className)
+            return session.read_transaction(self.__findMatchTroughAreaPopularity, ApplicantName)
 
     @staticmethod
-    def __findMatchTroughID(tx, ApplicantID,className):
-        str = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class)MATCH(a: Applicant)"\
-              "where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"')) and ID(a)="+ApplicantID+""\
-              "WITH a,collect(c)+collect(c1) AS cl unwind cl AS classes"\
-              "RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff "
-        print("\nMatch trough id search\n" + str)
+    def __findMatchTroughAreaPopularity(tx, ApplicantName):
+        str = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)"\
+              " optional match (c)<-[r:Accepted_To]-(a1:Applicant)"\
+              " with c,i,count(r) as AcceptedQuantity"\
+              " match (a:Applicant{Name:'"+ApplicantName+"'})"\
+              " where i.Area=a.Area and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum)"\
+              " return c,i,AcceptedQuantity order by AcceptedQuantity desc"
+        print("\nMatch trough most popular classes in the applicant's location he can apply to\n" + str)
         result = tx.run(str)
-        return [record["classes"] for record in result]
+        table = []
+        for res in result:
+            dc = {}
+            className = res["c"]["Name"]
+            institutionName = res["i"]["Name"]
+            acceptedQuantity = res["AcceptedQuantity"]
+            dc.update({"ClassName": className, "InstitutionName": institutionName, "AcceptedQuantity": acceptedQuantity})
+            table.append(dc)
+
+        return table
 
 
-    # get all faculties of a specific university id
-    def getFacultiesFromUni(self, id):
+    # general recommandation using path lenghts from a friend to a class including similars and friend of friend, can be adjusted to show more
+    def findMatchTroughFriendPath(self, ApplicantName,k):
         with self.driver.session() as session:
-            return session.read_transaction(self.__getFacultiesFromUni, id)
+            return session.read_transaction(self.__findMatchTroughPath, ApplicantName,k)
 
     @staticmethod
-    def __getFacultiesFromUni(tx, id):
-        result = tx.run("MATCH(i: Institution)-[w: Within]-(f:Faculty) where ID(i) = "+id+" return f")
-        return [record["f"] for record in result]
+    def __findMatchTroughFriendPath(tx, ApplicantName,k):
+        str = "MATCH (a:Applicant{Name:'"+ApplicantName+"'})-[r:Friend]-(a2:Applicant),(c:Class)--()--(i:Institution), path = ((a2)-[*.."+k+"]->(c)) "\
+              "RETURN distinct c,i,length(path) as Priority ORDER BY Priority asc"
+        print("\nfindMatchTroughFriendPath\n" + str)
+        result = tx.run(str)
+        table = []
+        for res in result:
+            dc = {}
+            className = res["c"]["Name"]
+            institutionName = res["i"]["Name"]
+            bagrutMinimum = res["c"]["BagrutMinimum"]
+            psychometricMinimum = res["c"]["PsychometricMinimum"]
+            priority = res["Priority"]
+            dc.update({"ClassName": className, "InstitutionName": institutionName, "BagrutMinimum": bagrutMinimum, "PsychometricMinimum": psychometricMinimum, "Priority": priority})
+            table.append(dc)
 
+        return table
 
-    # get all classes of a specific faculties id
-    def getClassesFromFaculty(self, id):
-        with self.driver.session() as session:
-            return session.read_transaction(self.__getClassesFromFaculty, id)
-    @staticmethod
-    def __getClassesFromFaculty(tx, id):
-        result = tx.run("MATCH(f: Faculty)-[o: Offered_In]-(c:Class) where ID(f) = " + id + " return c")
-        return [record["c"] for record in result]
 
 
     # get all of the nodes of type var

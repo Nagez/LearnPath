@@ -16,6 +16,7 @@ psychometricAVGESC = [432,516,540,527,555,566,584,610,624,640]
 bagrutAVGESC = [80,85,90,90,95,100,105,105,110,115]
 locations = ['South', 'Center', 'North', 'Jerusalem']
 
+
 # generate a create applicant query using the statistics
 def generateCypherCreateApplicant():
     random_gender = random.choices(['Female', 'Male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
@@ -179,7 +180,7 @@ def simulateFriends():
 def connectSimilars():
     learnPath.write_Query("MATCH p=()-[r:Similar]->() detach delete r")  # delete current (to prevent duplicate)
 
-    similarList = ["Engineering", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat"]
+    similarList = ["Engineering", "Chemistry", "Food", "Physics", "Civil", "Geo", "Computer", "Math", "Stat", "Israel"]
     for str in similarList:
         learnPath.write_similarNodes(str, str, str)
     # Health tag
@@ -194,12 +195,24 @@ def connectSimilars():
     BiologySimilarList = ["Bio", "Life"]
 
     # Natural tag (Natural Science)
-    NaturalSimilarList = ["Bio", "Life", "Physics", "Chemistry","Earth", "astronomy"]
+    NaturalSimilarList = ["Bio", "Life", "Physics", "Chemistry","Earth", "astronomy", "Natural"]
+
+    # Social tag
+    SocialSimilarList = ["psychology", "philosophy", "soci", "human", "communication"]
+
+    # History tag
+    HistorySimilarList= ["History", "Bible", "Archeology", "Ancient", "Anthropology", "Middle East", "Israel"]
+
+    # Culture tag
+    CultureSimilarList = ["Literature", "Hebrew", "Language", "Linguistics", "English", "Art"]
+
+    # Earth tag
+    EarthSimilarList = ["geography", "geology", "earth", "environment"]
 
     # list of the tag lists
-    tagList = [HealthSimilarList, EconomySimilarList, BuildSimilarList, BiologySimilarList, NaturalSimilarList]
+    tagList = [HealthSimilarList, EconomySimilarList, BuildSimilarList, BiologySimilarList, NaturalSimilarList, SocialSimilarList, HistorySimilarList, CultureSimilarList, EarthSimilarList]
     # list of the tag names
-    tagNames = ["Health", "Economy", "Build", "Biology", "Natural"]
+    tagNames = ["Health", "Economy", "Build", "Biology", "Natural", "Social", "History", "Culture", "Earth"]
 
     # connect similar nodes for all tags
     for i, list in enumerate(tagList):

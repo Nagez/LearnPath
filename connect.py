@@ -8,24 +8,6 @@ class connection:
     def close(self):
         self.driver.close()
 
-    # example for printing a message and creating message node
-    def print_greeting(self, message):
-        with self.driver.session() as session:
-            greeting = session.write_transaction(self._create_and_return_greeting, message)
-            print(greeting)
-    @staticmethod
-    def _create_and_return_greeting(tx, message):
-        result = tx.run("CREATE (a:Greeting) "
-                        "SET a.message = $message "
-                        "RETURN a.message + ', from node ' + id(a)", message=message)
-        return result.single()[0]
-
-    # return an applicant given the id of the node
-    def showoneapplicant(self):
-        with self.driver.session() as session:
-            result = session.run("MATCH (n) where id(n) = 393 or id(n) = 395 RETURN n")  # Query
-            return [record["c"] for record in result]
-
     def getAllApplicants(self):
         with self.driver.session() as session:
             result = session.run("MATCH (a:Applicant) RETURN a")  # Query
@@ -42,16 +24,19 @@ class connection:
                         "RETURN c")
         return [record["c"] for record in result]
 
+
     # write a query (mainly used to create applicant)
     def write_matchApplicantToClass(self, applicantID,classID):
         with self.driver.session() as session:
             session.write_transaction(self.__matchApplicantToClass, applicantID,classID)
+
     @staticmethod
     def __matchApplicantToClass(tx, applicantID,classID):
         result = tx.run("MATCH(a:Applicant),(c:Class) "
                         "where id(a)="+applicantID+" and id(c)="+classID+" "
                         "set a.Degree = c.Name CREATE(a)-[ac:Accepted_To]->(c) ")
         return result
+
 
     # using an applicant name, find matching class trough his friend connection
     def findMatchTroughFriend(self, Name):
@@ -60,12 +45,24 @@ class connection:
 
     @staticmethod
     def __findMatchTroughFriend(tx, Name):
-        str = "MATCH(a: Applicant{Name: '"+Name+"'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class)" \
+        str = "MATCH(a: Applicant{Name: '"+Name+"'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class)--(:Faculty)--(i:Institution)" \
               " WHERE a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum" \
-              " return distinct c,collect(a2.Name) as friend,count(f) as strengh order by strengh desc"
+              " return distinct c,i,collect(a2.Name) as Friends ,count(f) as Strengh order by Strengh desc"
         result = tx.run(str)
         print("\nMatch trough friend\n" + str)
-        return [record["c"] for record in result]
+        table = []
+        for res in result:
+            dc = {}
+            className = res["c"]["Name"]
+            institutionName = res["i"]["Name"]
+            friends = res["Friends"]
+            strengh = res["Strengh"]
+            dc.update({"ClassName": className, "InstitutionName": institutionName, "Friends": friends,
+                       "Strengh": strengh})
+            table.append(dc)
+
+        return table
+
 
     # match for applicant available classes using a class name search and get classes that contain that name, classes that connected to faculties with that name and similar classes (using applicant Name)
     def findMatchTroughName(self, ApplicantName, className):
@@ -82,6 +79,7 @@ class connection:
         result = tx.run(str)
         return [record["classes"] for record in result]
 
+
     # match for applicant available classes using a class name search and get classes that contain that name, classes that connected to faculties with that name and similar classes (using applicant ID)
     def findMatchIDTroughName(self, ApplicantID, className):
         with self.driver.session() as session:
@@ -97,6 +95,7 @@ class connection:
         result = tx.run(str)
         return [record["classes"] for record in result]
 
+
     # match for applicant available classes using a class name search and get classes that contain that name, classes that connected to faculties with that name and similar classes
     def findMatchTroughID(self, ApplicantID, className):
         with self.driver.session() as session:
@@ -104,10 +103,10 @@ class connection:
 
     @staticmethod
     def __findMatchTroughID(tx, ApplicantID,className):
-        str = "MATCH(a: Applicant{id: '"+ApplicantID+"'}), (c:Class)-[Offered_In]-(f:Faculty), (c:Class)-[Similar]-(c1:Class)" + \
-                        " WHERE (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"')) and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum) and (a.Bagrut>=c1.BagrutMinimum or a.Psychometric>=c1.PsychometricMinimum)"+\
-                        " WITH collect(c)+collect(c1) AS cl unwind cl AS classes"+\
-                        " RETURN DISTINCT classes "
+        str = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class)MATCH(a: Applicant)"\
+              "where (toLower(c.Name) CONTAINS  toLower('computer science') or toLower(f.Name) CONTAINS toLower('computer science')) and ID(a)=761"\
+              "WITH a,collect(c)+collect(c1) AS cl unwind cl AS classes"\
+              "RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff "
         print("\nMatch trough id search\n" + str)
         result = tx.run(str)
         return [record["classes"] for record in result]
@@ -288,6 +287,7 @@ class connection:
         result = tx.run(str)
         return result
 
+
     # general write query (mainly used to create applicant)
     def write_Query(self, query):
         with self.driver.session() as session:
@@ -297,6 +297,7 @@ class connection:
         # print(query)
         result = tx.run(query)
         return result
+
 
     # general read query
     def read_Query(self, query):
@@ -314,16 +315,3 @@ class connection:
             print(applicantQuery)
             result = session.run(applicantQuery)
             return [record["a"] for record in result]
-
-
-    # def getApplicantsID(self, gender, psychometric, bagrut, area, name):
-    #     with self.driver.session() as session:
-    #         return session.read_transaction(self.__getApplicantsID, gender, psychometric, bagrut, area, name)
-    #
-    # @staticmethod
-    # def __getApplicantsID(tx, gender, psychometric, bagrut, area, name):
-    #     result = tx.run("Match (a:Applicant{Name:'" + name + "' ,Gender:'" + gender + "' ,Bagrut: " + bagrut + ", Psychometric: " + str(psychometric) + ", Area: '" + area + "', Faculty: '""', Degree: ''}) return id(a) AS applicantsID")
-    #     return result.values("applicantsID")
-
-
-

@@ -16,54 +16,6 @@ psychometricAVGESC = [432,516,540,527,555,566,584,610,624,640]
 bagrutAVGESC = [80,85,90,90,95,100,105,105,110,115]
 locations = ['South', 'Center', 'North', 'Jerusalem']
 
-"""
-# old unsused ratios 
-
-# student by field ratio (total 100%)
-SFR_Humanities = 0.229
-SFR_SocialSciences = 0.288
-SFR_Law = 0.07
-SFR_Medicine = 0.077
-SFR_Math = 0.139
-SFR_Agriculture = 0.06
-SFR_EngineeringAndArchitecture = 0.191
-
-random_degree = random.choices(["Humanities", 'SocialSciences', 'Law', 'Math', 'Social sciences', 'Agriculture',
-                                'Engineering and architecture'],
-                               [SFR_Humanities, SFR_SocialSciences, SFR_Law, SFR_Medicine, SFR_Math,
-                                SFR_Agriculture, SFR_EngineeringAndArchitecture],k=1)
-
-# applicant to accepted ratio
-AAR_Humanities = 0.014
-AAR_LanguagesLiteraturesAndRegionalStudies = 0.017
-AAR_EducationAndTeacherTraining = 0.016
-AAR_Arts = 0.016
-AAR_SocialSciences = 0.016
-AAR_BusinessAndManagement = 0.015
-AAR_Law = 0.024
-AAR_Medicine = 0.044
-AAR_ParaMedicalStudies = 0.023
-AAR_MathematicsStatisticsAndComputerSciences = 0.018
-AAR_PhysicalSciences = 0.015
-AAR_BiologicalSciences = 0.017
-AAR_Agriculture = 0.013
-AAR_EngineeringAndArchitecture = 0.02
-
-print(random.randrange(1, 20, 1))
- random_isAccepted = random.choices(
-            ['Humanities', 'LanguagesLiteraturesAndRegionalStudies', 'EducationAndTeacherTraining',
-             'Arts,SocialSciences',
-             'BusinessAndManagement', 'Law,Medicine', 'ParaMedicalStudies', 'MathematicsStatisticsAndComputerSciences',
-             'PhysicalSciences', 'BiologicalSciences', 'Agriculture', 'EngineeringAndArchitecture'],
-            weight = [AAR_Humanities, AAR_LanguagesLiteraturesAndRegionalStudies, AAR_EducationAndTeacherTraining, AAR_Arts,
-             AAR_SocialSciences, AAR_BusinessAndManagement,
-             AAR_Law, AAR_Medicine, AAR_ParaMedicalStudies, AAR_MathematicsStatisticsAndComputerSciences,
-             AAR_PhysicalSciences, AAR_BiologicalSciences,
-             AAR_Agriculture, AAR_EngineeringAndArchitecture], k=1)
-             
- match(f:Faculty{Name:'Comupter science',ID:'1'}),(c:Class{Name:'math and comupter science',ID:'1'}) create(c)-[of:Offered_In]->(f);
-"""
-
 # generate a create applicant query using the statistics
 def generateCypherCreateApplicant():
     random_gender = random.choices(['Female', 'Male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
@@ -127,6 +79,7 @@ def createApplicants(clean,export,quantity):
         print("Generated applicant queries:\n" + queriesString)
         f.write(queriesString) # write applicant queries to text file
         f.close()
+    print('Done creating applicants')
 
 
 # create Accepted_To relation between applicants and classes according to bagrut/psychometric scores
@@ -172,6 +125,7 @@ def connectApplicants(clean,quantity):
             # print(rndClass.id) # get node id
             # print(rndClass.keys()) # get node attributes
             # print(rndClass.values()) # get node attributes value
+            print('Done connecting applicants')
 
 
 # create an example friend connection
@@ -218,8 +172,7 @@ def simulateFriends():
 
     friendDemo()
     print('Done connecting friends')
-    # "MATCH (a:Applicant)-[r:Friend]->(a2:Applicant) RETURN a.Name as Applicant, count(distinct r) as num_of_friends ORDER BY num_of_friends DESC " # check number of friends
-    # numberOfInstitutions = "MATCH(i: Institution) return count(*) as numberOfInstitutions"
+    # MATCH (a:Applicant)-[r:Friend]->(a2:Applicant) RETURN a.Name as Applicant, count(distinct r) as num_of_friends ORDER BY num_of_friends DESC  # check number of friends
 
 
 # connect similar nodes
@@ -243,14 +196,6 @@ def connectSimilars():
     # Natural tag (Natural Science)
     NaturalSimilarList = ["Bio", "Life", "Physics", "Chemistry","Earth", "astronomy"]
 
-    """
-    #
-    SocialScienceSimilarList = ["Anthropology", "Area studies", "Business", "Civics", "Communication", "Criminology", "Demography", "Development",
-                                "Economics", "Education", "Environmental", "Folkloristics", "Gender", "Geography", "History", "Industrial relations",
-                                "Information", "International relations", "Law", "Library", "Linguistics", "Media", "Political", "Psychology",
-                                "Public administration", "Sociology", "Social work", "Sustainable development"]
-    """
-
     # list of the tag lists
     tagList = [HealthSimilarList, EconomySimilarList, BuildSimilarList, BiologySimilarList, NaturalSimilarList]
     # list of the tag names
@@ -259,7 +204,7 @@ def connectSimilars():
     # connect similar nodes for all tags
     for i, list in enumerate(tagList):
         similarTagList(list, tagNames[i])
-
+    print('Done connecting similars')
 
 # connect similar nodes to the given Tag
 # similarList is the list of relevant key strings for this tag
@@ -290,26 +235,28 @@ if __name__ == '__main__':
 
     ## recommandations ##
 
-    # example to find a degree trough a friend reference
+    # find classes your firends was accepted to and you can apply to
     # MATCH(a: Applicant{Name: 'Or Nagar'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class)
     # WHERE a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum
-    # return distinct c,collect(a2.Name) as friend,count(f) as strengh order by strengh desc
-    ApplicantName = 'Or Nagar'
-    ApplicantName = input("Please input applicant name: ")
-    friendsClasses = learnPath.findMatchTroughFriend(ApplicantName)
-    print(""+ApplicantName+" friends Classes ("+str(len(friendsClasses))+"): ")
-    for _class in friendsClasses:
-        print(_class)
+    # return distinct c,collect(a2.Name) as friends ,count(f) as strengh order by strengh desc
+    # ApplicantName = 'Or Nagar'
+    # ApplicantName = input("Please input applicant name: ")
+    # friendsClasses = learnPath.findMatchTroughFriend(ApplicantName)
+    # print(""+ApplicantName+" friends Classes ("+str(len(friendsClasses))+"): ")
+    # for res in friendsClasses:
+    #     print(res)
+    # for _class in friendsClasses:
+    #    print(_class)
 
-    # find by name with similars and ordered by score diffrence
+    # find by name with similars and ordered by score diffrence (no filter)
     # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class)
     # with c,c1 where (toLower(c.Name) CONTAINS  toLower('computer science') or toLower(f.Name) CONTAINS toLower('computer science'))
     # WITH collect(c)+collect(c1) AS cl unwind cl AS classes MATCH(a: Applicant{Name: 'Or Nagar'})
     # RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff
-    availableClasses = learnPath.findMatchTroughName(ApplicantName, 'Computer science')
-    print(""+ApplicantName+" available Classes ("+str(len(availableClasses))+"): ")
-    for _class in availableClasses:
-        print(_class)
+    # availableClasses = learnPath.findMatchTroughName(ApplicantName, 'Computer science')
+    # print(""+ApplicantName+" available Classes ("+str(len(availableClasses))+"): ")
+    # for _class in availableClasses:
+    #     print(_class)
 
     # recommand by most popular classes in the applicant's location he can apply to
     # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)
@@ -317,39 +264,18 @@ if __name__ == '__main__':
     # with c,i,count(r) as countr
     # match (a:Applicant{Name:'Or Nagar'})
     # where i.Area=a.Area and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum)
-    # return c,i,countr order by countr desc
+    # return c,i,AcceptedQuantity order by AcceptedQuantity desc
 
     # general recommandation using path lenghts from a friend to a class including similars and friend of friend, can be adjusted to show more
     # MATCH (a:Applicant{Name: 'Or Nagar'})-[r:Friend]-(a2:Applicant),(c:Class)--()--(i:Institution), path = ((a2)-[*..3]->(c))
     # RETURN distinct c,i,length(path) as Priority ORDER BY Priority asc
 
-    # all classes with sufficient score
+    # all classes with sufficient score and both null
     # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class), (a: Applicant{Name: 'Or Nagar'})
-    # where (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum)
+    # where (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum)  or (c.PsychometricMinimum is null and c.BagrutMinimum is null)
     # return c,i
 
-    """
-    ## statistics ##
-    
-    # example for list of dictionaries returns
-    list = learnPath.getMostPopularClasses()
-    # list = learnPath.getAverageInFaculties()
-    # list = learnPath.getAverageInSimilar()
-    # list = learnPath.getAcceptedInAreaPercent()
-    print("keys:")
-    print(list[0].keys())
-    for key in list[0]:
-        print(key)
-    print("value list:")
-    for item in list:
-        for value in item.values():
-            print(value)
-    print("all:")
-    for item in list:
-        for key,value in item.items():
-            print(key, " : ", value)
 
-    """
     # MATCH (a:Applicant) WHERE NOT (a)-[:Accepted_To]->() return a
     # MATCH (c:Class)-[r:Similar]->(c1:Class) return c.Name,collect(c1.Name), count(c1)
     # WHERE a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum or c.BagrutMinimum is null or c.PsychometricMinimum is null

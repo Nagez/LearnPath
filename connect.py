@@ -188,6 +188,35 @@ class connection:
         return table
 
 
+    # all classes with sufficient score and both null, order by avg scores of accepted applicants
+    def findMatchTroughAcceptedAVG(self, ApplicantName):
+        with self.driver.session() as session:
+            return session.read_transaction(self.__findMatchTroughAcceptedAVG, ApplicantName)
+
+    @staticmethod
+    def __findMatchTroughAcceptedAVG(tx, ApplicantName):
+        str = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)"\
+              "optional match (c)<-[r:Accepted_To]-(a1:Applicant)"\
+              "match (a:Applicant)"\
+              "where a.Name='"+ApplicantName+"' and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum  or (c.PsychometricMinimum is null and c.BagrutMinimum is null))"\
+              "return c,i,count(a1) as NumOfAccepted, round(avg(a1.Bagrut),2) as AcceptedApplicantsBagrutAVG, round(avg(a1.Psychometric),2) as AcceptedApplicantsPsychometrictAVG order by AcceptedApplicantsPsychometrictAVG IS NOT NULL DESC"
+
+        print("\nfindMatchTroughAcceptedAVG\n" + str)
+        result = tx.run(str)
+        table = []
+        for res in result:
+            dc = {}
+            className = res["c"]["Name"]
+            institutionName = res["i"]["Name"]
+            numOfAccepted = res["NumOfAccepted"]
+            acceptedApplicantsBagrutAVG = res["AcceptedApplicantsBagrutAVG"]
+            acceptedApplicantsPsychometrictAVG = res["AcceptedApplicantsPsychometrictAVG"]
+            dc.update({"ClassName": className, "InstitutionName": institutionName, "NumOfAccepted": numOfAccepted,
+                       "AcceptedApplicantsBagrutAVG": acceptedApplicantsBagrutAVG, "AcceptedApplicantsPsychometrictAVG": acceptedApplicantsPsychometrictAVG})
+            table.append(dc)
+
+        return table
+
 
     # get all of the nodes of type var
     def write_getAllQuery(self, var):

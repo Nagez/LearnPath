@@ -287,11 +287,15 @@ if __name__ == '__main__':
     # RETURN distinct c,i,length(path) as Priority ORDER BY Priority asc
     # result = learnPath.findMatchTroughFriendPath
 
-    # all classes with sufficient score and both null
-    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class), (a: Applicant{Name: 'Or Nagar'})
-    # where (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum)  or (c.PsychometricMinimum is null and c.BagrutMinimum is null)
-    # return c,i
-    # trying to calc all accepted applicants avg scores
+    # all classes with sufficient score and both null, order by avg scores of accepted applicants
+    # MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class)
+    # optional match (c)<-[r:Accepted_To]-(a1:Applicant)
+    # match (a:Applicant)
+    # where a.Name='Or Nagar' and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum  or (c.PsychometricMinimum is null and c.BagrutMinimum is null))
+    # return c,i,count(a1) as NumOfAccepted, round(avg(a1.Bagrut),2) as AcceptedApplicantsBagrutAVG, round(avg(a1.Psychometric),2) as AcceptedApplicantsPsychometrictAVG order by AcceptedApplicantsPsychometrictAVG IS NOT NULL DESC
+    #result = learnPath.findMatchTroughAcceptedAVG(ApplicantName)
+    #for res in result:
+    #    print(res)
 
     # MATCH (a:Applicant) WHERE NOT (a)-[:Accepted_To]->() return a
     # MATCH (c:Class)-[r:Similar]->(c1:Class) return c.Name,collect(c1.Name), count(c1)

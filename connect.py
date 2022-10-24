@@ -122,10 +122,15 @@ class connection:
 
     @staticmethod
     def __findMatchIDTroughName(tx, ApplicantID, className):
-        str = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class)MATCH(a: Applicant)"\
+        str1 = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class)MATCH(a: Applicant)"\
               " where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"')) and ID(a)="+ApplicantID+""\
               " WITH a,collect(c)+collect(c1) AS cl unwind cl AS classes"\
               " RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff "
+        str="MATCH (f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class) " \
+            "with c,c1 where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"'))" \
+            " WITH collect(c)+collect(c1) AS cl unwind cl AS classes " \
+            "MATCH(a: Applicant) Where id(a)="+ApplicantID+" MATCH (classes)--(f:Faculty)--(i:Institution)  " \
+            "RETURN DISTINCT classes, i.Name, (toIntegerOrNull(classes.BagrutMinimum) - toIntegerOrNull(a.Bagrut)) as BagrutDiff, (toIntegerOrNull(classes.PsychometricMinimum) - toIntegerOrNull(a.Psychometric)) as PsychometricDiff order by BagrutDiff"
         print("\nMatch trough name search with applicant ID\n" + str)
         result = tx.run(str)
         table = []
@@ -134,7 +139,8 @@ class connection:
             className = res["classes"]["Name"]
             bagrutDiff = res["BagrutDiff"]
             psychometricDiff = res["PsychometricDiff"]
-            dc.update({"ClassName": className, "BagrutDiff": bagrutDiff, "PsychometricDiff": psychometricDiff})
+            institution = res["i.Name"]
+            dc.update({"ClassName": className, "Institution": institution, "BagrutDiff": bagrutDiff, "PsychometricDiff": psychometricDiff})
             table.append(dc)
 
         return table

@@ -11,35 +11,22 @@ app.secret_key = b'%#s(&2p5_cakpas4==52f5vp1&5@j&o-^jx@mf_(h6hdal0gq_'  # secret
 def base():
     return render_template('basePage.html')  # get the html file named basePage, must be in templates folder
 
+
+# LearnPath welcome page
+@app.route('/welcome')
+def welcome():
+    return render_template('welcome.html', list=list)
+
+
+# Add Applicant #
+
 # direct to the page that includes form in order to add new applicant
 @app.route('/AddApplicant')  # the url /
 def home1():
     return render_template('addApplicant.html')  # get the html file named addApplicant, must be in templates folder
 
 
-@app.route('/show', methods=["GET"])
-def show():
-    if request.method == "GET":
-        Institution = learnPath.write_getAllQuery("Institution")
-    return render_template('show.html', list=Institution, typeList="Institutions")
-
-
-@app.route('/show/<type>/<variable>', methods=["GET"])
-def show2(variable,type):
-    if request.method == "GET":
-        # print(variable)
-        # print(type)
-        # type = request.args.get(type)
-        if type == 'Institutions':
-            res = learnPath.getFacultiesFromUni(variable)
-            # print(list(res[0].labels)[0])
-            # typeOfList = list(res[0].labels)[0]
-            return render_template('show.html', list=res, typeList='Faculties')
-        if type == 'Faculties':
-            res = learnPath.getClassesFromFaculty(variable)
-            return render_template('ClassLearnHome.html', list=res)
-
-
+# add applicant and show alert
 @app.route('/added1', methods=["GET", "POST"])
 def gfg():
     if request.method == "POST":
@@ -57,36 +44,41 @@ def gfg():
         Bagrut=request.form.get("Bagrut")
         # Creating new applicant
         applicant = learnPath.generateCypherCreateCustomApplicant(Gender, Psychometric, Bagrut, Area, first_name+' '+last_name)
-        print(applicant[0].id)
+        # show flash (flask alert)
         flash("Applicant was successfully added ! Applicant Name: "+f"{applicant[0]._properties['Name']}"+"     Applicant ID : "+f"{applicant[0].id}");
     return render_template("addApplicant.html")
 
 
-@app.route('/showClass0', methods=["GET"])  # the url /
-def showClass0():
+# Show Institutions/Faculties/Classes #
+
+# show all Institutions
+@app.route('/show', methods=["GET"])
+def show():
     if request.method == "GET":
-        return render_template('showClass0.html') # get the html file named showClass0, must be in templates folder
+        Institution = learnPath.write_getAllQuery("Institution")
+    return render_template('show.html', list=Institution, typeList="Institutions")
 
 
-@app.route('/showClass0/pst', methods=["POST"])
-def showClass():
-    if request.method == "POST":
-        # getting input with name = class in HTML form
-        inputClass = request.form.get("class")
-        # getting input with name = fname in HTML form
-        first_name = request.form.get("fname")
-        # getting input with name = lname in HTML form
-        last_name = request.form.get("lname")
-        availableClasses = learnPath.findMatchTroughName(first_name+' '+last_name, inputClass)
-
-    return render_template('listTemplate.html', options=[], list=availableClasses)
-
-
-@app.route('/welcome')
-def welcome():
-    return render_template('welcome.html', list=list)
+# show all Faculties or Classes (depends on type)
+@app.route('/show/<type>/<variable>', methods=["GET"])
+def show2(variable,type):
+    if request.method == "GET":
+        # print(variable)
+        # print(type)
+        # type = request.args.get(type)
+        if type == 'Institutions':
+            res = learnPath.getFacultiesFromUni(variable)
+            # print(list(res[0].labels)[0])
+            # typeOfList = list(res[0].labels)[0]
+            return render_template('show.html', list=res, typeList='Faculties')
+        if type == 'Faculties':
+            res = learnPath.getClassesFromFaculty(variable)
+            return render_template('ClassLearnHome.html', list=res)
 
 
+# Statistics #
+
+# direct to page that shows statistics (depends on what the use choose)
 @app.route('/statistics/<option>', methods=["GET"])
 def statistics(option):
     options = ["Most popular classes", "Average scores in each institution's faculty", "Average scores in similar classes", "Percentage of accepted applicants in each area"]
@@ -104,11 +96,39 @@ def statistics(option):
 
     return render_template('listTemplate.html', options=options, list=list)
 
+
+# Algorithms #
+
+# direct to the page that includes form in order to use ClassName algorithm
+@app.route('/showClass0', methods=["GET"])  # the url /
+def showClass0():
+    if request.method == "GET":
+        return render_template('showClass0.html')  # get the html file named showClass0, must be in templates folder
+
+
+# show results of ClassName algorithm (after getting form input)
+@app.route('/showClass0/pst', methods=["POST"])
+def showClass():
+    if request.method == "POST":
+        # getting input with name = class in HTML form
+        inputClass = request.form.get("class")
+        # getting input with name = fname in HTML form
+        first_name = request.form.get("fname")
+        # getting input with name = lname in HTML form
+        last_name = request.form.get("lname")
+        availableClasses = learnPath.findMatchTroughName(first_name+' '+last_name, inputClass)
+
+    return render_template('listTemplate.html', options=[], list=availableClasses)
+
+
+# direct to the page that includes form in order to use ClassName algorithm by ID
 @app.route('/showClassbyID', methods=["GET"])  # the url /
 def findByClassAndIDpage():
     if request.method == "GET":
         return render_template('findbyClass&ID.html') # get the html file named findbyClass&ID, must be in templates folder
 
+
+# show results of ClassName algorithm using ID(after getting form input)
 @app.route('/showClassbyIDfun', methods=["POST"])
 def showClassbyIDfun():
     if request.method == "POST":
@@ -121,11 +141,14 @@ def showClassbyIDfun():
     return render_template('listTemplate.html', options=[], list=availableClasses)
 
 
+# direct to the page that includes form in order to use Friends algorithm
 @app.route('/showClassUsingFriendsByName', methods=["GET"])  # the url /
 def findByClassAndNameByFriendpage():
     if request.method == "GET":
-        return render_template('findByFriend_Name.html') # get the html file named findByFriend_Name, must be in templates folder
+        return render_template('findByFriend_Name.html')  # get the html file named findByFriend_Name, must be in templates folder
 
+
+# show results of Friends algorithm(after getting form input)
 @app.route('/showClassbyNameUsingFriends', methods=["POST"])
 def showClassbyNameUsingFriends():
     if request.method == "POST":
@@ -137,11 +160,15 @@ def showClassbyNameUsingFriends():
 
     return render_template('friendsAlgoResult.html', list=availableClasses)
 
+
+# direct to the page that includes form in order to use Area Popularity algorithm
 @app.route('/areaPopularityForm', methods=["GET"])
 def findByAreaPopularitypage():
     if request.method == "GET":
         return render_template('findByAreaPopularityForm.html') # get the html file named findByAreaPopularityForm, must be in templates folder
 
+
+# show results of Area Popularity algorithm(after getting form input)
 @app.route('/areaPopularityResult', methods=["POST"])
 def showClassbyAreaPopularity():
     if request.method == "POST":
@@ -153,11 +180,15 @@ def showClassbyAreaPopularity():
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
 
+
+# direct to the page that includes form in order to use Friend Path algorithm
 @app.route('/friendPathForm', methods=["GET"])
 def findByfriendPathpage():
     if request.method == "GET":
         return render_template('FriendPathAlgoForm.html')  # get the html file named FriendPathAlgoForm, must be in templates folder
 
+
+# show results of Friend Path algorithm(after getting form input)
 @app.route('/friendPathFormResult', methods=["POST"])
 def showClassbyfriendPath():
     if request.method == "POST":
@@ -170,21 +201,3 @@ def showClassbyfriendPath():
         availableClasses = learnPath.findMatchTroughFriendPath(first_name+' '+last_name, edges)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
-# @app.route('/SimilarAlgoForm', methods=["GET"])  # the url /
-# def goToSimilarForm():
-#     if request.method == "GET":
-#         return render_template('SimilarAlgoForm.html') # get the html file named showClass0, must be in templates folder
-# @app.route('/testt', methods=["POST"])  # the url /cool
-# def similarRes():
-#     if request.method == "POST":
-#         fname = request.form.get("fname")
-#         lname = request.form.get("lname")
-#         className = request.form.get("class")
-#         tags = learnPath.returnSimilar(className)
-#         list=[]
-#         for i in range(len(tags)):
-#             classes = learnPath.returnClassWithConnection(className, tags[i])
-#             list.append(classes)
-#         print(tags)
-#         return 'Hi cool'
-

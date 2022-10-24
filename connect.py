@@ -2,12 +2,15 @@ from neo4j import GraphDatabase
 
 class connection:
 
+    # init connection
     def __init__(self, uri, user, password):
         self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
+    # close connection
     def close(self):
         self.driver.close()
 
+    # return all applicants
     def getAllApplicants(self):
         with self.driver.session() as session:
             result = session.run("MATCH (a:Applicant) RETURN a")  # Query
@@ -47,9 +50,9 @@ class connection:
 
 
     # write a query (mainly used to create applicant)
-    def write_matchApplicantToClass(self, applicantID,classID):
+    def write_matchApplicantToClass(self, applicantID, classID):
         with self.driver.session() as session:
-            session.write_transaction(self.__matchApplicantToClass, applicantID,classID)
+            session.write_transaction(self.__matchApplicantToClass, applicantID, classID)
 
     @staticmethod
     def __matchApplicantToClass(tx, applicantID,classID):
@@ -58,7 +61,7 @@ class connection:
                         "set a.Degree = c.Name CREATE(a)-[ac:Accepted_To]->(c) ")
         return result
 
-
+# Match algorithms #
     # using an applicant name, find matching class trough his friend connection
     def findMatchTroughFriend(self, Name):
         with self.driver.session() as session:
@@ -77,9 +80,9 @@ class connection:
             className = res["c"]["Name"]
             institutionName = res["i"]["Name"]
             friends = res["Friends"]
-            strengh = res["Strengh"]
+            strength = res["Strengh"]
             dc.update({"ClassName": className, "InstitutionName": institutionName, "Friends": friends,
-                       "Strengh": strengh})
+                       "Strength": strength})
             table.append(dc)
 
         return table
@@ -393,7 +396,22 @@ class connection:
         result = tx.run(query)
         return result
 
+##########
 
+    # # return names of similar connections to class
+    # def returnSimilar(self, className):
+    #     with self.driver.session() as session:
+    #         query = "MATCH((c1: Class)-[s:Similar]-(c2:Class)) where toLower(c1.Name) Contains toLower('"+className+"') and id(c1)<>id(c2) return DISTINCT(s.Tag) as tag"
+    #         result = session.run(query)
+    #         return [record["tag"] for record in result]
+    #
+    # # return class with specific similar connection name
+    # def returnClassWithConnection(self, className, tagName):
+    #     with self.driver.session() as session:
+    #         query = "MATCH((c1: Class)-[s:Similar]-(c2:Class)) where toLower(c1.Name) Contains toLower('"+className+"') and toLower(s.Tag)=toLower('"+tagName+"') and id(c1)<>id(c2) return c2.Name as className"
+    #         result = session.run(query)
+    #         return [record["className"] for record in result]
+##########
     def generateCypherCreateCustomApplicant(self, gender, psychometric, bagrut, area, name):
         with self.driver.session() as session:
             applicantQuery = "CREATE (a:Applicant{Name:'" + name + "' ,Gender:'" + gender + "' ,Bagrut: " + bagrut + ", Psychometric: " + str(psychometric) + ", Area: '" + area + "', Faculty: '', Degree: ''}) return a"

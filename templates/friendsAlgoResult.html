@@ -1,0 +1,31 @@
+{% extends "basePage.html" %}
+{% block content %}
+
+   <h1>Classes :</h1>
+   <div class="page2">
+       <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Class</th>
+      <th scope="col">Institution</th>
+      <th scope="col">Friends Amount</th>
+      <th scope="col">Friend Names</th>
+    </tr>
+  </thead>
+       <tbody>
+       {% for item in list %}
+           <tr>
+               <td>{{item["ClassName"]}}</td>
+               <td>{{item["InstitutionName"]}}</td>
+               <td>{{item["Strength"]}}</td>
+               <td>
+                    {% for friend in item['Friends']%}
+                        {{friend}}<br>
+                    {%endfor%}
+               </td>
+           <tr>
+       {% endfor %}
+       </tbody>
+    </table>
+    </div>
+{% endblock %}

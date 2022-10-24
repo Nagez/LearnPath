@@ -139,10 +139,28 @@ def showClassbyNameUsingFriends():
         last_name = request.form.get("lname")
         availableClasses = learnPath.findMatchTroughFriend(first_name+' '+last_name)
 
-    return render_template('showClass.html', list=availableClasses)
-@app.route('/cool')  # the url /cool
-def hi():
-    return 'Hi cool'
+    return render_template('friendsAlgoResult.html', list=availableClasses)
+
+
+# @app.route('/SimilarAlgoForm', methods=["GET"])  # the url /
+# def goToSimilarForm():
+#     if request.method == "GET":
+#         return render_template('SimilarAlgoForm.html') # get the html file named showClass0, must be in templates folder
+# @app.route('/testt', methods=["POST"])  # the url /cool
+# def similarRes():
+#     if request.method == "POST":
+#         fname = request.form.get("fname")
+#         lname = request.form.get("lname")
+#         className = request.form.get("class")
+#         tags = learnPath.returnSimilar(className)
+#         list=[]
+#         for i in range(len(tags)):
+#             classes = learnPath.returnClassWithConnection(className, tags[i])
+#             list.append(classes)
+#         print(tags)
+#         return 'Hi cool'
+
+
 
 """
             <li><a href="{{ url_for('page2') }}">Add an applicant</a></li>

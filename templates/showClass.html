@@ -6,17 +6,17 @@
        <table class="table">
   <thead>
     <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Psychometric Minimum</th>
-      <th scope="col">Bagrut Minimum</th>
+      <th scope="col">Class</th>
+      <th scope="col">Bagrut Difference</th>
+      <th scope="col">Psychometric Difference</th>
     </tr>
   </thead>
        <tbody>
        {% for item in list %}
            <tr>
-               <td>{{item["Name"]}}</td>
-               <td>{{item["PsychometricMinimum"]}}</td>
-               <td>{{item["BagrutMinimum"]}}</td>
+               <td>{{item["ClassName"]}}</td>
+               <td>{{item["BagrutDiff"]}}</td>
+               <td>{{item["PsychometricDiff"]}}</td>
            <tr>
        {% endfor %}
        </tbody>

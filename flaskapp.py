@@ -61,10 +61,6 @@ def gfg():
     return render_template("addApplicant.html")
 
 
-def homePage():
-    print("hi")
-
-
 @app.route('/showClass0', methods=["GET"])  # the url /
 def showClass0():
     if request.method == "GET":
@@ -92,7 +88,6 @@ def welcome():
 
 @app.route('/statistics/<option>', methods=["GET"])
 def statistics(option):
-    # print(option)
     options = ["Most popular classes", "Average scores in each institution's faculty", "Average scores in similar classes", "Percentage of accepted applicants in each area"]
     if request.method == "GET":
         if option == '0':

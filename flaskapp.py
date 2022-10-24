@@ -141,7 +141,21 @@ def showClassbyNameUsingFriends():
 
     return render_template('friendsAlgoResult.html', list=availableClasses)
 
+@app.route('/areaPopularityForm', methods=["GET"])
+def findByAreaPopularitypage():
+    if request.method == "GET":
+        return render_template('findByAreaPopularityForm.html') # get the html file named showClass0, must be in templates folder
 
+@app.route('/areaPopularityResult', methods=["POST"])
+def showClassbyAreaPopularity():
+    if request.method == "POST":
+        # getting input with name = fname in HTML form
+        first_name = request.form.get("fname")
+        # getting input with name = lname in HTML form
+        last_name = request.form.get("lname")
+        availableClasses = learnPath.findMatchTroughAreaPopularity(first_name+' '+last_name)
+
+    return render_template('AreaPopularityAlgoRes.html', list=availableClasses)
 # @app.route('/SimilarAlgoForm', methods=["GET"])  # the url /
 # def goToSimilarForm():
 #     if request.method == "GET":

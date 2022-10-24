@@ -71,7 +71,7 @@ class connection:
     def __findMatchTroughFriend(tx, Name):
         str = "MATCH(a: Applicant{Name: '"+Name+"'})-[f:Friend]-(a2)-[r:Accepted_To]->(c:Class)--(:Faculty)--(i:Institution)" \
               " WHERE a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum" \
-              " return distinct c,i,collect(a2.Name) as Friends ,count(f) as Strengh order by Strengh desc"
+              " return distinct c,i,collect(a2.Name) as Friends ,count(f) as Strength order by Strength desc"
         result = tx.run(str)
         print("\nMatch trough friend\n" + str)
         table = []
@@ -80,7 +80,7 @@ class connection:
             className = res["c"]["Name"]
             institutionName = res["i"]["Name"]
             friends = res["Friends"]
-            strength = res["Strengh"]
+            strength = res["Strength"]
             dc.update({"ClassName": className, "InstitutionName": institutionName, "Friends": friends,
                        "Strength": strength})
             table.append(dc)

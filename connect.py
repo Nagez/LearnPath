@@ -98,7 +98,7 @@ class connection:
         str = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class)"\
                "with c,c1 where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"'))"\
                "WITH collect(c)+collect(c1) AS cl unwind cl AS classes MATCH(a: Applicant{Name: '"+ApplicantName+"'})"\
-               "RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff"
+               "RETURN DISTINCT classes, (toIntegerOrNull(classes.BagrutMinimum) - toIntegerOrNull(a.Bagrut)) as BagrutDiff, (toIntegerOrNull(classes.PsychometricMinimum) - toIntegerOrNull(a.Psychometric)) as PsychometricDiff order by BagrutDiff"
         print("\nMatch trough name search\n" + str)
         result = tx.run(str)
         table = []

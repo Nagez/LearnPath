@@ -3,7 +3,7 @@ import connect
 
 app = Flask(__name__)  # init app
 learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234")  # connect to database
-app.secret_key = b'%#s(&2p5_cakpas4==52f5vp1&5@j&o-^jx@mf_(h6hdal0gq_'
+app.secret_key = b'%#s(&2p5_cakpas4==52f5vp1&5@j&o-^jx@mf_(h6hdal0gq_'  # secret key for flash (flask alert)
 
 
 @app.route('/')  # the url /
@@ -13,7 +13,7 @@ def base():
 
 @app.route('/AddApplicant')  # the url /
 def home1():
-    return render_template('addApplicant.html')  # get the html file named LearnPathHome, must be in templates folder
+    return render_template('addApplicant.html')  # get the html file named addApplicant, must be in templates folder
 
 
 @app.route('/show', methods=["GET"])
@@ -111,7 +111,7 @@ def statistics(option):
 @app.route('/showClassbyID', methods=["GET"])  # the url /
 def findByClassAndIDpage():
     if request.method == "GET":
-        return render_template('findbyClass&ID.html') # get the html file named showClass0, must be in templates folder
+        return render_template('findbyClass&ID.html') # get the html file named findbyClass&ID, must be in templates folder
 
 @app.route('/showClassbyIDfun', methods=["POST"])
 def showClassbyIDfun():
@@ -128,7 +128,7 @@ def showClassbyIDfun():
 @app.route('/showClassUsingFriendsByName', methods=["GET"])  # the url /
 def findByClassAndNameByFriendpage():
     if request.method == "GET":
-        return render_template('findByFriend_Name.html') # get the html file named showClass0, must be in templates folder
+        return render_template('findByFriend_Name.html') # get the html file named findByFriend_Name, must be in templates folder
 
 @app.route('/showClassbyNameUsingFriends', methods=["POST"])
 def showClassbyNameUsingFriends():
@@ -144,7 +144,7 @@ def showClassbyNameUsingFriends():
 @app.route('/areaPopularityForm', methods=["GET"])
 def findByAreaPopularitypage():
     if request.method == "GET":
-        return render_template('findByAreaPopularityForm.html') # get the html file named showClass0, must be in templates folder
+        return render_template('findByAreaPopularityForm.html') # get the html file named findByAreaPopularityForm, must be in templates folder
 
 @app.route('/areaPopularityResult', methods=["POST"])
 def showClassbyAreaPopularity():
@@ -156,6 +156,24 @@ def showClassbyAreaPopularity():
         availableClasses = learnPath.findMatchTroughAreaPopularity(first_name+' '+last_name)
 
     return render_template('AreaPopularityAlgoRes.html', list=availableClasses)
+
+@app.route('/friendPathForm', methods=["GET"])
+def findByfriendPathpage():
+    if request.method == "GET":
+        return render_template('FriendPathAlgoForm.html')  # get the html file named FriendPathAlgoForm, must be in templates folder
+
+@app.route('/friendPathFormResult', methods=["POST"])
+def showClassbyfriendPath():
+    if request.method == "POST":
+        # getting input with name = fname in HTML form
+        first_name = request.form.get("fname")
+        # getting input with name = lname in HTML form
+        last_name = request.form.get("lname")
+        # getting input with name = edges in HTML form
+        edges = request.form.get("edges")
+        availableClasses = learnPath.findMatchTroughFriendPath(first_name+' '+last_name, edges)
+
+    return render_template('friendPathAlgoResult.html', list=availableClasses)
 # @app.route('/SimilarAlgoForm', methods=["GET"])  # the url /
 # def goToSimilarForm():
 #     if request.method == "GET":
@@ -174,10 +192,3 @@ def showClassbyAreaPopularity():
 #         print(tags)
 #         return 'Hi cool'
 
-
-
-"""
-            <li><a href="{{ url_for('page2') }}">Add an applicant</a></li>
-            <li><a href="{{ url_for('page2') }}">Connect friend</a></li>
-MATCH (f:Faculty)-[o:Offered_In]-(c:Class) where ID(f)=id return c
-"""

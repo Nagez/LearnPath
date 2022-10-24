@@ -3,7 +3,7 @@
 
         <h1>Find Match</h1><br><br><br>
         <h4 class="mb-3">Applicant Info</h4>
-       <form class="needs-validation" acnovalidate action="{{ url_for("showClassbyAreaPopularity")}}" method="post"> <!-- action="{{ url_for("gfg")}}" method="post"-->
+       <form class="needs-validation" acnovalidate action="{{ url_for("showClassbyfriendPath")}}" method="post"> <!-- action="{{ url_for("gfg")}}" method="post"-->
         <div class="row g-3">
             <div class="col-sm-6">
               <label for="firstName" class="form-label">First name</label>
@@ -20,6 +20,17 @@
               <div class="invalid-feedback">
                 Valid last name is required.
               </div>
+            </div>
+
+
+            <br><br><br><br><br>
+
+            <h4>Other Required Inputs</h4>
+
+            <div class="col-">
+             <label for="Edges" class="form-label">Number of Edges</label>
+             <input id="Edges" type="range" value="1" min="1" max="100" name="edges" oninput="this.nextElementSibling.value = this.value">
+             <output id="Edges-output">1</output>
             </div>
 
 

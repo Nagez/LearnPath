@@ -1,0 +1,29 @@
+{% extends "basePage.html" %}
+{% block content %}
+
+   <h1>Classes :</h1>
+   <div class="page2">
+       <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Class</th>
+      <th scope="col">Institution</th>
+      <th scope="col">Bagrut Minimum</th>
+      <th scope="col">Psychometric Minimum</th>
+      <th scope="col">Number of Edges</th>
+    </tr>
+  </thead>
+       <tbody>
+       {% for item in list %}
+           <tr>
+               <td>{{item["ClassName"]}}</td>
+               <td>{{item["InstitutionName"]}}</td>
+               <td>{{item["BagrutMinimum"]}}</td>
+               <td>{{item["PsychometricMinimum"]}}</td>
+               <td>{{item["Priority"]}}</td>
+           <tr>
+       {% endfor %}
+       </tbody>
+    </table>
+    </div>
+{% endblock %}

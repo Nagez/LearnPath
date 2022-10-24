@@ -169,7 +169,7 @@ class connection:
     # general recommandation using path lenghts from a friend to a class including similars and friend of friend, can be adjusted to show more
     def findMatchTroughFriendPath(self, ApplicantName,k):
         with self.driver.session() as session:
-            return session.read_transaction(self.__findMatchTroughPath, ApplicantName,k)
+            return session.read_transaction(self.__findMatchTroughFriendPath, ApplicantName,k)
 
     @staticmethod
     def __findMatchTroughFriendPath(tx, ApplicantName,k):

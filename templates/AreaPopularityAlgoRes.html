@@ -1,0 +1,25 @@
+{% extends "basePage.html" %}
+{% block content %}
+
+   <h1>Classes :</h1>
+   <div class="page2">
+       <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Class</th>
+      <th scope="col">Institution</th>
+      <th scope="col">Accepted Quantity</th>
+    </tr>
+  </thead>
+       <tbody>
+       {% for item in list %}
+           <tr>
+               <td>{{item["ClassName"]}}</td>
+               <td>{{item["InstitutionName"]}}</td>
+               <td>{{item["AcceptedQuantity"]}}</td>
+           <tr>
+       {% endfor %}
+       </tbody>
+    </table>
+    </div>
+{% endblock %}

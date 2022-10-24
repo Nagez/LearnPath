@@ -6,11 +6,12 @@ learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234")  # conn
 app.secret_key = b'%#s(&2p5_cakpas4==52f5vp1&5@j&o-^jx@mf_(h6hdal0gq_'  # secret key for flash (flask alert)
 
 
+# base page that contains the navigation bar, footer and needed scripts
 @app.route('/')  # the url /
 def base():
     return render_template('basePage.html')  # get the html file named basePage, must be in templates folder
 
-
+# direct to the page that includes form in order to add new applicant
 @app.route('/AddApplicant')  # the url /
 def home1():
     return render_template('addApplicant.html')  # get the html file named addApplicant, must be in templates folder
@@ -78,7 +79,7 @@ def showClass():
         last_name = request.form.get("lname")
         availableClasses = learnPath.findMatchTroughName(first_name+' '+last_name, inputClass)
 
-    return render_template('showClass.html', list=availableClasses)
+    return render_template('listTemplate.html', options=[], list=availableClasses)
 
 
 @app.route('/welcome')
@@ -117,7 +118,7 @@ def showClassbyIDfun():
         ID = request.form.get("ID")
         availableClasses = learnPath.findMatchIDTroughName(ID, inputClass)
 
-    return render_template('showClass.html', list=availableClasses)
+    return render_template('listTemplate.html', options=[], list=availableClasses)
 
 
 @app.route('/showClassUsingFriendsByName', methods=["GET"])  # the url /
@@ -150,7 +151,7 @@ def showClassbyAreaPopularity():
         last_name = request.form.get("lname")
         availableClasses = learnPath.findMatchTroughAreaPopularity(first_name+' '+last_name)
 
-    return render_template('AreaPopularityAlgoRes.html', list=availableClasses)
+    return render_template('listTemplate.html', options=[], list=availableClasses)
 
 @app.route('/friendPathForm', methods=["GET"])
 def findByfriendPathpage():
@@ -168,7 +169,7 @@ def showClassbyfriendPath():
         edges = request.form.get("edges")
         availableClasses = learnPath.findMatchTroughFriendPath(first_name+' '+last_name, edges)
 
-    return render_template('friendPathAlgoResult.html', list=availableClasses)
+    return render_template('listTemplate.html', options=[], list=availableClasses)
 # @app.route('/SimilarAlgoForm', methods=["GET"])  # the url /
 # def goToSimilarForm():
 #     if request.method == "GET":

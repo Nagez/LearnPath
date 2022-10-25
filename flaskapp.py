@@ -145,7 +145,7 @@ def showClassbyIDfun():
 @app.route('/showClassUsingFriendsByName', methods=["GET"])  # the url /
 def findByClassAndNameByFriendpage():
     if request.method == "GET":
-        return render_template('findByFriend_Name.html')  # get the html file named findByFriend_Name, must be in templates folder
+        return render_template('templateForm.html', algorithm='showClassbyNameUsingFriends')  # get the html file named templateForm.html, must be in templates folder
 
 
 # show results of Friends algorithm(after getting form input)
@@ -165,7 +165,7 @@ def showClassbyNameUsingFriends():
 @app.route('/areaPopularityForm', methods=["GET"])
 def findByAreaPopularitypage():
     if request.method == "GET":
-        return render_template('findByAreaPopularityForm.html') # get the html file named findByAreaPopularityForm, must be in templates folder
+        return render_template('templateForm.html', algorithm='showClassbyAreaPopularity')  # get the html file named templateForm.html, must be in templates folder
 
 
 # show results of Area Popularity algorithm(after getting form input)
@@ -207,7 +207,7 @@ def showClassbyfriendPath():
 @app.route('/AcceptedAvgForm', methods=["GET"])
 def findByAcceptedAVGpage():
     if request.method == "GET":
-        return render_template('AcceptedAvgForm.html')  # get the html file named AcceptedAvgForm.html, must be in templates folder
+        return render_template('templateForm.html', algorithm='showClassbyAcceptedAVG')  # get the html file named templateForm.html, must be in templates folder
 
 
 # show results of Accepted Average algorithm(after getting form input)

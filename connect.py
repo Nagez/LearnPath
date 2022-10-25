@@ -209,7 +209,7 @@ class connection:
               "optional match (c)<-[r:Accepted_To]-(a1:Applicant)"\
               "match (a:Applicant)"\
               "where a.Name='"+ApplicantName+"' and (a.Bagrut>=c.BagrutMinimum or a.Psychometric>=c.PsychometricMinimum  or (c.PsychometricMinimum is null and c.BagrutMinimum is null))"\
-              "return c,i,count(a1) as NumOfAccepted, round(avg(a1.Bagrut),2) as AcceptedApplicantsBagrutAVG, round(avg(a1.Psychometric),2) as AcceptedApplicantsPsychometrictAVG order by AcceptedApplicantsPsychometrictAVG IS NOT NULL DESC"
+              "return c,i,count(a1) as NumOfAccepted, round(avg(a1.Bagrut),2) as AcceptedApplicantsBagrutAVG, round(avg(a1.Psychometric),2) as AcceptedApplicantsPsychometrictAVG order by AcceptedApplicantsPsychometrictAVG "
 
         print("\nfindMatchTroughAcceptedAVG\n" + str)
         result = tx.run(str)

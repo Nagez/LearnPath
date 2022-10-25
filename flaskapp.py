@@ -28,7 +28,7 @@ def home1():
 
 # add applicant and show alert
 @app.route('/added1', methods=["GET", "POST"])
-def gfg():
+def addApplicant():
     if request.method == "POST":
         # getting input with name = fname in HTML form
         first_name = request.form.get("fname")

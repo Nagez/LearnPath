@@ -19,7 +19,16 @@
             {% for item in list %}
             <tr>
                 {% for value in item.values() %}
-                    <td> {{ value }} </td>
+                    <td>
+                         <!--if the value is array print all array, else print the single element-->
+                        {% if value is iterable and (value is not string and value is not mapping) %}
+                            {% for i in value %}
+                              {{ i }}<br>
+                            {% endfor %}
+                        {% else %}
+                          {{ value }}
+                        {% endif %}
+                    </td>
                 {% endfor %}
              </tr>
             {% endfor %}

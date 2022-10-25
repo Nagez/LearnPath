@@ -81,8 +81,7 @@ class connection:
             institutionName = res["i"]["Name"]
             friends = res["Friends"]
             strength = res["Strength"]
-            dc.update({"ClassName": className, "InstitutionName": institutionName, "Friends": friends,
-                       "Strength": strength})
+            dc.update({"Class": className, "Institution": institutionName, "Friends": friends})
             table.append(dc)
 
         return table
@@ -109,7 +108,7 @@ class connection:
             bagrutDiff = res["BagrutDiff"]
             psychometricDiff = res["PsychometricDiff"]
             institution = res["i.Name"]
-            dc.update({"ClassName": className, "Institution":institution, "BagrutDiff": bagrutDiff, "PsychometricDiff": psychometricDiff})
+            dc.update({"Class": className, "Institution":institution, "Bagrut Difference": bagrutDiff, "Psychometric Difference": psychometricDiff})
             table.append(dc)
 
         return table
@@ -140,7 +139,7 @@ class connection:
             bagrutDiff = res["BagrutDiff"]
             psychometricDiff = res["PsychometricDiff"]
             institution = res["i.Name"]
-            dc.update({"ClassName": className, "Institution": institution, "BagrutDiff": bagrutDiff, "PsychometricDiff": psychometricDiff})
+            dc.update({"Class": className, "Institution": institution, "Bagrut Difference": bagrutDiff, "Psychometric Difference": psychometricDiff})
             table.append(dc)
 
         return table
@@ -168,7 +167,7 @@ class connection:
             className = res["c"]["Name"]
             institutionName = res["i"]["Name"]
             acceptedQuantity = res["AcceptedQuantity"]
-            dc.update({"ClassName": className, "InstitutionName": institutionName, "AcceptedQuantity": acceptedQuantity})
+            dc.update({"Class": className, "Institution": institutionName, "Accepted Quantity": acceptedQuantity})
             table.append(dc)
 
         return table
@@ -193,7 +192,7 @@ class connection:
             bagrutMinimum = res["c"]["BagrutMinimum"]
             psychometricMinimum = res["c"]["PsychometricMinimum"]
             priority = res["Priority"]
-            dc.update({"ClassName": className, "InstitutionName": institutionName, "BagrutMinimum": bagrutMinimum, "PsychometricMinimum": psychometricMinimum, "Priority": priority})
+            dc.update({"Class": className, "Institution": institutionName, "Bagrut Minimum": bagrutMinimum, "Psychometric Minimum": psychometricMinimum, "Priority": priority})
             table.append(dc)
 
         return table
@@ -222,8 +221,8 @@ class connection:
             numOfAccepted = res["NumOfAccepted"]
             acceptedApplicantsBagrutAVG = res["AcceptedApplicantsBagrutAVG"]
             acceptedApplicantsPsychometrictAVG = res["AcceptedApplicantsPsychometrictAVG"]
-            dc.update({"ClassName": className, "InstitutionName": institutionName, "NumOfAccepted": numOfAccepted,
-                       "AcceptedApplicantsBagrutAVG": acceptedApplicantsBagrutAVG, "AcceptedApplicantsPsychometrictAVG": acceptedApplicantsPsychometrictAVG})
+            dc.update({"Class": className, "Institution": institutionName, "Number of Accepted": numOfAccepted,
+                       "Bagrut Average": acceptedApplicantsBagrutAVG, "Psychometric Average": acceptedApplicantsPsychometrictAVG})
             table.append(dc)
 
         return table
@@ -284,7 +283,7 @@ class connection:
              institutionName = res["InstitutionName"]
              area = res["Area"]
              numOfAcceptedApplicants = res["NumOfAcceptedApplicants"]
-             dc.update({"ClassName":className,"InstitutionName":institutionName,"Area":area,"NumOfAcceptedApplicants":numOfAcceptedApplicants})
+             dc.update({"Class":className,"Institution":institutionName,"Area":area,"Amount of Accepted Applicants":numOfAcceptedApplicants})
              table.append(dc)
 
          return table
@@ -308,7 +307,7 @@ class connection:
             facultyName = res["FacultyName"]
             avgB = res["AverageBagrutMinimum"]
             avgP = res["AveragePsychometricMinimum"]
-            dc.update({"InstitutionName": institutionName, "FacultyName": facultyName,  "AverageBagrutMinimum": avgB,  "AveragePsychometricMinimum": avgP})
+            dc.update({"Institution": institutionName, "Faculty": facultyName,  "Average Bagrut Minimum": avgB,  "Average Psychometric Minimum": avgP})
             table.append(dc)
 
         return table
@@ -332,7 +331,7 @@ class connection:
             avgP = res["AveragePsychometricMinimum"]
             classesQuantity = res["ClassesQuantity"]
             tag = res["Tag"]
-            dc.update({"AverageBagrutMinimum": avgB, "AveragePsychometricMinimum": avgP, "ClassesQuantity": classesQuantity, "Tag": tag})
+            dc.update({"Average Bagrut Minimum": avgB, "Average Psychometric Minimum": avgP, "Classes Quantity": classesQuantity, "Tag": tag})
             table.append(dc)
 
         return table
@@ -354,7 +353,7 @@ class connection:
             area = res["Area"]
             quantityOfAcceptedApplicants = res["QuantityOfAcceptedApplicants"]
             percent = res["Percent"]
-            dc.update({"Area": area, "QuantityOfAcceptedApplicants": quantityOfAcceptedApplicants, "Percent": percent})
+            dc.update({"Area": area, "Quantity Of Accepted Applicants": quantityOfAcceptedApplicants, "Percent": percent})
             table.append(dc)
 
         return table
@@ -404,22 +403,7 @@ class connection:
         result = tx.run(query)
         return result
 
-##########
-
-    # # return names of similar connections to class
-    # def returnSimilar(self, className):
-    #     with self.driver.session() as session:
-    #         query = "MATCH((c1: Class)-[s:Similar]-(c2:Class)) where toLower(c1.Name) Contains toLower('"+className+"') and id(c1)<>id(c2) return DISTINCT(s.Tag) as tag"
-    #         result = session.run(query)
-    #         return [record["tag"] for record in result]
-    #
-    # # return class with specific similar connection name
-    # def returnClassWithConnection(self, className, tagName):
-    #     with self.driver.session() as session:
-    #         query = "MATCH((c1: Class)-[s:Similar]-(c2:Class)) where toLower(c1.Name) Contains toLower('"+className+"') and toLower(s.Tag)=toLower('"+tagName+"') and id(c1)<>id(c2) return c2.Name as className"
-    #         result = session.run(query)
-    #         return [record["className"] for record in result]
-##########
+# generate new applicant
     def generateCypherCreateCustomApplicant(self, gender, psychometric, bagrut, area, name):
         with self.driver.session() as session:
             applicantQuery = "CREATE (a:Applicant{Name:'" + name + "' ,Gender:'" + gender + "' ,Bagrut: " + bagrut + ", Psychometric: " + str(psychometric) + ", Area: '" + area + "', Faculty: '', Degree: ''}) return a"

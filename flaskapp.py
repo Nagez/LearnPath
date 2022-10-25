@@ -158,7 +158,7 @@ def showClassbyNameUsingFriends():
         last_name = request.form.get("lname")
         availableClasses = learnPath.findMatchTroughFriend(first_name+' '+last_name)
 
-    return render_template('friendsAlgoResult.html', list=availableClasses)
+    return render_template('listTemplate.html', options=[], list=availableClasses)
 
 
 # direct to the page that includes form in order to use Area Popularity algorithm

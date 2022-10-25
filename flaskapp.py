@@ -31,9 +31,9 @@ def home1():
 def addApplicant():
     if request.method == "POST":
         # getting input with name = fname in HTML form
-        first_name = request.form.get("fname")
+        first_name = request.form.get("fname").capitalize()
         # getting input with name = lname in HTML form
-        last_name = request.form.get("lname")
+        last_name = request.form.get("lname").capitalize()
         # getting input with name = Area in HTML form
         Area = request.form['Area']
         # getting input with name = Gender in HTML form
@@ -117,9 +117,9 @@ def showClass():
         # getting input with name = class in HTML form
         inputClass = request.form.get("class")
         # getting input with name = fname in HTML form
-        first_name = request.form.get("fname")
+        first_name = request.form.get("fname").capitalize()
         # getting input with name = lname in HTML form
-        last_name = request.form.get("lname")
+        last_name = request.form.get("lname").capitalize()
         availableClasses = learnPath.findMatchTroughName(first_name+' '+last_name, inputClass)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
@@ -143,9 +143,9 @@ def showClassbyIDfun():
 def showClassbyNameUsingFriends():
     if request.method == "POST":
         # getting input with name = fname in HTML form
-        first_name = request.form.get("fname")
+        first_name = request.form.get("fname").capitalize()
         # getting input with name = lname in HTML form
-        last_name = request.form.get("lname")
+        last_name = request.form.get("lname").capitalize()
         availableClasses = learnPath.findMatchTroughFriend(first_name+' '+last_name)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
@@ -156,9 +156,9 @@ def showClassbyNameUsingFriends():
 def showClassbyAreaPopularity():
     if request.method == "POST":
         # getting input with name = fname in HTML form
-        first_name = request.form.get("fname")
+        first_name = request.form.get("fname").capitalize()
         # getting input with name = lname in HTML form
-        last_name = request.form.get("lname")
+        last_name = request.form.get("lname").capitalize()
         availableClasses = learnPath.findMatchTroughAreaPopularity(first_name+' '+last_name)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
@@ -169,9 +169,9 @@ def showClassbyAreaPopularity():
 def showClassbyfriendPath():
     if request.method == "POST":
         # getting input with name = fname in HTML form
-        first_name = request.form.get("fname")
+        first_name = request.form.get("fname").capitalize()
         # getting input with name = lname in HTML form
-        last_name = request.form.get("lname")
+        last_name = request.form.get("lname").capitalize()
         # getting input with name = edges in HTML form
         edges = request.form.get("edges")
         availableClasses = learnPath.findMatchTroughFriendPath(first_name+' '+last_name, edges)
@@ -184,9 +184,9 @@ def showClassbyfriendPath():
 def showClassbyAcceptedAVG():
     if request.method == "POST":
         # getting input with name = fname in HTML form
-        first_name = request.form.get("fname")
+        first_name = request.form.get("fname").capitalize()
         # getting input with name = lname in HTML form
-        last_name = request.form.get("lname")
+        last_name = request.form.get("lname").capitalize()
         availableClasses = learnPath.findMatchTroughAcceptedAVG(first_name+' '+last_name)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)

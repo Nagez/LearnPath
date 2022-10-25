@@ -81,7 +81,7 @@ class connection:
             institutionName = res["i"]["Name"]
             friends = res["Friends"]
             strength = res["Strength"]
-            dc.update({"Class": className, "Institution": institutionName, "Friends": friends})
+            dc.update({"Class": className, "Institution": institutionName, "Friends": friends, "Strength": strength})
             table.append(dc)
 
         return table
@@ -98,7 +98,7 @@ class connection:
             "with c,c1 where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"'))"\
             "WITH collect(c)+collect(c1) AS cl unwind cl AS classes MATCH(a: Applicant{Name: '"+ApplicantName+"'})"\
             "MATCH (classes)--(f:Faculty)--(i:Institution)"\
-            "RETURN DISTINCT classes, i.Name, classes.BagrutMinimum - a.Bagrut as BagrutDiff, classes.PsychometricMinimum - a.Psychometric as PsychometricDiff order by BagrutDiff"
+            "RETURN DISTINCT classes, i.Name as InstitutionName, classes.BagrutMinimum - a.Bagrut as BagrutDiff, classes.PsychometricMinimum - a.Psychometric as PsychometricDiff order by BagrutDiff"
         print("\nMatch trough name search\n" + str)
         result = tx.run(str)
         table = []
@@ -107,7 +107,7 @@ class connection:
             className = res["classes"]["Name"]
             bagrutDiff = res["BagrutDiff"]
             psychometricDiff = res["PsychometricDiff"]
-            institution = res["i.Name"]
+            institution = res["InstitutionName"]
             dc.update({"Class": className, "Institution":institution, "Bagrut Difference": bagrutDiff, "Psychometric Difference": psychometricDiff})
             table.append(dc)
 
@@ -125,7 +125,7 @@ class connection:
             "with c,c1 where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"'))" \
             " WITH collect(c)+collect(c1) AS cl unwind cl AS classes " \
             "MATCH(a: Applicant) Where id(a)="+ApplicantID+" MATCH (classes)--(f:Faculty)--(i:Institution)  " \
-            "RETURN DISTINCT classes, i.Name, classes.BagrutMinimum - a.Bagrut as BagrutDiff, classes.PsychometricMinimum - a.Psychometric as PsychometricDiff order by BagrutDiff"
+            "RETURN DISTINCT classes, i.Name as InstitutionName, classes.BagrutMinimum - a.Bagrut as BagrutDiff, classes.PsychometricMinimum - a.Psychometric as PsychometricDiff order by BagrutDiff"
         print("\nMatch trough name search with applicant ID\n" + str)
         result = tx.run(str)
         table = []
@@ -134,7 +134,7 @@ class connection:
             className = res["classes"]["Name"]
             bagrutDiff = res["BagrutDiff"]
             psychometricDiff = res["PsychometricDiff"]
-            institution = res["i.Name"]
+            institution = res["InstitutionName"]
             dc.update({"Class": className, "Institution": institution, "Bagrut Difference": bagrutDiff, "Psychometric Difference": psychometricDiff})
             table.append(dc)
 

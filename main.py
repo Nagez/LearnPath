@@ -126,7 +126,7 @@ def connectApplicants(clean,quantity):
             # rndClass.id # get node id
             # rndClass.keys() # get node attributes
             # rndClass.values() # get node attributes value
-            print('Done connecting applicants')
+    print('Done connecting applicants')
 
 
 # create an example friend connection

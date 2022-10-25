@@ -123,9 +123,9 @@ def connectApplicants(clean,quantity):
                 else:
                     print("not accepted by bagrut")
             # various ways to access result information:
-            # print(rndClass.id) # get node id
-            # print(rndClass.keys()) # get node attributes
-            # print(rndClass.values()) # get node attributes value
+            # rndClass.id # get node id
+            # rndClass.keys() # get node attributes
+            # rndClass.values() # get node attributes value
             print('Done connecting applicants')
 
 

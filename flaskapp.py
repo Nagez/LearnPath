@@ -63,13 +63,8 @@ def show():
 @app.route('/show/<type>/<variable>', methods=["GET"])
 def show2(variable,type):
     if request.method == "GET":
-        # print(variable)
-        # print(type)
-        # type = request.args.get(type)
         if type == 'Institutions':
             res = learnPath.getFacultiesFromUni(variable)
-            # print(list(res[0].labels)[0])
-            # typeOfList = list(res[0].labels)[0]
             return render_template('show.html', list=res, typeList='Faculties')
         if type == 'Faculties':
             res = learnPath.getClassesFromFaculty(variable)

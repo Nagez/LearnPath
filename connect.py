@@ -98,7 +98,7 @@ class connection:
             "with c,c1 where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"'))"\
             "WITH collect(c)+collect(c1) AS cl unwind cl AS classes MATCH(a: Applicant{Name: '"+ApplicantName+"'})"\
             "MATCH (classes)--(f:Faculty)--(i:Institution)"\
-            "RETURN DISTINCT classes, i.Name, (toIntegerOrNull(classes.BagrutMinimum) - toIntegerOrNull(a.Bagrut)) as BagrutDiff, (toIntegerOrNull(classes.PsychometricMinimum) - toIntegerOrNull(a.Psychometric)) as PsychometricDiff order by BagrutDiff"
+            "RETURN DISTINCT classes, i.Name, classes.BagrutMinimum - a.Bagrut as BagrutDiff, classes.PsychometricMinimum - a.Psychometric as PsychometricDiff order by BagrutDiff"
         print("\nMatch trough name search\n" + str)
         result = tx.run(str)
         table = []
@@ -125,7 +125,7 @@ class connection:
             "with c,c1 where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"'))" \
             " WITH collect(c)+collect(c1) AS cl unwind cl AS classes " \
             "MATCH(a: Applicant) Where id(a)="+ApplicantID+" MATCH (classes)--(f:Faculty)--(i:Institution)  " \
-            "RETURN DISTINCT classes, i.Name, (toIntegerOrNull(classes.BagrutMinimum) - toIntegerOrNull(a.Bagrut)) as BagrutDiff, (toIntegerOrNull(classes.PsychometricMinimum) - toIntegerOrNull(a.Psychometric)) as PsychometricDiff order by BagrutDiff"
+            "RETURN DISTINCT classes, i.Name, classes.BagrutMinimum - a.Bagrut as BagrutDiff, classes.PsychometricMinimum - a.Psychometric as PsychometricDiff order by BagrutDiff"
         print("\nMatch trough name search with applicant ID\n" + str)
         result = tx.run(str)
         table = []

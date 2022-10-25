@@ -43,12 +43,12 @@
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <span id='drop-span'>Algorithm | <span class="badge bg-secondary">Find by</span></span>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="{{ url_for('showClass0') }}">ClassName |<span class="badge bg-secondary">Applicant Name</span></a></li>
-              <li><a class="dropdown-item" href="{{ url_for('findByClassAndIDpage') }}">ClassName |<span class="badge bg-secondary">Applicant ID</span></a></li>
-              <li><a class="dropdown-item" href="{{ url_for('findByClassAndNameByFriendpage') }}">Friends |<span class="badge bg-secondary">Applicant Name</span></a></li>
-              <li><a class="dropdown-item" href="{{ url_for('findByAreaPopularitypage') }}">Area Popularity |<span class="badge bg-secondary">Applicant Name</span></a></li>
-              <li><a class="dropdown-item" href="{{ url_for('findByfriendPathpage') }}">Friend Path |<span class="badge bg-secondary">Applicant Name</span></a></li>
-              <li><a class="dropdown-item" href="{{ url_for('findByAcceptedAVGpage') }}">Accepted Average |<span class="badge bg-secondary">Applicant Name</span></a></li>
+              <li><a class="dropdown-item" href="{{ url_for('chooseAlgorithm', variable = 1) }}">ClassName |<span class="badge bg-secondary">Applicant Name</span></a></li>
+              <li><a class="dropdown-item" href="{{ url_for('chooseAlgorithm', variable = 2) }}">ClassName |<span class="badge bg-secondary">Applicant ID</span></a></li>
+              <li><a class="dropdown-item" href="{{ url_for('chooseAlgorithm', variable = 3) }}">Friends |<span class="badge bg-secondary">Applicant Name</span></a></li>
+              <li><a class="dropdown-item" href="{{ url_for('chooseAlgorithm', variable = 4) }}">Area Popularity |<span class="badge bg-secondary">Applicant Name</span></a></li>
+              <li><a class="dropdown-item" href="{{ url_for('chooseAlgorithm', variable = 5) }}">Friend Path |<span class="badge bg-secondary">Applicant Name</span></a></li>
+              <li><a class="dropdown-item" href="{{ url_for('chooseAlgorithm', variable = 6) }}">Accepted Average |<span class="badge bg-secondary">Applicant Name</span></a></li>
           </ul>
         </li>
       </ul>

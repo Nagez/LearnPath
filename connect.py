@@ -121,10 +121,6 @@ class connection:
 
     @staticmethod
     def __findMatchIDTroughName(tx, ApplicantID, className):
-        str1 = "MATCH (i:Institution)-[]-(f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class)MATCH(a: Applicant)"\
-              " where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"')) and ID(a)="+ApplicantID+""\
-              " WITH a,collect(c)+collect(c1) AS cl unwind cl AS classes"\
-              " RETURN DISTINCT classes, (classes.BagrutMinimum - a.Bagrut) as BagrutDiff, (classes.PsychometricMinimum - a.Psychometric) as PsychometricDiff order by BagrutDiff "
         str="MATCH (f:Faculty)-[]-(c:Class) optional match (c)-[Similar]-(c1:Class) " \
             "with c,c1 where (toLower(c.Name) CONTAINS  toLower('"+className+"') or toLower(f.Name) CONTAINS toLower('"+className+"'))" \
             " WITH collect(c)+collect(c1) AS cl unwind cl AS classes " \

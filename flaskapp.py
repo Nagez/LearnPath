@@ -98,12 +98,21 @@ def statistics(option):
 
 
 # Algorithms #
-
-# direct to the page that includes form in order to use ClassName algorithm
-@app.route('/showClass0', methods=["GET"])  # the url /
-def showClass0():
+@app.route('/chooseAlgorithm/<variable>', methods=["GET"])  # the url /
+def chooseAlgorithm(variable):
     if request.method == "GET":
-        return render_template('showClass0.html')  # get the html file named showClass0, must be in templates folder
+        if variable == '1':
+            return render_template('showClass0.html')  # get the html file named showClass0, must be in templates folder
+        if variable == '2':
+            return render_template('findbyClass&ID.html')  # get the html file named findbyClass&ID, must be in templates folder
+        if variable == '3':
+            return render_template('templateForm.html', algorithm='showClassbyNameUsingFriends')  # get the html file named templateForm.html, must be in templates folder
+        if variable == '4':
+            return render_template('templateForm.html', algorithm='showClassbyAreaPopularity')  # get the html file named templateForm.html, must be in templates folder
+        if variable == '5':
+            return render_template('FriendPathAlgoForm.html')  # get the html file named FriendPathAlgoForm, must be in templates folder
+        if variable == '6':
+            return render_template('templateForm.html', algorithm='showClassbyAcceptedAVG')  # get the html file named templateForm.html, must be in templates folder
 
 
 # show results of ClassName algorithm (after getting form input)
@@ -121,13 +130,6 @@ def showClass():
     return render_template('listTemplate.html', options=[], list=availableClasses)
 
 
-# direct to the page that includes form in order to use ClassName algorithm by ID
-@app.route('/showClassbyID', methods=["GET"])  # the url /
-def findByClassAndIDpage():
-    if request.method == "GET":
-        return render_template('findbyClass&ID.html') # get the html file named findbyClass&ID, must be in templates folder
-
-
 # show results of ClassName algorithm using ID(after getting form input)
 @app.route('/showClassbyIDfun', methods=["POST"])
 def showClassbyIDfun():
@@ -139,13 +141,6 @@ def showClassbyIDfun():
         availableClasses = learnPath.findMatchIDTroughName(ID, inputClass)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
-
-
-# direct to the page that includes form in order to use Friends algorithm
-@app.route('/showClassUsingFriendsByName', methods=["GET"])  # the url /
-def findByClassAndNameByFriendpage():
-    if request.method == "GET":
-        return render_template('templateForm.html', algorithm='showClassbyNameUsingFriends')  # get the html file named templateForm.html, must be in templates folder
 
 
 # show results of Friends algorithm(after getting form input)
@@ -161,13 +156,6 @@ def showClassbyNameUsingFriends():
     return render_template('listTemplate.html', options=[], list=availableClasses)
 
 
-# direct to the page that includes form in order to use Area Popularity algorithm
-@app.route('/areaPopularityForm', methods=["GET"])
-def findByAreaPopularitypage():
-    if request.method == "GET":
-        return render_template('templateForm.html', algorithm='showClassbyAreaPopularity')  # get the html file named templateForm.html, must be in templates folder
-
-
 # show results of Area Popularity algorithm(after getting form input)
 @app.route('/areaPopularityResult', methods=["POST"])
 def showClassbyAreaPopularity():
@@ -179,13 +167,6 @@ def showClassbyAreaPopularity():
         availableClasses = learnPath.findMatchTroughAreaPopularity(first_name+' '+last_name)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
-
-
-# direct to the page that includes form in order to use Friend Path algorithm
-@app.route('/friendPathForm', methods=["GET"])
-def findByfriendPathpage():
-    if request.method == "GET":
-        return render_template('FriendPathAlgoForm.html')  # get the html file named FriendPathAlgoForm, must be in templates folder
 
 
 # show results of Friend Path algorithm(after getting form input)
@@ -201,13 +182,6 @@ def showClassbyfriendPath():
         availableClasses = learnPath.findMatchTroughFriendPath(first_name+' '+last_name, edges)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
-
-
-# direct to the page that includes form in order to use Accepted Average algorithm
-@app.route('/AcceptedAvgForm', methods=["GET"])
-def findByAcceptedAVGpage():
-    if request.method == "GET":
-        return render_template('templateForm.html', algorithm='showClassbyAcceptedAVG')  # get the html file named templateForm.html, must be in templates folder
 
 
 # show results of Accepted Average algorithm(after getting form input)

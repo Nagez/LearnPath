@@ -201,3 +201,23 @@ def showClassbyfriendPath():
         availableClasses = learnPath.findMatchTroughFriendPath(first_name+' '+last_name, edges)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
+
+
+# direct to the page that includes form in order to use Accepted Average algorithm
+@app.route('/AcceptedAvgForm', methods=["GET"])
+def findByAcceptedAVGpage():
+    if request.method == "GET":
+        return render_template('AcceptedAvgForm.html')  # get the html file named AcceptedAvgForm.html, must be in templates folder
+
+
+# show results of Accepted Average algorithm(after getting form input)
+@app.route('/acceptedAvgResult', methods=["POST"])
+def showClassbyAcceptedAVG():
+    if request.method == "POST":
+        # getting input with name = fname in HTML form
+        first_name = request.form.get("fname")
+        # getting input with name = lname in HTML form
+        last_name = request.form.get("lname")
+        availableClasses = learnPath.findMatchTroughAcceptedAVG(first_name+' '+last_name)
+
+    return render_template('listTemplate.html', options=[], list=availableClasses)

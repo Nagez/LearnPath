@@ -125,6 +125,25 @@ def showClass():
     return render_template('listTemplate.html', options=[], list=availableClasses)
 
 
+# show results of algorithms(after getting form input)
+@app.route('/showAlgorithm/<algorithm>', methods=["POST"])
+def showAlgorithm(algorithm):
+    if request.method == "POST":
+        # getting input with name = fname in HTML form
+        first_name = request.form.get("fname").capitalize()
+        # getting input with name = lname in HTML form
+        last_name = request.form.get("lname").capitalize()
+
+        if algorithm == 'showClassbyNameUsingFriends':
+            availableClasses = learnPath.findMatchTroughFriend(first_name+' '+last_name)
+        if algorithm == 'showClassbyAreaPopularity':
+            availableClasses = learnPath.findMatchTroughAreaPopularity(first_name+' '+last_name)
+        if algorithm == 'showClassbyAcceptedAVG':
+            availableClasses = learnPath.findMatchTroughAcceptedAVG(first_name+' '+last_name)
+
+    return render_template('listTemplate.html', options=[], list=availableClasses)
+
+
 # show results of ClassName algorithm using ID(after getting form input)
 @app.route('/showClassbyIDfun', methods=["POST"])
 def showClassbyIDfun():
@@ -134,32 +153,6 @@ def showClassbyIDfun():
         # getting input with name = ID in HTML form
         ID = request.form.get("ID")
         availableClasses = learnPath.findMatchIDTroughName(ID, inputClass)
-
-    return render_template('listTemplate.html', options=[], list=availableClasses)
-
-
-# show results of Friends algorithm(after getting form input)
-@app.route('/showClassbyNameUsingFriends', methods=["POST"])
-def showClassbyNameUsingFriends():
-    if request.method == "POST":
-        # getting input with name = fname in HTML form
-        first_name = request.form.get("fname").capitalize()
-        # getting input with name = lname in HTML form
-        last_name = request.form.get("lname").capitalize()
-        availableClasses = learnPath.findMatchTroughFriend(first_name+' '+last_name)
-
-    return render_template('listTemplate.html', options=[], list=availableClasses)
-
-
-# show results of Area Popularity algorithm(after getting form input)
-@app.route('/areaPopularityResult', methods=["POST"])
-def showClassbyAreaPopularity():
-    if request.method == "POST":
-        # getting input with name = fname in HTML form
-        first_name = request.form.get("fname").capitalize()
-        # getting input with name = lname in HTML form
-        last_name = request.form.get("lname").capitalize()
-        availableClasses = learnPath.findMatchTroughAreaPopularity(first_name+' '+last_name)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
 
@@ -175,18 +168,5 @@ def showClassbyfriendPath():
         # getting input with name = edges in HTML form
         edges = request.form.get("edges")
         availableClasses = learnPath.findMatchTroughFriendPath(first_name+' '+last_name, edges)
-
-    return render_template('listTemplate.html', options=[], list=availableClasses)
-
-
-# show results of Accepted Average algorithm(after getting form input)
-@app.route('/acceptedAvgResult', methods=["POST"])
-def showClassbyAcceptedAVG():
-    if request.method == "POST":
-        # getting input with name = fname in HTML form
-        first_name = request.form.get("fname").capitalize()
-        # getting input with name = lname in HTML form
-        last_name = request.form.get("lname").capitalize()
-        availableClasses = learnPath.findMatchTroughAcceptedAVG(first_name+' '+last_name)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)

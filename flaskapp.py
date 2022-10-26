@@ -97,32 +97,17 @@ def statistics(option):
 def chooseAlgorithm(variable):
     if request.method == "GET":
         if variable == '1':
-            return render_template('showClass0.html')  # get the html file named showClass0, must be in templates folder
+            return render_template('showClass0.html', algorithm='showClassByNameSearch')  # get the html file named showClass0, must be in templates folder
         if variable == '2':
             return render_template('findbyClass&ID.html')  # get the html file named findbyClass&ID, must be in templates folder
         if variable == '3':
-            return render_template('templateForm.html', algorithm='showClassbyNameUsingFriends')  # get the html file named templateForm.html, must be in templates folder
+            return render_template('templateForm.html', algorithm='showClassByNameUsingFriends')  # get the html file named templateForm.html, must be in templates folder
         if variable == '4':
-            return render_template('templateForm.html', algorithm='showClassbyAreaPopularity')  # get the html file named templateForm.html, must be in templates folder
+            return render_template('templateForm.html', algorithm='showClassByAreaPopularity')  # get the html file named templateForm.html, must be in templates folder
         if variable == '5':
-            return render_template('FriendPathAlgoForm.html')  # get the html file named FriendPathAlgoForm, must be in templates folder
+            return render_template('FriendPathAlgoForm.html', algorithm='showFriendPathFormResult')  # get the html file named FriendPathAlgoForm, must be in templates folder
         if variable == '6':
-            return render_template('templateForm.html', algorithm='showClassbyAcceptedAVG')  # get the html file named templateForm.html, must be in templates folder
-
-
-# show results of ClassName algorithm (after getting form input)
-@app.route('/showClass0/pst', methods=["POST"])
-def showClass():
-    if request.method == "POST":
-        # getting input with name = class in HTML form
-        inputClass = request.form.get("class")
-        # getting input with name = fname in HTML form
-        first_name = request.form.get("fname").capitalize()
-        # getting input with name = lname in HTML form
-        last_name = request.form.get("lname").capitalize()
-        availableClasses = learnPath.findMatchTroughName(first_name+' '+last_name, inputClass)
-
-    return render_template('listTemplate.html', options=[], list=availableClasses)
+            return render_template('templateForm.html', algorithm='showClassByAcceptedAVG')  # get the html file named templateForm.html, must be in templates folder
 
 
 # show results of algorithms(after getting form input)
@@ -134,12 +119,18 @@ def showAlgorithm(algorithm):
         # getting input with name = lname in HTML form
         last_name = request.form.get("lname").capitalize()
 
-        if algorithm == 'showClassbyNameUsingFriends':
+        if algorithm == 'showClassByNameUsingFriends':
             availableClasses = learnPath.findMatchTroughFriend(first_name+' '+last_name)
-        if algorithm == 'showClassbyAreaPopularity':
+        if algorithm == 'showClassByAreaPopularity':
             availableClasses = learnPath.findMatchTroughAreaPopularity(first_name+' '+last_name)
-        if algorithm == 'showClassbyAcceptedAVG':
+        if algorithm == 'showClassByAcceptedAVG':
             availableClasses = learnPath.findMatchTroughAcceptedAVG(first_name+' '+last_name)
+        if algorithm == 'showFriendPathFormResult':
+            edges = request.form.get("edges")  # getting input with name = edges in HTML form
+            availableClasses = learnPath.findMatchTroughFriendPath(first_name + ' ' + last_name, edges)
+        if algorithm == 'showClassByNameSearch':
+            inputClass = request.form.get("class")  # getting input with name = class in HTML form
+            availableClasses = learnPath.findMatchTroughName(first_name + ' ' + last_name, inputClass)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)
 
@@ -153,20 +144,5 @@ def showClassbyIDfun():
         # getting input with name = ID in HTML form
         ID = request.form.get("ID")
         availableClasses = learnPath.findMatchIDTroughName(ID, inputClass)
-
-    return render_template('listTemplate.html', options=[], list=availableClasses)
-
-
-# show results of Friend Path algorithm(after getting form input)
-@app.route('/friendPathFormResult', methods=["POST"])
-def showClassbyfriendPath():
-    if request.method == "POST":
-        # getting input with name = fname in HTML form
-        first_name = request.form.get("fname").capitalize()
-        # getting input with name = lname in HTML form
-        last_name = request.form.get("lname").capitalize()
-        # getting input with name = edges in HTML form
-        edges = request.form.get("edges")
-        availableClasses = learnPath.findMatchTroughFriendPath(first_name+' '+last_name, edges)
 
     return render_template('listTemplate.html', options=[], list=availableClasses)

@@ -233,7 +233,7 @@ class App(customtkinter.CTk):
             self.entry4.grid(column=1, row=2, sticky="nwe", padx=1, pady=1)
             self.entry4.configure(state=tkinter.DISABLED, text="CheckBox disabled", text_color="red")
 
-    def on_closing(self, event=0):
+    def on_closing(self):
         self.destroy()
 
     def start(self):

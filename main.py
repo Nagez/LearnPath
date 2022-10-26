@@ -1,7 +1,6 @@
 import random
 import threading
 from tkinter import DISABLED, NORMAL
-
 import names
 import connect
 import flaskapp
@@ -20,7 +19,7 @@ locations = ['South', 'Center', 'North', 'Jerusalem']
 # generate a create applicant query using the statistics
 def generateCypherCreateApplicant():
     random_gender = random.choices(['Female', 'Male'], [GirltoBoyRatio, 1 - GirltoBoyRatio])
-    random_SocioEconomicCluster = random.choices([1,2,3,4,5,6,7,8,9,10],[5,5,12,12,9,9,13,13,11,11],k=1)
+    random_SocioEconomicCluster = random.choices([1,2,3,4,5,6,7,8,9,10],[5,5,12,12,9,9,13,13,11,11],k=1) # get random EconomicSocialCluster according to statistics
     faculty = getRandomFacultyBySEC(random_SocioEconomicCluster[0])
     random_psyScore, random_bagrutScore = getRandomScore(random_SocioEconomicCluster[0])
     random_area = random.choices(locations)
@@ -57,7 +56,7 @@ def getRandomScore(sec):
         psyScore = round(random.gauss(psychometricAVGESC[sec-1], 200 / 3))  # get a round score according to gaussian distribution of a score mean of the socialEconomic Cluster
     while bagrutScore <= 60 or bagrutScore >= 120:
         bagrutScore = round(random.gauss(bagrutAVGESC[sec - 1], 200 / 12))
-    # print("psyScore: " + str(psyScore) + " avg: " + str(psychometricAVGESC[sec - 1])+"\n"+"bagrutScore: " + str(bagrutScore) + " avg: " + str(bagrutAVGESC[sec - 1]))
+    # print("psyScore: " + str(psyScore) + " avg: " + str(psychometricAVGESC[sec - 1])+"\n"+"bagrutScore: " + str(bagrutScore) + " avg: " + str(bagrutAVGESC[sec - 1])) # for debug
     return psyScore, bagrutScore
 
 

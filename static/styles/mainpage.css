@@ -90,3 +90,12 @@ h3 {
   justify-content: center;
 }
 
+/*add red color if validation failed*/
+.massage{
+  color: red;
+}
+
+/*add greed color if validation succeeded*/
+.massage i{
+  color: green;
+}

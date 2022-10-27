@@ -3,25 +3,20 @@
 
         <h1>Find Match</h1><br><br><br>
         <h4 class="mb-3">Applicant Info</h4>
-       <form class="needs-validation" action="{{ url_for('showClassbyIDfun')}}" method="post">
+       <form class="form-validation" action="{{ url_for('showClassbyIDfun')}}" method="post" novalidate>
         <div class="row g-3">
             <div class="col-sm-6">
               <label for="ID" class="form-label">Applicant ID</label>
-              <input type="text" class="form-control" id="ID" placeholder="Enter ID" value="" name="ID" required>
-              <span id= "ID-error"></span>
-              <div class="invalid-feedback">
-                Valid ID is required.
-              </div>
+              <input type="text" class="form-control" id="ID" placeholder="Enter ID" value="" name="ID" onkeyup="validateID()">
+              <span id= "id-error" class="massage"></span>
             </div>
 
             <h4 class="mb-3"><br><br>Class Info</h4>
 
              <div class="col-sm-6">
               <label for="class" class="form-label">Class Name</label>
-              <input type="text" class="form-control" id="class" placeholder="Enter Class Name" value="" name="class" required>
-              <div class="invalid-feedback">
-                Valid class name is required.
-              </div>
+              <input type="text" class="form-control" id="class" placeholder="Enter Class Name" value="" name="class" onkeyup="validateClass()">
+              <span id= "cname-error" class="massage"></span>
             </div>
 
           <hr class="my-4">

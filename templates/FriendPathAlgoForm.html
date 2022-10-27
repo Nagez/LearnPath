@@ -3,23 +3,18 @@
 
         <h1>Find Match</h1><br><br><br>
         <h4 class="mb-3">Applicant Info</h4>
-       <form class="needs-validation" action="{{ url_for('showClassbyfriendPath')}}" method="post">
+       <form class="form-validation" action="{{ url_for('showClassbyfriendPath')}}" method="post" novalidate>
         <div class="row g-3">
             <div class="col-sm-6">
               <label for="firstName" class="form-label">First name</label>
-              <input type="text" class="form-control" id="firstName" placeholder="Enter First Name" value="" name="fname" required>
-              <span id= "name-error"></span>
-              <div class="invalid-feedback">
-                Valid first name is required.
-              </div>
+              <input type="text" class="form-control" id="firstName" placeholder="Enter First Name" value="" name="fname" onkeyup="validateFname()">
+              <span id= "fname-error" class="massage"></span>
             </div>
 
             <div class="col-sm-6">
               <label for="lastName" class="form-label">Last name</label>
-              <input type="text" class="form-control" id="lastName" placeholder="Enter Last Name" value="" name="lname" required>
-              <div class="invalid-feedback">
-                Valid last name is required.
-              </div>
+              <input type="text" class="form-control" id="lastName" placeholder="Enter Last Name" value="" name="lname" onkeyup="validateLname()">
+              <span id= "lname-error" class="massage"></span>
             </div>
 
 

@@ -244,7 +244,6 @@ if __name__ == '__main__':
     print('Learn Path. Welcome.')
     learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
     #initConnections()  # can run only once
-    flaskapp.app.run(host="localhost", port=8000, debug=True)  # , debug=True   --DELETE LATER
     learnPath.close()  # close the connection to the database
 
     # GUI #

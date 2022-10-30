@@ -85,7 +85,7 @@ function validateClass(){
     if(cname!=null)
     {
         cname=cname.value
-        if(!cname.match(/^([A-Za-z]+)$/)) //if class is not valid
+        if(!cname.match(/^([A-Za-z]+)$/)&&!cname.match(/[a-zA-Z]+ [a-zA-Z]+$/)) //if class is not valid
         {
             cnameError.innerHTML = 'invalid class name'
             return false

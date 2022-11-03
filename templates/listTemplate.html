@@ -1,21 +1,27 @@
 {% extends "basePage.html" %}
 {% block content %}
+
+     <!--options menu for statistics page-->
      <div class="list-group">
          {% for item in options %}
             <a href="{{ url_for('statistics', option = loop.index) }}" class="list-group-item list-group-item-action">{{item}}</a>
          {% endfor %}
      </div>
     <p></p>
+
+     <!--table that shows output-->
      <div class="table-responsive">
         <table class="table table-dark table-striped table-bordered border-light">
             <thead>
             <tr>
+                 <!--values for titles in table-->
                  {% for key in list[0] %}
                     <th> {{ key }} </th>
                 {% endfor %}
             </tr>
             <thead>
             <tbody>
+            <!--content of table values-->
             {% for item in list %}
             <tr>
                 {% for value in item.values() %}

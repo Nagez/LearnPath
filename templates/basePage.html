@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <title>LearnPath</title>
+
+    <!--icon for page-->
     <link id="icon_learn" rel="icon" href="{{url_for('static', filename='LearnPath Icon.png')}}" type="image/icon type">
+
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 
+    <!--css file-->
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/mainpage.css') }}">
+
     <!-- for validation icon -->
     <script src="https://kit.fontawesome.com/5cda2b99aa.js" crossorigin="anonymous"></script>
 </head>
@@ -19,7 +23,7 @@
 
 <div class="container">
 
-
+<!--navigation bar-->
   <nav class="navbar navbar fixed-top navbar-dark bg-dark navbar-expand-lg bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="{{ url_for('base') }}"><h4>LearnPath</h4></a>
@@ -59,14 +63,17 @@
 
   <br><br><br><br>
 
+<!--expand block - here other pages will expand-->
 {% block content %}
 {% endblock %}
 
+<!--footer-->
   <footer class="my-5 pt-5 text-muted text-center text-small">
     <p class="mb-1">&copy; 2022 LearnPath<br>Shaked Wagner, Or Nagar</p>
   </footer>
 </div>
 
+<!--javascript file-->
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/main.js') }}"></script>
 
 <!-- JavaScript Bundle with Popper -->

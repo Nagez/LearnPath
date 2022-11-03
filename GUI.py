@@ -7,6 +7,7 @@ customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark",
 customtkinter.set_default_color_theme("dark-blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
 
+# define class for GUI
 class App(customtkinter.CTk):
 
     WIDTH = 780
@@ -117,6 +118,7 @@ class App(customtkinter.CTk):
         else:
             customtkinter.set_appearance_mode("light")
 
+    # create custom menu for "Create" option (check_box_1)
     def check1(self):
         # if check_box_1 is checked create frame_info1 and all its widgets
         if self.check_box_1.get() == 1:
@@ -162,6 +164,7 @@ class App(customtkinter.CTk):
             if self.entry3.winfo_exists() == 1:
                 self.entry3.destroy()
 
+    # create custom menu for "Connect Applicants" option (check_box_2)
     def check2(self):
         # if check_box_2 is checked create frame_info2 and all its widgets
         if self.check_box_2.get() == 1:
@@ -204,7 +207,7 @@ class App(customtkinter.CTk):
             if self.entry4.winfo_exists() == 1:
                 self.entry4.destroy()
 
-
+    # error message for frame_info1
     def entry3Fun(self):
         # create entry 3 if it doest exists
         if self.entry3.winfo_exists() == 0:
@@ -219,6 +222,7 @@ class App(customtkinter.CTk):
             self.entry3.grid(column=1, row=3, sticky="nwe", padx=1, pady=1)
             self.entry3.configure(state=tkinter.DISABLED, text="CheckBox disabled", text_color="red")
 
+    # error message for frame_info2
     def entry4Fun(self):
         # create entry 3 if it doest exists
         if self.entry4.winfo_exists() == 0:
@@ -233,8 +237,10 @@ class App(customtkinter.CTk):
             self.entry4.grid(column=1, row=2, sticky="nwe", padx=1, pady=1)
             self.entry4.configure(state=tkinter.DISABLED, text="CheckBox disabled", text_color="red")
 
+    # destroy window when closing GUI
     def on_closing(self):
         self.destroy()
 
+    # start GUI
     def start(self):
         self.mainloop()

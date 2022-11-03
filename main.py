@@ -242,13 +242,15 @@ def initConnections():
 
 if __name__ == '__main__':
     print('Learn Path. Welcome.')
-    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234") # connect to database
+    learnPath = connect.connection("bolt://localhost:7687", "neo4j", "1234")  # connect to database
     #initConnections()  # can run only once
     learnPath.close()  # close the connection to the database
 
     # GUI #
     app = GUI.App()
 
+
+# function for initiating The functions that were selected in GUI
     def init_event():
         if app.check_box_1.get() == 1:  # Create
             if (app.entry.get().count(" ") == 0 or app.entry.get() == "") and app.entry.get() != "" and app.entry.get().count(".") == 0:
@@ -345,12 +347,14 @@ if __name__ == '__main__':
             app.button_1.configure(state=NORMAL)
             app.button_1.configure(text="Run Init")
 
+
+# function for starting flask webapp
     def app_event():
         flaskapp.app.run()  # app.run(debug=True) for debugging
 
     # threads #
 
-    # check if thread in working
+    # create thread function for init_event function
     def init_thread_function():
         # create a new instance of the thread with the same configuration
         init_event_thread = threading.Thread(target=init_event)
@@ -360,6 +364,8 @@ if __name__ == '__main__':
             # print(init_event_thread.is_alive())
             init_event_thread.start()
 
+
+    # create thread function for app_event function
     def app_thread_function():
         # create a new instance of the thread with the same configuration
         app_event_thread = threading.Thread(target=app_event)
@@ -369,6 +375,9 @@ if __name__ == '__main__':
             # print(app_event_thread.is_alive())
             app_event_thread.start()
 
+
+    # assign functions to buttons in GUI
     app.button_1.command = init_thread_function
     app.button_2.command = app_thread_function
+
     app.start()

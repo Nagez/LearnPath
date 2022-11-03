@@ -61,7 +61,7 @@ def show():
 
 # show all Faculties or Classes (depends on type)
 @app.route('/show/<type>/<variable>', methods=["GET"])
-def show2(variable,type):
+def show2(variable, type):
     if request.method == "GET":
         if type == 'Institutions':
             res = learnPath.getFacultiesFromUni(variable)
